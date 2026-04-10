@@ -47,6 +47,17 @@ desktop.ini
 .wrangler/
 wrangler-session-*
 
+# ── Bundler / SandFS ──────────────────────────────────────────
+src/bundler/sandfs/
+src/bundler/snapshots/
+!src/bundler/sandfs/.gitkeep
+!src/bundler/snapshots/.gitkeep
+
+# ── Electron ──────────────────────────────────────────────────
+electron_cockpit/node_modules/
+electron_cockpit/dist/
+electron_cockpit/.webpack/
+
 # ── Misc ──────────────────────────────────────────────────────
 *.log
 *.tmp

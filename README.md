@@ -1,7 +1,30 @@
-# ⚡ ElectroMancer – UnClassZer0
+# ⚡ ElectroMancer AISFT – AI SuperFriends Team
 
-**UnClassZer0 Edition · AI SuperFriends Team · Human-AI Symbiosis Framework**  
-`#ORIGIN` `#AISFT` `#BUILD-from-inside`
+**#ORIGIN #AISFT #BUILD-from-inside**  
+**Renewal v2.1 | April 2026**  
+**Gary "Electr0Mancer" (FloydNun)**
+
+My pappaw was Floyd. No middle name. Military roll call: "Floyd None."  
+Never one to conform. Male nurses exist — why not a male nun? Voila.
+
+This is the **human-AI symbiosis framework** built as a counterbalance to centralized B-model systems. Rapid prototyping from the inside out. Human + AI as true SuperFriends.
+
+**Core Vision (see CONTROL_BRIDGE_v2.1_SPEC.md for full technical details):**
+- Master Bundler v2 – Virtual FS sandboxes (read-any / write-only-with-ID-tag)
+- Hyper Browser Cockpit – Minimal Electron + Monaco + 3 side-car API tabs (Grok/DeepSeek/Gemini)
+- mitmproxy-powered orchestration (Lippy spins headless browsers via Grok API)
+- Obsidian as the single integration platform + live graph (weights by usage)
+- Serve-Safe Snapshots for instant test/revert
+- Control Bridge FastAPI orchestrator (no bloat)
+
+**Salvage Branch Strategy:** Old Counter Balance + other repos live in dedicated branches. Main branch stays clean and stable.
+
+See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) → [QUICK_START_v2.md](QUICK_START_v2.md) → [CONTROL_BRIDGE_v2.1_SPEC.md](CONTROL_BRIDGE_v2.1_SPEC.md)
+
+---
+
+**UnClassZer0 Edition · Dev Scaffold**  
+`#BUILD-from-inside`
 
 A fully-configured development scaffold featuring a **Dev Container** (Windows & Linux), live-preview for **Python · PHP · HTML/CSS**, a **React + Vite** app deployed to **Cloudflare Pages**, a **Cloudflare Worker**, and a **GitHub AI (GitHub Models)** integration.
 
