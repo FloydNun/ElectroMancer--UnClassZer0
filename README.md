@@ -66,7 +66,7 @@ All ports are auto-forwarded by the Dev Container.
 | Service | Command | Port |
 |---------|---------|------|
 | **HTML/CSS Live Preview** | Open `src/index.html` → right-click → *Open with Live Server* | 5500 |
-| **Python / Flask** | `cd src && python app.py` | 5000 |
+| **Python / Flask** | `cd src && FLASK_DEBUG=1 python app.py` | 5000 |
 | **PHP** | `cd src && php -S localhost:8000` | 8000 |
 | **React (Vite)** | `cd react-cloudflare-app && npm run dev` | 5173 |
 | **Cloudflare Worker** | `cd cloudflare && wrangler dev` | 8787 |

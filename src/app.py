@@ -4,8 +4,9 @@ Run: python app.py
 Visit: http://localhost:5000
 """
 
-from flask import Flask, jsonify, render_template_string
+import os
 import datetime
+from flask import Flask, jsonify, render_template_string
 
 app = Flask(__name__)
 
@@ -74,5 +75,7 @@ def status():
 
 
 if __name__ == "__main__":
-    # debug=True enables hot-reload (live preview for Python changes)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Enable hot-reload in development by setting FLASK_DEBUG=1 in the environment.
+    # Never run with debug=True in production — it exposes an interactive debugger.
+    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode)
