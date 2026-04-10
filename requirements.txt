@@ -1,0 +1,16 @@
+# ──────────────────────────────────────────────────────────────
+# Python dependencies
+# Install: pip install -r requirements.txt
+# ──────────────────────────────────────────────────────────────
+
+# Web framework (src/app.py)
+flask>=3.0.0
+
+# HTTP client
+requests>=2.31.0
+
+# GitHub Models API / OpenAI-compatible SDK (github-ai/github_models_demo.py)
+openai>=1.40.0
+
+# Utilities
+python-dotenv>=1.0.0

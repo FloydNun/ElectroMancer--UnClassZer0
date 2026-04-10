@@ -1,0 +1,115 @@
+{
+  "name": "ElectroMancer – Python · PHP · React · Cloudflare · GitHub AI",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // Dev Container Features (layers applied on top of the base
+  // Dockerfile – works on both Windows and Linux Docker hosts)
+  // ──────────────────────────────────────────────────────────
+  "features": {
+    // Node.js LTS for React / Vite / Wrangler
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    // Python (latest 3.x)
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": true
+    },
+    // PHP with common extensions
+    "ghcr.io/devcontainers/features/php:1": {
+      "version": "8.3",
+      "installComposer": true
+    },
+    // GitHub CLI (gh) – used for GitHub Models API and Copilot
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // Forward ports
+  //   5173  – Vite (React dev server)
+  //   8787  – Wrangler (Cloudflare Workers local dev)
+  //   5500  – Live Server (HTML/CSS/PHP preview)
+  //   5000  – Flask / Python app
+  //   8000  – PHP built-in web server
+  // ──────────────────────────────────────────────────────────
+  "forwardPorts": [5173, 8787, 5500, 5000, 8000],
+  "portsAttributes": {
+    "5173": { "label": "Vite (React)", "onAutoForward": "openBrowser" },
+    "8787": { "label": "Wrangler (Cloudflare Worker)", "onAutoForward": "notify" },
+    "5500": { "label": "Live Server (HTML/CSS/PHP)", "onAutoForward": "openBrowser" },
+    "5000": { "label": "Flask (Python)", "onAutoForward": "notify" },
+    "8000": { "label": "PHP dev server", "onAutoForward": "notify" }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // VS Code extensions
+  // ──────────────────────────────────────────────────────────
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // ── Python ──────────────────────────────────────────
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.black-formatter",
+        "ms-python.debugpy",
+
+        // ── PHP ─────────────────────────────────────────────
+        "bmewburn.vscode-intelephense-client",
+        "felixfbecker.php-debug",
+
+        // ── HTML / CSS / Live Preview ────────────────────────
+        "ritwickdey.LiveServer",
+        "ms-vscode.live-server",
+        "ecmel.vscode-html-css",
+        "bradlc.vscode-tailwindcss",
+
+        // ── JavaScript / React ───────────────────────────────
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "dsznajder.es7-react-js-snippets",
+        "ms-vscode.vscode-typescript-next",
+
+        // ── Cloudflare ───────────────────────────────────────
+        "cloudflare.cloudflare-workers-bindings-extension",
+
+        // ── GitHub AI / Copilot (Marketplace) ───────────────
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+
+        // ── Git / GitHub ─────────────────────────────────────
+        "GitHub.vscode-pull-request-github",
+        "eamodio.gitlens",
+
+        // ── General DX ───────────────────────────────────────
+        "EditorConfig.EditorConfig",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+        "[php]": {
+          "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+        },
+        "liveServer.settings.port": 5500,
+        "liveServer.settings.donotShowInfoMsg": true,
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // Lifecycle scripts
+  // ──────────────────────────────────────────────────────────
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  // Run as non-root for better compatibility across Windows/Linux
+  "remoteUser": "vscode"
+}
