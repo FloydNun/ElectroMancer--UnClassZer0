@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ElectroMancer – UnClassZer0</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__inner">
+        <h1>⚡ ElectroMancer</h1>
+        <p class="tagline">UnClassZer0 · AI SuperFriends Team · Human-AI Symbiosis</p>
+        <nav class="nav">
+          <a href="index.html" class="nav__link nav__link--active">Home</a>
+          <a href="index.php" class="nav__link">PHP Demo</a>
+          <a href="../react-cloudflare-app/" class="nav__link">React ⚛️</a>
+          <a href="../github-ai/copilot_chat_demo.md" class="nav__link">GitHub AI 🤖</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>🚀 Dev Environment Ready</h2>
+        <p>
+          This scaffold is running inside a <strong>Dev Container</strong> that
+          works on both <em>Windows</em> and <em>Linux</em> hosts.
+        </p>
+        <ul>
+          <li>🐍 <strong>Python</strong> – Flask app at <code>localhost:5000</code></li>
+          <li>🐘 <strong>PHP</strong> – built-in server at <code>localhost:8000</code></li>
+          <li>🌐 <strong>HTML / CSS</strong> – Live Server at <code>localhost:5500</code></li>
+          <li>⚛️ <strong>React + Vite</strong> – dev server at <code>localhost:5173</code></li>
+          <li>☁️ <strong>Cloudflare Worker</strong> – Wrangler at <code>localhost:8787</code></li>
+          <li>🤖 <strong>GitHub AI</strong> – see <code>github-ai/</code> folder</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>🤖 GitHub AI Quick Start</h2>
+        <p>
+          Set your GitHub personal access token and run the demo to talk to
+          <strong>GitHub Models</strong> (GPT-4o, Llama, Phi, Mistral, …) —
+          all available free through the GitHub Marketplace.
+        </p>
+        <pre><code>export GITHUB_TOKEN=ghp_your_token_here
+python github-ai/github_models_demo.py</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>☁️ Cloudflare Integration</h2>
+        <p>Deploy your React app to Cloudflare Pages or run Workers locally:</p>
+        <pre><code># React → Cloudflare Pages
+cd react-cloudflare-app
+npm run build
+wrangler pages deploy dist
+
+# Cloudflare Worker
+cd cloudflare
+wrangler dev</code></pre>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Built with ❤️ by the AI SuperFriends Team ·
+        <a href="https://github.com/FloydNun/ElectroMancer--UnClassZer0" target="_blank">GitHub</a>
+      </p>
+    </footer>
+  </body>
+</html>

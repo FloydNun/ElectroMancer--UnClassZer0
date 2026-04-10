@@ -1,0 +1,222 @@
+/* ──────────────────────────────────────────────────────────────
+   React App – Global styles
+   ────────────────────────────────────────────────────────────── */
+:root {
+  --clr-bg: #0d0f1a;
+  --clr-surface: #161929;
+  --clr-border: #2a2e4a;
+  --clr-primary: #7c6af7;
+  --clr-primary-light: #a89dff;
+  --clr-accent: #00e5ff;
+  --clr-text: #e2e4f0;
+  --clr-muted: #8b8fac;
+  --clr-error: #ff6b6b;
+  --radius: 0.75rem;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Cascadia Code", "Fira Code", monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Hero ────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #1a1040 0%, #0d1a3a 50%, #0d0f1a 100%);
+  border-bottom: 1px solid var(--clr-border);
+  padding: 3rem 1.5rem 2rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--clr-primary-light), var(--clr-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tagline {
+  color: var(--clr-muted);
+  margin-top: 0.5rem;
+}
+
+/* ── Container ───────────────────────────────────────────────── */
+.container {
+  max-width: 900px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  display: grid;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+@media (min-width: 640px) {
+  .container {
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  }
+}
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card h2 {
+  font-size: 1.2rem;
+  color: var(--clr-primary-light);
+}
+
+.card p,
+.card code {
+  color: var(--clr-muted);
+  font-size: 0.9rem;
+}
+
+code {
+  font-family: var(--font-mono);
+  color: var(--clr-accent);
+  font-size: 0.85rem;
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(124, 106, 247, 0.1);
+  border: 1px solid var(--clr-border);
+  border-radius: 2rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+  box-shadow: 0 0 6px #4caf50;
+}
+
+.badge__label {
+  color: var(--clr-text);
+}
+
+.badge__port {
+  color: var(--clr-accent);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn {
+  display: inline-block;
+  padding: 0.55rem 1.25rem;
+  background: var(--clr-primary);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s, opacity 0.2s;
+  width: fit-content;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--clr-primary-light);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--count {
+  font-size: 1.1rem;
+  min-width: 160px;
+}
+
+/* ── Textarea ────────────────────────────────────────────────── */
+.textarea {
+  width: 100%;
+  background: #0a0c14;
+  border: 1px solid var(--clr-border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  color: var(--clr-text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: 2px solid var(--clr-primary);
+}
+
+/* ── Response / Error ────────────────────────────────────────── */
+.response {
+  background: #0a0c14;
+  border: 1px solid var(--clr-border);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--clr-accent);
+  white-space: pre-wrap;
+}
+
+.error {
+  color: var(--clr-error);
+  font-size: 0.875rem;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 1.25rem;
+  border-top: 1px solid var(--clr-border);
+  color: var(--clr-muted);
+  font-size: 0.875rem;
+}
+
+.footer a {
+  color: var(--clr-primary-light);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
