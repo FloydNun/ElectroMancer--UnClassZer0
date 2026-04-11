@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUD_Shield Forensic Node v4.9 (Deploy Ready)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .drop-zone { border: 2px dashed rgba(59, 130, 246, 0.3); transition: all 0.2s; cursor: pointer; }
+        .drop-zone:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .scan-line { width: 100%; height: 2px; background: rgba(59, 130, 246, 0.5); position: absolute; top: 0; left: 0; animation: scan 3s linear infinite; opacity: 0; }
+        @keyframes scan { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        const { useState, useEffect, useRef } = React;
+
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-storage.js";
+
+        // --- HARDCODED DEPLOYMENT CONFIG ---
+        // Project keys for the Firebase Console
+        const DEFAULT_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBNVI7SUt8XY81pFTvjgekQylnzmeWi7lc",
+            authDomain: "nursemoolovesyou.firebaseapp.com",
+            projectId: "nursemoolovesyou",
+            storageBucket: "nursemoolovesyou.firebasestorage.app",
+            messagingSenderId: "35703220958",
+            appId: "1:35703220958:web:ffbebc1a47f956e9bbf04f",
+            measurementId: "G-92WYSCC9N9"
+        };
+
+        const firebaseConfig = window.__firebase_config ? JSON.parse(window.__firebase_config) : DEFAULT_FIREBASE_CONFIG;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hud-shield-v4-portable';
+        const STORAGE_BUCKET_URL = `gs://${firebaseConfig.storageBucket}`;
+        
+        // YOUR PAID API KEY (Bypasses Canvas limits)
+        const GEMINI_API_KEY = "AIzaSyAaGvQkgxopPe_knZIPlu9hHOxHWACzMnM"; 
+
+        const App = () => {
+            const [user, setUser] = useState(null);
+            const [view, setView] = useState('dashboard'); 
+            const [events, setEvents] = useState([]);
+            const [contacts, setContacts] = useState([]);
+            const [knownSources, setKnownSources] = useState(new Set()); 
+            const [storage, setStorage] = useState(null);
+            const [processing, setProcessing] = useState(false);
+            const [progress, setProgress] = useState({ current: 0, total: 0, skipped: 0 });
+            const [status, setStatus] = useState("System_Ready");
+            const [faxRecipients, setFaxRecipients] = useState(""); 
+            const [selectedEvents, setSelectedEvents] = useState(new Set());
+
+            useEffect(() => {
+                const initAuth = async () => {
+                    try {
+                        if (typeof window.__initial_auth_token !== 'undefined' && window.__initial_auth_token) {
+                            await signInWithCustomToken(auth, window.__initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (e) { setStatus("Auth Failed"); }
+                };
+                initAuth();
+                const unsubscribe = onAuthStateChanged(auth, (u) => {
+                    setUser(u);
+                    if (u) {
+                        setStatus(`Connected: ${u.uid.slice(0,5)}...`);
+                        try { setStorage(getStorage(app, STORAGE_BUCKET_URL)); } catch (err) { console.warn("Storage Init Issue"); }
+                    }
+                });
+                return () => unsubscribe();
+            }, []);
+
+            useEffect(() => {
+                if (!user) return;
+                const eventQ = query(collection(db, 'artifacts', appId, 'public', 'data', 'timeline_events'));
+                const unsubscribeEvents = onSnapshot(eventQ, (s) => {
+                    const loadedEvents = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                    setEvents(loadedEvents.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)));
+                    setKnownSources(new Set(loadedEvents.map(e => e.source).filter(Boolean)));
+                }, (err) => { setStatus("DB Access Issue"); });
+
+                const contactQ = query(collection(db, 'artifacts', appId, 'public', 'data', 'fax_contacts'));
+                const unsubscribeContacts = onSnapshot(contactQ, (s) => {
+                    setContacts(s.docs.map(d => ({ id: d.id, ...d.data() })));
+                });
+                return () => { unsubscribeEvents(); unsubscribeContacts(); };
+            }, [user]);
+
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view, events, contacts]);
+
+            const handleBatchUpload = async (fileList) => {
+                setProcessing(true);
+                const files = Array.from(fileList);
+                setProgress({ current: 0, total: files.length, skipped: 0 });
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    setProgress(prev => ({ ...prev, current: i + 1 }));
+                    if (knownSources.has(file.name)) {
+                        setProgress(prev => ({ ...prev, skipped: prev.skipped + 1 }));
+                        continue; 
+                    }
+                    await processSingleFile(file);
+                }
+                setProcessing(false);
+                setStatus("Batch Complete");
+            };
+
+            const processSingleFile = async (file) => {
+                setStatus(`Vaulting: ${file.name}`);
+                return new Promise((resolve) => {
+                    const isImage = file.type.startsWith('image/');
+                    const isGemini = file.name.toLowerCase().includes('gemini');
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        let storagePath = "none";
+                        try {
+                            if (storage && user) {
+                                try {
+                                    const storageRef = ref(storage, `evidence/${user.uid}/${Date.now()}_${file.name}`);
+                                    const snapshot = await uploadBytes(storageRef, file);
+                                    storagePath = snapshot.metadata.fullPath;
+                                } catch (err) { console.error("Vault fail"); }
+                            }
+                            let payload = {};
+                            const apiModel = "gemini-2.5-flash-preview-09-2025";
+                            if (isImage) {
+                                payload = {
+                                    contents: [{ parts: [{ text: "Analyze image. Return JSON Array: [{\"type\":\"event\", \"title\":\"Visual Evidence\", \"summary\":\"Detail\", \"intent\":\"INFO\", \"date\":\"2025-01-01\"}]" }, { inlineData: { mimeType: file.type, data: e.target.result.split(',')[1] } }] }],
+                                    generationConfig: { responseMimeType: "application/json" }
+                                };
+                            } else {
+                                const text = e.target.result;
+                                let promptText = isGemini ? 
+                                    `Extract DIRECTIVES and RESEARCH. JSON Array: [{"type":"event", "title":"Plan", "summary":"Desc", "intent":"DIRECTIVE|RESEARCH", "date":"2025-01-01"}] DATA: ${text.slice(0, 30000)}` :
+                                    `Extract PROOF (Violations). JSON Array: [{"type":"event", "title":"Violation", "summary":"Desc", "intent":"VIOLATION|HARASSMENT", "date":"2025-01-01"}] DATA: ${text.slice(0, 30000)}`;
+                                payload = { contents: [{ parts: [{ text: promptText }] }], generationConfig: { responseMimeType: "application/json" } };
+                            }
+                            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${apiModel}:generateContent?key=${GEMINI_API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                            const json = await res.json();
+                            const raw = json.candidates?.[0]?.content?.parts?.[0]?.text;
+                            if (raw) {
+                                const extracted = JSON.parse(raw.replace(/```json/g, '').replace(/```/g, '').trim());
+                                for (const item of extracted) {
+                                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', item.type === 'contact' ? 'fax_contacts' : 'timeline_events'), {
+                                        ...item, timestamp: serverTimestamp(), uid: user.uid, source: file.name, evidence_path: storagePath, evidence_bucket: STORAGE_BUCKET_URL
+                                    });
+                                }
+                            }
+                            resolve();
+                        } catch (err) { resolve(); }
+                    };
+                    if (isImage) reader.readAsDataURL(file); else reader.readAsText(file);
+                });
+            };
+
+            const toggleSelectEvent = (id) => {
+                const newSet = new Set(selectedEvents);
+                if (newSet.has(id)) newSet.delete(id); else newSet.add(id);
+                setSelectedEvents(newSet);
+            };
+
+            const generateFaxBody = () => {
+                const sel = events.filter(e => selectedEvents.has(e.id));
+                let b = `URGENT HUD COMPLIANCE NOTICE\nTO: ${faxRecipients}\nDATE: ${new Date().toLocaleDateString()}\n\n`;
+                sel.forEach((e, i) => { b += `[${i+1}] ${e.title} (${e.intent})\nDetails: ${e.summary}\nSource: ${e.source}\n---\n`; });
+                return b + `\nImmediate response required.`;
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col p-4 pb-20 max-w-7xl mx-auto">
+                    <header className="flex flex-col md:flex-row justify-between items-center mb-6 glass p-6 rounded-3xl border-t border-t-blue-500/50">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-blue-600 p-3 rounded-xl text-white font-black">HS</div>
+                            <h1 className="font-black text-2xl italic uppercase text-white">HUD_Shield <span className="text-blue-500">PRO v4.9</span></h1>
+                        </div>
+                        <div className="flex gap-2 text-[10px] font-black uppercase items-center glass px-3 py-1 rounded-full">
+                            <span className={`w-2 h-2 rounded-full ${status.includes("Issue") ? "bg-red-500" : "bg-green-500 animate-pulse"}`}></span>
+                            <span className="text-slate-300">{status}</span>
+                        </div>
+                    </header>
+                    <nav className="flex gap-4 mb-8">
+                        {['dashboard', 'action', 'upload'].map(v => (
+                            <button key={v} onClick={() => setView(v)} className={`px-6 py-3 rounded-2xl font-bold uppercase text-xs transition-all ${view === v ? 'bg-blue-600 text-white shadow-lg' : 'glass text-slate-400 hover:text-white'}`}>{v}</button>
+                        ))}
+                    </nav>
+                    <main className="flex-1">
+                        {view === 'dashboard' && (
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div className="lg:col-span-2 space-y-4">
+                                    {events.map(e => (
+                                        <div key={e.id} className="glass p-6 rounded-[2rem] border-l-4 border-l-blue-600 group relative">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <span className={`text-[10px] font-black px-2 py-1 rounded-lg uppercase ${e.intent === 'VIOLATION' ? 'bg-red-900/30 text-red-400' : e.intent === 'DIRECTIVE' ? 'bg-purple-900/30 text-purple-400' : 'bg-blue-900/30 text-blue-400'}`}>{e.intent}</span>
+                                                <span className="text-[10px] mono text-slate-600">{e.timestamp?.seconds ? new Date(e.timestamp.seconds * 1000).toLocaleDateString() : 'Pending'}</span>
+                                            </div>
+                                            <h4 className="text-lg font-bold text-slate-100">{e.title}</h4>
+                                            <p className="text-sm text-slate-400 mt-2">{e.summary}</p>
+                                            <button onClick={() => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'timeline_events', e.id))} className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-red-500"><i data-lucide="trash-2" className="w-4 h-4"></i></button>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="space-y-6">
+                                    <div className="glass p-6 rounded-[2rem] h-[400px] flex flex-col">
+                                        <h3 className="text-[10px] font-black text-blue-400 uppercase mb-4 tracking-widest">Broadcast Targets</h3>
+                                        <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                                            {contacts.map(c => (
+                                                <div key={c.id} className="bg-slate-900/50 p-3 rounded-xl border border-slate-800 flex justify-between items-center group">
+                                                    <div><div className="text-[11px] font-bold text-slate-300">{c.name}</div><div className="text-[9px] mono text-slate-500">{c.number}</div></div>
+                                                    <button onClick={() => setFaxRecipients(prev => prev ? `${prev}, ${c.number}@fax.plus` : `${c.number}@fax.plus`)} className="text-green-500 opacity-0 group-hover:opacity-100"><i data-lucide="user-plus" className="w-4 h-4"></i></button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {view === 'action' && (
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+                                <div className="space-y-2 overflow-y-auto h-[500px] pr-2 custom-scrollbar">
+                                    {events.map(e => (
+                                        <div key={e.id} onClick={() => toggleSelectEvent(e.id)} className={`p-4 rounded-2xl border cursor-pointer transition-all ${selectedEvents.has(e.id) ? 'bg-blue-900/20 border-blue-500' : 'bg-slate-900/50 border-slate-800'}`}>
+                                            <div className="font-bold text-sm text-white">{e.title}</div>
+                                            <div className="text-xs text-slate-500 mt-1 line-clamp-1">{e.summary}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="glass p-6 rounded-[2rem] space-y-4">
+                                    <input type="text" value={faxRecipients} onChange={e => setFaxRecipients(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 mono text-sm" placeholder="Targets..." />
+                                    <div className="bg-slate-950 rounded-xl p-4 mono text-[10px] text-slate-400 h-64 overflow-y-auto whitespace-pre-wrap border border-slate-800">{generateFaxBody()}</div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button onClick={() => { navigator.clipboard.writeText(generateFaxBody()); setStatus("Copied!"); }} className="bg-slate-800 text-white py-4 rounded-xl font-bold uppercase text-xs">Copy</button>
+                                        <button onClick={() => window.location.href = `mailto:${faxRecipients}?subject=HUD%20Compliance&body=${encodeURIComponent(generateFaxBody())}`} className="bg-blue-600 text-white py-4 rounded-xl font-bold uppercase text-xs">Broadcast</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {view === 'upload' && (
+                            <div className="max-w-2xl mx-auto pt-10">
+                                <div onDrop={(e) => { e.preventDefault(); handleBatchUpload(e.dataTransfer.files); }} onDragOver={(e) => e.preventDefault()} className="drop-zone glass h-80 rounded-[3rem] flex flex-col items-center justify-center text-center p-8 relative overflow-hidden">
+                                    {processing && <div className="scan-line"></div>}
+                                    <i data-lucide="layers" className="text-blue-500 mb-6 opacity-50 w-16 h-16"></i>
+                                    <h2 className="text-lg font-black uppercase mb-2">Bulk Evidence Vault</h2>
+                                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-6">Drop folders or multiple files</p>
+                                    <label className="bg-slate-800 text-white px-8 py-3 rounded-xl cursor-pointer font-bold text-xs uppercase">Browse<input type="file" multiple className="hidden" onChange={(e) => handleBatchUpload(e.target.files)} /></label>
+                                    {processing && <div className="mt-8 text-blue-400 font-black text-xs uppercase animate-pulse">Processing {progress.current}/{progress.total}</div>}
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        };
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

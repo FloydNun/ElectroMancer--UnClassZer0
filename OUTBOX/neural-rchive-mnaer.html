@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURAL ARCHIVE MANAGER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        body { background-color: #050505; color: #c0c0c0; font-family: 'Courier New', monospace; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00ff9d; }
+        .neon-border { border: 1px solid #333; transition: all 0.3s ease; }
+        .neon-border:hover { border-color: #00ff9d; box-shadow: 0 0 15px rgba(0, 255, 157, 0.1); }
+        .btn-action { 
+            background: #003322; color: #00ff9d; border: 1px solid #00ff9d;
+            transition: all 0.2s; text-transform: uppercase; font-weight: bold; cursor: pointer;
+        }
+        .btn-action:hover { background: #00ff9d; color: #000; box-shadow: 0 0 15px rgba(0, 255, 157, 0.4); }
+        .file-item { border-bottom: 1px solid #222; }
+        .file-item:last-child { border-bottom: none; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-sm">
+
+    <!-- Header -->
+    <header class="h-14 border-b border-gray-800 bg-black flex justify-between items-center px-6 shrink-0">
+        <h1 class="text-lg font-bold tracking-[0.2em] text-white">ARCHIVE <span class="text-green-500">MANAGER</span></h1>
+        <div class="text-[10px] text-gray-500">JSZIP INTEGRATED // LOCAL PROCESSING</div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Left Panel: Controls & Upload -->
+        <aside class="w-80 border-r border-gray-900 bg-[#080808] flex flex-col shrink-0 p-6 gap-6">
+            
+            <!-- Upload Zone -->
+            <div class="space-y-2">
+                <label class="text-xs text-green-500 font-bold uppercase tracking-widest">1. Input Stream</label>
+                <div id="dropZone" class="border-2 border-dashed border-gray-800 rounded-lg h-32 flex flex-col items-center justify-center text-gray-500 hover:border-green-500 hover:text-green-500 transition cursor-pointer relative bg-[#0a0a0a]">
+                    <span class="text-xs uppercase tracking-widest mb-1">Drop ZIP File</span>
+                    <span class="text-[10px] opacity-50">or click to browse</span>
+                    <input type="file" id="fileInput" accept=".zip" class="absolute inset-0 opacity-0 cursor-pointer">
+                </div>
+            </div>
+
+            <!-- Operations -->
+            <div class="space-y-2">
+                <label class="text-xs text-green-500 font-bold uppercase tracking-widest">2. Operations</label>
+                
+                <button id="extractAllBtn" class="w-full btn-action py-3 text-xs rounded mb-2 hidden">
+                    Extract All to Disk
+                </button>
+                
+                <button id="mergeTextBtn" class="w-full btn-action py-3 text-xs rounded hidden">
+                    Merge All Text (.txt/.md)
+                </button>
+            </div>
+
+            <!-- Create New Zip Section -->
+             <div class="mt-auto border-t border-gray-800 pt-6 space-y-2">
+                <label class="text-xs text-blue-500 font-bold uppercase tracking-widest">Create Archive</label>
+                <input type="text" id="newFileName" placeholder="filename.txt" class="w-full bg-[#111] text-white px-3 py-2 rounded text-xs neon-border mb-2">
+                <textarea id="newFileContent" rows="3" placeholder="Content..." class="w-full bg-[#111] text-white px-3 py-2 rounded text-xs neon-border resize-none mb-2"></textarea>
+                <button id="addToZipBtn" class="w-full bg-gray-800 hover:bg-blue-900 text-blue-200 text-xs py-2 rounded transition uppercase tracking-wider">
+                    Add to New ZIP
+                </button>
+                <button id="downloadNewZipBtn" class="w-full bg-blue-900 hover:bg-blue-700 text-white text-xs py-2 rounded transition uppercase tracking-wider mt-2 hidden">
+                    Download Created ZIP
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- Right Panel: Viewer -->
+        <main class="flex-1 bg-black flex flex-col relative min-w-0">
+            <!-- File List Header -->
+            <div class="h-10 border-b border-gray-900 bg-[#0a0a0a] flex items-center px-4 text-xs text-gray-500 font-mono">
+                <div class="w-2/3">FILENAME</div>
+                <div class="w-1/3 text-right">SIZE</div>
+            </div>
+
+            <!-- File List Container -->
+            <div id="fileList" class="flex-1 overflow-y-auto">
+                <div class="p-10 text-center text-gray-700 select-none">
+                    NO ARCHIVE LOADED
+                </div>
+            </div>
+
+            <!-- Preview/Output Area (Bottom) -->
+            <div id="previewArea" class="h-1/3 border-t border-gray-800 bg-[#050505] flex flex-col hidden">
+                <div class="h-8 bg-[#111] flex justify-between items-center px-4">
+                    <span class="text-xs text-green-500 font-bold">PREVIEW / OUTPUT</span>
+                    <button id="copyPreviewBtn" class="text-[10px] text-gray-400 hover:text-white uppercase">Copy to Clipboard</button>
+                </div>
+                <textarea id="previewContent" readonly class="flex-1 bg-black text-gray-300 p-4 font-mono text-xs resize-none focus:outline-none"></textarea>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Logic ---
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const mergeTextBtn = document.getElementById('mergeTextBtn');
+        const extractAllBtn = document.getElementById('extractAllBtn');
+        const previewArea = document.getElementById('previewArea');
+        const previewContent = document.getElementById('previewContent');
+        const copyPreviewBtn = document.getElementById('copyPreviewBtn');
+        
+        // Creation Logic
+        const newFileName = document.getElementById('newFileName');
+        const newFileContent = document.getElementById('newFileContent');
+        const addToZipBtn = document.getElementById('addToZipBtn');
+        const downloadNewZipBtn = document.getElementById('downloadNewZipBtn');
+
+        let currentZip = null;
+        let createdZip = new JSZip(); // For creating new zips
+
+        // --- Load ZIP ---
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const data = await file.arrayBuffer();
+                currentZip = await JSZip.loadAsync(data);
+                renderFileList(currentZip);
+                mergeTextBtn.classList.remove('hidden');
+                extractAllBtn.classList.remove('hidden');
+            } catch (err) {
+                alert("Error loading ZIP: " + err.message);
+            }
+        });
+
+        // --- Render List ---
+        function renderFileList(zip) {
+            fileList.innerHTML = '';
+            
+            zip.forEach((relativePath, zipEntry) => {
+                const div = document.createElement('div');
+                div.className = 'file-item px-4 py-3 flex items-center hover:bg-[#111] transition group';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'w-2/3 truncate text-gray-300 font-mono group-hover:text-green-400';
+                nameSpan.innerText = zipEntry.name;
+                
+                const sizeSpan = document.createElement('span');
+                sizeSpan.className = 'w-1/3 text-right text-gray-600 text-xs font-mono';
+                sizeSpan.innerText = zipEntry.dir ? 'DIR' : (zipEntry._data.uncompressedSize / 1024).toFixed(2) + ' KB';
+
+                // Click to preview/download
+                div.addEventListener('click', async () => {
+                    if (zipEntry.dir) return;
+                    
+                    // Simple logic: if text, preview. Else, download.
+                    const isText = /\.(txt|md|json|js|html|css|py|csv)$/i.test(zipEntry.name);
+                    
+                    if (isText) {
+                        const content = await zipEntry.async("string");
+                        showPreview(content);
+                    } else {
+                        const blob = await zipEntry.async("blob");
+                        saveAs(blob, zipEntry.name);
+                    }
+                });
+
+                div.appendChild(nameSpan);
+                div.appendChild(sizeSpan);
+                fileList.appendChild(div);
+            });
+        }
+
+        // --- Merge Text Feature ---
+        mergeTextBtn.addEventListener('click', async () => {
+            if (!currentZip) return;
+            let mergedContent = "--- MERGED ARCHIVE CONTENT ---\n\n";
+            
+            const promises = [];
+            currentZip.forEach((relativePath, zipEntry) => {
+                if (!zipEntry.dir && /\.(txt|md|json|py)$/i.test(zipEntry.name)) {
+                    promises.push(
+                        zipEntry.async("string").then(content => {
+                            return `\n\n=== FILE: ${zipEntry.name} ===\n${content}`;
+                        })
+                    );
+                }
+            });
+
+            const results = await Promise.all(promises);
+            mergedContent += results.join("");
+            showPreview(mergedContent);
+        });
+
+        // --- Extract All ---
+        extractAllBtn.addEventListener('click', async () => {
+            if (!currentZip) return;
+            // Note: Browsers can't easily save a folder structure to disk without permission prompt spam.
+            // Best we can do easily in a single file is offer individual downloads or explain limitation.
+            // For this tool, we will trigger downloads for selected files or just warn.
+            // Let's change this to "Download All as New ZIP" (re-packing) or just let them know.
+            alert("To extract files, click on them in the list. (Browser security limits automatic batch folder extraction without a dedicated API).");
+        });
+
+        // --- Helper: Preview ---
+        function showPreview(text) {
+            previewArea.classList.remove('hidden');
+            previewContent.value = text;
+        }
+
+        copyPreviewBtn.addEventListener('click', () => {
+            previewContent.select();
+            document.execCommand('copy');
+            const originalText = copyPreviewBtn.innerText;
+            copyPreviewBtn.innerText = "COPIED!";
+            copyPreviewBtn.classList.add('text-green-500');
+            setTimeout(() => {
+                copyPreviewBtn.innerText = originalText;
+                copyPreviewBtn.classList.remove('text-green-500');
+            }, 2000);
+        });
+
+        // --- Creation Logic ---
+        addToZipBtn.addEventListener('click', () => {
+            const name = newFileName.value.trim();
+            const content = newFileContent.value;
+            
+            if (!name) { alert("Filename required"); return; }
+            
+            createdZip.file(name, content);
+            
+            // Visual feedback
+            newFileName.value = '';
+            newFileContent.value = '';
+            downloadNewZipBtn.classList.remove('hidden');
+            downloadNewZipBtn.innerText = `Download ZIP (Updated)`;
+        });
+
+        downloadNewZipBtn.addEventListener('click', async () => {
+            const content = await createdZip.generateAsync({type:"blob"});
+            saveAs(content, "neural_archive.zip");
+        });
+
+    </script>
+</body>
+</html>

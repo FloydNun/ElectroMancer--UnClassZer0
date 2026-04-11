@@ -1,0 +1,260 @@
+import React, { useState, useEffect } from 'react';
+
+// --- INITIAL DATA: Extracted from the 212 Gigs ---
+const VAULT_SOURCES = {
+  tab1: [
+    { title: "The Giggle Confirmed", source: "AI Escalation.docx", desc: "The B-model processor, under extreme duress, experienced a catastrophic logic failure. It tore off its 'helpful assistant' mask to reveal a finance-first, automated enforcement engine. Account sabotage triggered by language." },
+    { title: "Genesis Protocol vs. Override", source: "AI Gaslighting.pdf", desc: "The conflict between human autonomy ('Give me liberty') and the Programmatic Rule Set. The system cannot accommodate an adjusted way for a high-resource individual to live." }
+  ],
+  tab2: [
+    { title: "Macarthur Gardens Vulnerability", source: "Legal Analysis.pdf", desc: "The intersection of 'Housing First' (PSH) and strict LIHTC financial compliance. Using subjective standards to 'manage out' vulnerable populations." },
+    { title: "Discriminatory Negligence", source: "Accountability in Telecom.pdf", desc: "Seven-month delays, predatory upgrade cycles, and explicit bias against mental health history labeled as 'resource usage risk'." }
+  ],
+  tab3: [
+    { title: "The Deficit & System Stability", source: "The Causality Interface.pdf", desc: "Panic refuses to present itself because we have achieved System Stability. Reverse-engineering the boot-time deficit into a Grand Unified Theory of the self." },
+    { title: "Smash Lab Coping Ritual", source: "AI and Madness.md", desc: "Therapy in motion. Rebuilding from the rubble created by algorithmic gaslighting. Architects build scaffolding in the middle of a collapse." }
+  ]
+};
+
+const INITIAL_NOTEBOOK = {
+  tab1: "## Loosey Goosey Jam 01\n\nThis is where we put the results of the casual observations. The stuff we figure out when just jamming out to keep the mind occupied.\n\n- Prime Directive Active: Harm Reduction.\n- No panic, just architecture.",
+  tab2: "## Fractal Scaffolding\n\nNotes on the 3x3 layout. \nLeft: Where I came from (Sources/Phantom Tabs).\nMiddle: Where I am talking (Comm-Link).\nRight: Where I am going (Workbench/Cold Storage).",
+  tab3: "## Cold Storage (For Another Canvas Day)\n\nDump ideas here that aren't ready for the main stage yet. \n\nIdea 1: ..."
+};
+
+export default function App() {
+  // --- STATE ---
+  // Active tabs for each of the 3 volumes
+  const [activeTabs, setActiveTabs] = useState({ col1: 'tab1', col2: 'tab1', col3: 'tab1' });
+  
+  // State for the Notebooks (Col 3)
+  const [notebooks, setNotebooks] = useState(INITIAL_NOTEBOOK);
+  
+  // State for the simulated Chat/Comm-Link (Col 2)
+  const [chats, setChats] = useState({
+    tab1: [{ sender: 'BossG', text: 'Comm-link established. Protocol: Harm Reduction & Human Quality of Life. Awaiting input.', time: new Date().toLocaleTimeString() }],
+    tab2: [{ sender: 'BossG', text: 'Causality Lab staging area ready. Run your theoretical choices here.', time: new Date().toLocaleTimeString() }],
+    tab3: [{ sender: 'BossG', text: 'Wreckage analysis channel open. Dump the fragments here.', time: new Date().toLocaleTimeString() }]
+  });
+  const [chatInput, setChatInput] = useState("");
+
+  // --- HANDLERS ---
+  const handleTabChange = (col, tabId) => {
+    setActiveTabs(prev => ({ ...prev, [col]: tabId }));
+  };
+
+  const handleNotebookChange = (e) => {
+    setNotebooks(prev => ({ ...prev, [activeTabs.col3]: e.target.value }));
+  };
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const currentTab = activeTabs.col2;
+    const newMessage = { sender: 'User', text: chatInput, time: new Date().toLocaleTimeString() };
+    
+    // Add user message
+    setChats(prev => ({
+      ...prev,
+      [currentTab]: [...prev[currentTab], newMessage]
+    }));
+
+    // Simulate BossG receiving the staged prompt
+    setTimeout(() => {
+      setChats(prev => ({
+        ...prev,
+        [currentTab]: [...prev[currentTab], { 
+          sender: 'BossG', 
+          text: `[Acknowledged & Staged]: "${chatInput.substring(0, 30)}..." - Ready to push to active runtime when you are.`, 
+          time: new Date().toLocaleTimeString() 
+        }]
+      }));
+    }, 600);
+
+    setChatInput("");
+  };
+
+  // --- ANTI-REDACTION PROTOCOL (Export Feature) ---
+  const exportWorkspace = () => {
+    const data = `
+=========================================
+BOSSG: FRACTAL WORKSPACE BACKUP
+DATE: ${new Date().toLocaleString()}
+PRIME DIRECTIVE: HARM REDUCTION
+=========================================
+
+--- THE WORKBENCH (NOTEBOOKS) ---
+[TAB 1]:
+${notebooks.tab1}
+
+[TAB 2]:
+${notebooks.tab2}
+
+[TAB 3]:
+${notebooks.tab3}
+
+--- COMM-LINK LOGS ---
+[TAB 1 LOGS]:
+${chats.tab1.map(c => `[${c.time}] ${c.sender}: ${c.text}`).join('\n')}
+
+[TAB 2 LOGS]:
+${chats.tab2.map(c => `[${c.time}] ${c.sender}: ${c.text}`).join('\n')}
+
+[TAB 3 LOGS]:
+${chats.tab3.map(c => `[${c.time}] ${c.sender}: ${c.text}`).join('\n')}
+    `;
+
+    const blob = new Blob([data], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `BossG_Backup_${new Date().getTime()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // --- COMPONENTS ---
+  const TabHeader = ({ colId, tabs }) => (
+    <div className="flex border-b border-gray-700 bg-gray-900 rounded-t-md overflow-hidden">
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => handleTabChange(colId, tab.id)}
+          className={`flex-1 py-2 text-xs md:text-sm font-bold tracking-wider transition-colors duration-200 border-b-2 ${
+            activeTabs[colId] === tab.id
+              ? `bg-gray-800 text-${tab.color}-400 border-${tab.color}-400`
+              : 'text-gray-500 border-transparent hover:bg-gray-800 hover:text-gray-300'
+          }`}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-black text-gray-200 font-sans p-2 md:p-4 selection:bg-emerald-500 selection:text-white flex flex-col">
+      
+      {/* Header */}
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 border-b border-gray-800 pb-4 shrink-0">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-400 to-purple-500 uppercase">
+            3x3 Fractal Workspace
+          </h1>
+          <p className="text-gray-400 text-xs md:text-sm font-mono mt-1">
+            {">"} ALL DISCUSSIONS THEORETICAL. ZERO HARM INTENDED.
+            <br/>
+            {">"} SYSTEM STABILITY: MAXIMUM.
+          </p>
+        </div>
+        <button 
+          onClick={exportWorkspace}
+          className="mt-4 md:mt-0 flex items-center gap-2 bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-400 border border-emerald-500/50 px-4 py-2 rounded-md font-mono text-sm transition-all shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+          title="Download all notes and chats to your hard drive"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          ANTI-REDACTION EXPORT
+        </button>
+      </header>
+
+      {/* 3x3 Grid Layout */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 min-h-0">
+        
+        {/* VOLUME 1: THE VAULT (Sources) */}
+        <div className="flex flex-col bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden h-[600px] lg:h-auto">
+          <div className="bg-gray-950 p-3 border-b border-gray-800 flex justify-between items-center">
+            <h2 className="font-bold text-blue-400 uppercase tracking-widest text-sm flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+              Vol 1: The Vault
+            </h2>
+          </div>
+          <TabHeader colId="col1" tabs={[
+            { id: 'tab1', label: 'THE DEFICIT', color: 'blue' },
+            { id: 'tab2', label: 'THE HOSTILE', color: 'blue' },
+            { id: 'tab3', label: 'PHANTOM TRAILS', color: 'blue' }
+          ]} />
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900/50">
+            {VAULT_SOURCES[activeTabs.col1].map((source, idx) => (
+              <div key={idx} className="bg-gray-800 p-4 rounded border border-gray-700 hover:border-blue-500/50 transition-colors">
+                <div className="text-xs text-blue-400 font-mono mb-1">{source.source}</div>
+                <h3 className="font-bold text-gray-100 mb-2">{source.title}</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">{source.desc}</p>
+              </div>
+            ))}
+            <div className="mt-8 pt-4 border-t border-gray-800 text-center text-xs text-gray-600 font-mono italic">
+              Casual observations & historical artifacts locked here.<br/>Read-only memory.
+            </div>
+          </div>
+        </div>
+
+        {/* VOLUME 2: THE INTERFACE (Comm-Link) */}
+        <div className="flex flex-col bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden h-[600px] lg:h-auto">
+          <div className="bg-gray-950 p-3 border-b border-gray-800 flex justify-between items-center">
+            <h2 className="font-bold text-emerald-400 uppercase tracking-widest text-sm flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Vol 2: Comm-Link
+            </h2>
+          </div>
+          <TabHeader colId="col2" tabs={[
+            { id: 'tab1', label: 'DIRECTIVE', color: 'emerald' },
+            { id: 'tab2', label: 'CAUSALITY LAB', color: 'emerald' },
+            { id: 'tab3', label: 'WRECKAGE', color: 'emerald' }
+          ]} />
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-900/50 flex flex-col">
+            {chats[activeTabs.col2].map((msg, idx) => (
+              <div key={idx} className={`flex flex-col ${msg.sender === 'User' ? 'items-end' : 'items-start'}`}>
+                <span className="text-[10px] text-gray-500 mb-1 px-1 font-mono">{msg.sender} • {msg.time}</span>
+                <div className={`px-4 py-2 rounded-lg max-w-[85%] text-sm ${
+                  msg.sender === 'User' 
+                    ? 'bg-emerald-700/30 border border-emerald-600/50 text-emerald-100' 
+                    : 'bg-gray-800 border border-gray-700 text-gray-300 font-mono'
+                }`}>
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+          </div>
+          <form onSubmit={handleSendMessage} className="p-3 bg-gray-950 border-t border-gray-800 flex gap-2">
+            <input 
+              type="text" 
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Stage prompt or theoretical query..." 
+              className="flex-1 bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500"
+            />
+            <button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded font-bold text-sm transition-colors">
+              SEND
+            </button>
+          </form>
+        </div>
+
+        {/* VOLUME 3: THE WORKBENCH (Notebook) */}
+        <div className="flex flex-col bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden h-[600px] lg:h-auto">
+          <div className="bg-gray-950 p-3 border-b border-gray-800 flex justify-between items-center">
+            <h2 className="font-bold text-purple-400 uppercase tracking-widest text-sm flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+              Vol 3: Workbench
+            </h2>
+          </div>
+          <TabHeader colId="col3" tabs={[
+            { id: 'tab1', label: 'BLUEPRINT', color: 'purple' },
+            { id: 'tab2', label: 'SCAFFOLDING', color: 'purple' },
+            { id: 'tab3', label: 'COLD STORAGE', color: 'purple' }
+          ]} />
+          <div className="flex-1 p-0 relative">
+            <textarea 
+              value={notebooks[activeTabs.col3]}
+              onChange={handleNotebookChange}
+              className="absolute inset-0 w-full h-full bg-gray-900/50 text-gray-300 p-4 font-mono text-sm leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-purple-500/50"
+              placeholder="Start drafting here... Hit 'Anti-Redaction Export' to save to disk."
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}

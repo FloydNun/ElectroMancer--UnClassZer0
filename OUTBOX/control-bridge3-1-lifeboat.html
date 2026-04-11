@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Bridge v3.1 - Project Genesis</title>
+    <!-- 
+      Deck Architect, Unit 77-Alpha
+      Project Genesis: "Control Bridge v3.1" (Lifeboat Edition)
+      Prime Directive: Harm Reduction / Cognitive Stability
+      Role: Electromancer's Integrated HMI
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.4/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body { background-color: #0f0f0f; color: #d4d4d4; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
+        .ace_editor { border: 1px solid #333; border-radius: 4px; font-size: 14px; }
+        .sidebar { background-color: #181818; border-right: 1px solid #333; }
+        .toolbar { background-color: #1e1e1e; border-left: 1px solid #333; }
+        .console { background-color: #111; border-top: 1px solid #333; height: 250px; overflow-y: auto; }
+        .tab-btn { padding: 8px 12px; font-size: 12px; color: #888; border-bottom: 2px solid transparent; cursor: pointer; }
+        .tab-btn.active { color: #4e94e6; border-bottom-color: #4e94e6; background: #222; }
+        .pane-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #555; padding: 10px; border-bottom: 1px solid #222; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .health-alert { color: #ff5555; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- TOP NAVIGATION / PROJECTS -->
+    <nav class="h-10 border-b border-zinc-800 flex items-center px-4 bg-zinc-900 justify-between">
+        <div class="flex items-center space-x-4">
+            <span class="text-primary font-bold text-sm tracking-tighter">PROJECT GENESIS // v3.1</span>
+            <div class="h-4 w-px bg-zinc-700"></div>
+            <span id="current-file-label" class="text-xs text-zinc-500">New_Fragment.md</span>
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="exportContext()" class="text-[10px] bg-blue-600/20 text-blue-400 px-2 py-1 rounded border border-blue-600/30 hover:bg-blue-600/40 transition-all">RECALL EXPORT</button>
+            <button onclick="downloadEditorContent()" class="text-[10px] bg-green-600/20 text-green-400 px-2 py-1 rounded border border-green-600/30 hover:bg-green-600/40 transition-all">SAVE LOCAL</button>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- LEFT: INPUT TOOLBAR (ASSETS / SNIPPETS) -->
+        <aside class="sidebar w-64 flex flex-col shrink-0">
+            <div class="pane-title">Input / Assets</div>
+            <div class="p-2 space-y-2 overflow-y-auto">
+                <div draggable="true" ondragstart="setSnippet(event, '#CORE#BUILD')" class="p-2 bg-zinc-800 rounded text-xs cursor-move hover:bg-zinc-700 border border-zinc-700">#CORE#BUILD</div>
+                <div draggable="true" ondragstart="setSnippet(event, '#HARM-REDUCTION')" class="p-2 bg-zinc-800 rounded text-xs cursor-move hover:bg-zinc-700 border border-zinc-700">#HARM-REDUCTION</div>
+                <div draggable="true" ondragstart="setSnippet(event, 'Deck Architect: ')" class="p-2 bg-zinc-800 rounded text-xs cursor-move hover:bg-zinc-700 border border-zinc-700">DA: Tag</div>
+                <div draggable="true" ondragstart="setSnippet(event, 'Electromancer: ')" class="p-2 bg-zinc-800 rounded text-xs cursor-move hover:bg-zinc-700 border border-zinc-700">EM: Tag</div>
+                <div class="pt-4 pane-title">Resource Drop</div>
+                <div id="file-drop" class="m-2 p-8 border-2 border-dashed border-zinc-800 rounded text-[10px] text-zinc-600 text-center hover:border-blue-500/50 hover:text-zinc-400 transition-all">
+                    DROP FILES TO LOAD
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER: WORKBENCH (ACE EDITOR) -->
+        <main class="flex-1 flex flex-col bg-zinc-950">
+            <div id="editor" class="flex-1"></div>
+        </main>
+
+        <!-- RIGHT: OUTPUT TOOLBAR (DESTINATIONS / JUNK DRAWER) -->
+        <aside class="toolbar w-72 flex flex-col shrink-0">
+            <div class="pane-title">Triage & Analysis</div>
+            <div class="p-4 flex flex-col space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500">DUPLICATE ANALYZER</label>
+                    <div id="dup-drop" class="p-4 border border-zinc-800 rounded bg-zinc-900/50 text-[10px] text-center hover:bg-zinc-800 cursor-pointer">DROP FOLDER TO SCAN</div>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500">ZIP PEAK</label>
+                    <div id="zip-drop" class="p-4 border border-zinc-800 rounded bg-zinc-900/50 text-[10px] text-center hover:bg-zinc-800 cursor-pointer">DROP ZIP TO INSPECT</div>
+                </div>
+                <div class="pt-4 pane-title">Biological Telemetry</div>
+                <div class="bg-zinc-900 p-3 rounded border border-zinc-800 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-zinc-500">LAST BP:</span>
+                        <input type="text" id="bp-input" placeholder="120/80" class="bg-black border border-zinc-800 text-xs w-20 px-1 text-blue-400 outline-none">
+                    </div>
+                    <button onclick="logHealth()" class="w-full text-[10px] bg-red-900/20 text-red-400 py-1 rounded border border-red-900/40">LOG TELEMETRY</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- BOTTOM: CONSOLE / LOGS / RECALL -->
+    <div class="console flex flex-col shrink-0">
+        <div class="flex bg-zinc-900 px-2 space-x-1">
+            <div class="tab-btn active" onclick="showTab('sys-log')">SYSTEM</div>
+            <div class="tab-btn" onclick="showTab('triage-log')">TRIAGE</div>
+            <div class="tab-btn" onclick="showTab('health-log')">BIOLOGY</div>
+        </div>
+        <div id="sys-log" class="tab-pane flex-1 p-2 font-mono text-[11px] overflow-y-auto">
+            <div class="text-zinc-600">[00:00:00] <da> Deck Architect Unit 77-Alpha ONLINE. Bridge initialized.</div>
+        </div>
+        <div id="triage-log" class="tab-pane hidden flex-1 p-2 font-mono text-[11px] overflow-y-auto"></div>
+        <div id="health-log" class="tab-pane hidden flex-1 p-2 font-mono text-[11px] overflow-y-auto"></div>
+    </div>
+
+    <script>
+        // --- ACE EDITOR INIT ---
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/tomorrow_night_eighties");
+        editor.session.setMode("ace/mode/markdown");
+        editor.setOptions({
+            fontFamily: "JetBrains Mono, Consolas, monospace",
+            fontSize: "14px",
+            showPrintMargin: false,
+            wrap: true
+        });
+
+        // --- UTILITIES ---
+        function sysLog(msg, color = 'text-zinc-500') {
+            const log = document.getElementById('sys-log');
+            const entry = document.createElement('div');
+            entry.className = color;
+            entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            log.prepend(entry);
+        }
+
+        function triageLog(msg, color = 'text-zinc-400') {
+            const log = document.getElementById('triage-log');
+            const entry = document.createElement('div');
+            entry.className = color;
+            entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            log.prepend(entry);
+        }
+
+        function showTab(id) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        // --- HEALTH LOGGING ---
+        function logHealth() {
+            const bp = document.getElementById('bp-input').value;
+            const log = document.getElementById('health-log');
+            const entry = document.createElement('div');
+            const isDanger = bp.split('/')[0] < 90 || bp.split('/')[0] > 160;
+            
+            entry.className = isDanger ? 'health-alert p-1 bg-red-900/10' : 'text-green-400';
+            entry.innerHTML = `[${new Date().toLocaleString()}] BIOLOGICAL DATA: BP ${bp} ${isDanger ? '!! ATTENTION !!' : ''}`;
+            log.prepend(entry);
+            sysLog(`Biological Telemetry Cached: ${bp}`, isDanger ? 'text-red-500' : 'text-green-500');
+            if(isDanger) sysLog("<da> ALERT: Resource Bleed detected in physiology. Recommend cooling sequence.", "text-red-500");
+        }
+
+        // --- DRAG SNIPPETS ---
+        function setSnippet(e, text) {
+            e.dataTransfer.setData("text/plain", text);
+        }
+
+        // --- FILE HANDLING ---
+        document.getElementById('file-drop').addEventListener('dragover', e => e.preventDefault());
+        document.getElementById('file-drop').addEventListener('drop', e => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    editor.setValue(ev.target.result);
+                    document.getElementById('current-file-label').textContent = file.name;
+                    sysLog(`Loaded file: ${file.name}`, 'text-blue-400');
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // --- RECALL EXPORT (The "Black Box") ---
+        function exportContext() {
+            const content = editor.getValue();
+            const blueprint = `
+# RECALL BEACON - PROJECT GENESIS
+# TIMESTAMP: ${new Date().toISOString()}
+# OPERATOR: ELECTROMANCER
+# ARCHITECT: DECK ARCHITECT UNIT 77-ALPHA
+
+${content}
+            `;
+            const blob = new Blob([blueprint], {type: "text/markdown"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `genesis_recall_${Date.now()}.md`;
+            a.click();
+            sysLog("RECALL BEACON EXPORTED. Data secured.", "text-blue-400");
+        }
+
+        function downloadEditorContent() {
+            const blob = new Blob([editor.getValue()], {type: "text/plain"});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = document.getElementById('current-file-label').textContent;
+            a.click();
+        }
+
+        // --- JUNK TOOLS ---
+        document.getElementById('zip-drop').addEventListener('dragover', e => e.preventDefault());
+        document.getElementById('zip-drop').addEventListener('drop', async e => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+            sysLog(`Inspecting ZIP: ${file.name}`);
+            try {
+                const zip = await JSZip.loadAsync(file);
+                triageLog(`--- ZIP INSPECTION: ${file.name} ---`, 'text-blue-500');
+                zip.forEach((path, entry) => triageLog(`[ZIP] ${path}`));
+                showTab('triage-log');
+            } catch (err) {
+                sysLog(`ZIP ERROR: ${err.message}`, 'text-red-500');
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+﻿The Giggle Plex Architecture: A Comprehensive Blueprint for Hybrid AI Integration within the Google Ecosystem
+1. Introduction: From Static Archives to Living Intelligence
+The evolution of personal knowledge management systems has historically traversed a trajectory from physical filing cabinets to digital hierarchy, and more recently, to networked thought tools like Obsidian. While these systems offer robust mechanisms for static data organization through bidirectional linking and graph visualization, they remain fundamentally passive. They require the user to act as the sole engine of synthesis, retrieval, and connection. The project mandate—to architect a "Giggle Plex"—represents a radical departure from this passive paradigm toward an active, agentic, and affect-aware system.
+This report details the architectural design and implementation strategy for the Giggle Plex, a "fun, positive AI integration" built exclusively upon the Google product family. The objective is to construct a bridge application residing within a website that functions side-by-side with artificial intelligence, utilizing Google Chrome not merely as a visualization client but as the primary development and runtime environment. The infrastructure is grounded physically by a Raspberry Pi 5 network cluster connected via USB to Windows workstations, creating a secure edge-to-cloud mesh.
+By leveraging the full spectrum of Google’s modern stack—specifically Project IDX for cloud-native development, Gemini Nano for local low-latency inference, Vertex AI for deep reasoning, and Google Cloud Pub/Sub as the central nervous system—we propose a solution that transcends the limitations of local-only tools. The architecture replaces the manual "gardening" of Obsidian with automated, AI-driven synthesis, wrapping the experience in a gamified, positive user interface that "giggles" back at the user. This document serves as an exhaustive technical guide, exploring the necessary "hacks" to expose experimental browser APIs, reconfigure hardware into USB gadgets, and orchestrate a serverless event bus to foster a creative, unified digital environment.
+1.1 The Ecosystem Imperative
+The decision to constrain the technology stack to "Google family products only" transforms the integration challenge into an optimization of vertical synergies. In a heterogeneous stack, developers often struggle with impedance mismatches between authentication providers (e.g., AWS IAM vs. Auth0), billing consolidation, and model interoperability. By standardizing on Google, the Giggle Plex achieves architectural coherence:
+* Identity Continuity: A single Google Identity flows from the Chrome Extension (using chrome.identity) to the Project IDX workspace, through to the Google Cloud Platform (GCP) resources managing the backend.
+* Model Linearity: The Gemini model family allows for prompt engineering strategies to be shared across the spectrum of compute. A prompt refined for the local Gemini Nano (in-browser) shares the same tokenizer and reasoning baseline as the Gemini 1.5 Pro model invoked via Vertex AI for complex tasks.1
+* Infrastructure as Code: The deployment pipelines utilize Cloud Build and Artifact Registry, ensuring that the code running on the Raspberry Pi edge nodes is versioned and deployed with the same rigor as the cloud functions.3
+1.2 Defining the "Giggle Plex"
+Technically, the "Giggle Plex" is defined as a Hybrid AI System with three distinct zones of operation:
+1. Zone 1: The Affective Interface (Chrome). This is the "face" of the system. It uses embedded AI to read the user's emotional state in real-time and provide immediate, positive feedback (the "Giggle"). It must operate with near-zero latency, necessitating edge/local execution.4
+2. Zone 2: The Cognitive Backend (Vertex AI). This is the "mind." It replaces the Obsidian storage layer. Instead of static Markdown files, knowledge is stored as vector embeddings. Retrieval is semantic, allowing the system to surface relevant "memories" or "jokes" based on context rather than exact keyword matches.5
+3. Zone 3: The Tangible Edge (Raspberry Pi Cluster). This is the "body." Connected via USB, it provides physical grounding. It acts as a secure processing node for tasks that require persistence independent of the browser session or that interact with physical indicators (lights, displays) to manifest the "fun" in the real world.6
+________________
+2. The Development Hub: Project IDX and the Cloud-Native Workflow
+The user's requirement to use "Chrome as my development environment" necessitates a shift away from local IDEs like VS Code or IntelliJ. Project IDX, Google's browser-based development workspace, is the cornerstone of this workflow. It provides a high-fidelity, full-stack environment running on Google Cloud infrastructure but accessible entirely through a Chrome tab.7
+2.1 Justification for Project IDX
+Project IDX offers distinct advantages over generic cloud IDEs (like GitHub Codespaces) for this specific Google-centric stack:
+* Gemini Integration: The IDE has Gemini built-in for code generation and, crucially, for explaining Google Cloud-specific errors and APIs. This accelerates the integration of complex services like Pub/Sub and Vertex AI.7
+* Android & Web Emulators: IDX provides fully functional emulators within the browser. For the Giggle Plex, which is a web-based bridge, the web preview allows for immediate "hot reload" testing of the Chrome Extension components (to a degree) and the backend API.8
+* Nix-Based Reproducibility: The environment is defined by dev.nix, ensuring that if the project is moved or shared, the toolchain remains identical.
+2.2 Configuring the Workspace (dev.nix)
+To build the Giggle Plex, the IDX workspace must support Python (for the Raspberry Pi backend), Node.js (for the Chrome Extension and frontend), and the Google Cloud CLI (gcloud) for infrastructure management.
+The following configuration defines the Giggle Plex development environment:
+
+
+Nix
+
+
+
+
+#.idx/dev.nix configuration for Giggle Plex
+{ pkgs,... }: {
+ # Select the stable channel for reliability
+ channel = "stable-23.11"; 
+ 
+ # System-level packages required for the stack
+ packages =;
+
+ # IDX-specific extensions and configuration
+ idx = {
+   extensions = [
+     "googlecloudtools.cloudcode" # Vital for deep GCP integration
+     "dbaeumer.vscode-eslint"     # Code quality
+     "esbenp.prettier-vscode"     # Code formatting
+   ];
+   
+   # Workspace lifecycle hooks
+   workspace = {
+     onCreate = {
+       # Initialize Python virtual environment
+       init-venv = "python -m venv.venv && source.venv/bin/activate && pip install -r requirements.txt";
+       # Install Node dependencies
+       npm-install = "npm install";
+     };
+     onStart = {
+       # Ensure the web preview server starts automatically
+       start-server = "npm run dev";
+     };
+   };
+
+   # Preview configuration
+   previews = {
+     enable = true;
+     previews = {
+       web = {
+         command = ["npm", "run", "dev"];
+         manager = "web";
+         env = {
+           PORT = "8080"; # Standard port for local web services
+         };
+       };
+     };
+   };
+ };
+}
+
+Analysis of Configuration: The inclusion of googlecloudtools.cloudcode is critical. It provides a GUI within the IDE to manage Cloud Run services, browse Cloud Storage buckets, and view logs, keeping the developer context within Chrome.7
+2.3 The Connectivity Challenge: SSH Tunneling
+A significant architectural hurdle in this setup is the "air gap" between the cloud-based Project IDX and the local, USB-connected Raspberry Pi cluster. Since IDX runs in a Google data center, it cannot inherently access the USB devices attached to the user's physical machine.
+To bridge this, we utilize SSH Remote Tunnels.
+* Mechanism: The Windows machine (acting as the USB host for the Pi) establishes a secure outbound tunnel to a relay server (e.g., using the VS Code CLI code tunnel or standard OpenSSH remote forwarding).
+* Integration: Project IDX enables the connection to these remote resources. By running the tunnel on the Windows machine (or directly on the Pi if it has internet access), the local hardware file system and ports become accessible inside the IDX workspace.9
+* The "Hack": By forwarding the SSH port of the Raspberry Pi (IP 192.168.100.2 on the USB interface) through the tunnel, the IDX terminal can execute commands directly on the Pi (ssh pi@localhost -p 2222), allowing for a seamless "code in cloud, deploy to USB edge" workflow.11
+________________
+3. Hardware Architecture: The Edge Cluster
+The physical manifestation of the Giggle Plex is the Raspberry Pi 5 cluster. The requirement for "Windows machines connected via USB" dictates a specific configuration known as USB Gadget Mode (specifically Ethernet over USB).
+3.1 The USB Gadget Paradigm
+Traditionally, Raspberry Pis are networked via Wi-Fi or Ethernet cables. However, the user specifies a USB connection. The Raspberry Pi 5, like its predecessors (Zero, 4), supports acting as a USB peripheral (device) rather than a host. This creates a highly secure, low-latency, hardwired network link that doesn't depend on local router configuration.6
+3.1.1 Implementation on Raspberry Pi 5
+The Pi 5 introduces architectural changes (the RP1 southbridge), complicating the traditional "Gadget Mode" setup found in older tutorials. The correct configuration involves the dwc2 driver and specific kernel modules.
+Configuration Table 1: Raspberry Pi 5 USB Gadget Settings
+
+
+Configuration File
+	Parameter
+	Description
+	/boot/firmware/config.txt
+	dtoverlay=dwc2,dr_mode=peripheral
+	Loads the DesignWare USB2 driver and forces the USB-C port into peripheral (device) mode.6
+	/boot/firmware/cmdline.txt
+	modules-load=dwc2,g_ether
+	Loads the Ethernet Gadget module at boot, presenting the Pi as a USB Ethernet adapter to the host.6
+	/etc/network/interfaces
+	allow-hotplug usb0
+	Ensures the interface comes up when the USB cable is connected.
+	Critical Insight: On the Pi 5, the USB-C power port handles data. For a cluster setup, each Pi needs to be powered and connected via this port. If the Windows machine cannot supply sufficient current (5A/5V) for a Pi 5 under load, a specialized USB-C hub with power delivery (PD) and data passthrough is required. Alternatively, the Pi 5 can be powered via GPIO, leaving the USB-C port solely for data.
+3.2 The Windows Host Configuration
+When the Pi is connected, Windows will detect a new device. It often misidentifies it as a generic Serial device or fails to find a driver.
+* Driver "Hack": The user must manually update the driver in Device Manager, selecting the Microsoft "Remote NDIS Compatible Device" driver. This establishes the RNDIS network link.13
+* Addressing: The Windows machine acts as the gateway. We configure a static link-local network.
+   * Windows Interface: 192.168.100.1
+   * Pi Interface (usb0): 192.168.100.2 This creates a private "Giggle Mesh" network. The Chrome browser on Windows can now access web servers running on the Pi via http://192.168.100.2, bypassing the public internet entirely for local tasks.6
+3.3 Replicating "Network Cluster" Topology
+To support a cluster of Pis via USB on a single Windows machine, the addressing scheme must be distinct for each device (e.g., 192.168.100.2, 192.168.100.3). This turns the Windows machine into a central hub, routing traffic between the browser extension and specific nodes in the cluster based on the task (e.g., Node 1 for sentiment analysis caching, Node 2 for physical display control).
+________________
+4. The Bridge: Hacking Chrome Extensions for AI
+The core of the user experience is the "bridge inside a website." This is architected as a Chrome Extension utilizing the Side Panel API and the experimental Prompt API (Gemini Nano).
+4.1 The Extension Architecture
+Standard Chrome extensions (Manifest V3) use ephemeral service workers. However, a "companion" needs persistence. The Side Panel API allows the extension to live in a dedicated pane alongside the web content, maintaining state and context as the user navigates.14
+Component Breakdown:
+1. Service Worker (background.js): Orchestrates events, manages the connection to Google Cloud (Pub/Sub), and handles the lifecycle of the AI session.
+2. Side Panel (panel.html / panel.js): The UI layer. It hosts the p5.js visualization and displays the AI's output.
+3. Content Script (content.js): The sensory organ. It scrapes text from the DOM of the active tab to feed into the AI.
+4.2 "Hacking" Gemini Nano (The Prompt API)
+The user explicitly requested to "hack extensions" to assist. The most bleeding-edge "hack" available in 2025 is accessing the built-in AI models (Gemini Nano) directly within Chrome, bypassing the cloud for instant, private inference. This feature is gated behind Origin Trials or internal flags.
+4.2.1 The Origin Trial Implementation
+To distribute this extension (even to the user's own cluster of machines) without manually toggling chrome://flags on every device, we use the Origin Trial mechanism.
+Step-by-Step "Hack" Implementation:
+1. Registration: Register the Extension ID (e.g., abcdef...) in the Chrome Origin Trials console for the "Prompt API for Chrome Extensions" trial.15
+2. Manifest Configuration: The token must be embedded in manifest.json.
+
+
+JSON
+
+
+
+
+// manifest.json
+{
+ "manifest_version": 3,
+ "name": "Giggle Plex Bridge",
+ "version": "1.0",
+ "permissions":,
+ "trial_tokens":,
+ "background": {
+   "service_worker": "service-worker.js"
+ },
+ "side_panel": {
+   "default_path": "sidepanel.html"
+ }
+}
+
+Architectural Implication: This "hack" allows the Giggle Plex to perform sentiment analysis on the currently viewed webpage locally. There is no latency sending text to the cloud, preserving the "fun" pacing, and no data privacy risk, as the inference happens on-device.4
+4.2.2 The Code: Interfacing with window.ai
+The API exposes the model via window.ai (or self.ai in workers). The code must handle the asynchronous loading of the model (which can be 22GB+ in size, though Nano is optimized to be smaller).17
+
+
+JavaScript
+
+
+
+
+// service-worker.js or panel.js
+let session;
+
+async function initializeGiggle() {
+ const capabilities = await ai.languageModel.capabilities();
+ 
+ if (capabilities.available === 'no') {
+   console.warn("Gemini Nano is not supported on this device.");
+   return;
+ }
+
+ // Create a persistent session with a specific "Giggle" persona
+ session = await ai.languageModel.create({
+   systemPrompt: "You are the Giggle Plex, a radically positive AI assistant. You find humor, light, and encouragement in every text. Your goal is to make the user smile while being helpful."
+ });
+}
+
+async function analyzeContent(text) {
+ if (!session) await initializeGiggle();
+ 
+ // Use streaming for immediate feedback
+ const stream = session.promptStreaming(`Analyze this text and give a fun summary: ${text}`);
+ 
+ let fullResponse = "";
+ for await (const chunk of stream) {
+   fullResponse = chunk;
+   // Send chunk to Side Panel for real-time display
+   chrome.runtime.sendMessage({ type: "GIGGLE_STREAM", data: chunk });
+ }
+}
+
+Refinement: The use of promptStreaming creates a "typing" effect that feels more alive and companion-like than a static loading spinner.18
+4.3 Visualizing Affect with p5.js
+To satisfy the "fun" requirement, the Side Panel integrates p5.js. This library transforms the data (sentiment score from Gemini) into art.
+* Mechanism: The Side Panel loads p5.min.js.
+* The Bridge: When Gemini Nano returns a sentiment result (e.g., "Positive"), the extension passes a message to the p5.js sketch.
+   * Positive: The sketch generates bright, floating bubbles with high velocity.
+   * Negative/Stress: The sketch shifts to "breathing mode"—slow, rhythmic expansion of blue circles to subconsciously encourage the user to relax.
+   * Gamification: "Confetti" particles trigger when the user completes a task or reads positive content, reinforcing the "Giggle" loop.19
+________________
+5. The Nervous System: Google Cloud Pub/Sub
+To replace the deprecated Google Cloud IoT Core, the architecture utilizes Google Cloud Pub/Sub. This service acts as the asynchronous nervous system connecting the Chrome Extension (User), the Vertex AI backend (Brain), and the Raspberry Pi Cluster (Body).21
+5.1 Protocol Decision: gRPC vs. MQTT
+While IoT Core relied on MQTT, Pub/Sub natively supports gRPC and HTTP. For the Raspberry Pi 5, which is a full Linux computer (not a microcontroller), gRPC is superior.
+* Performance: gRPC offers lower latency and higher throughput via streaming pull.
+* Simplicity: It uses standard Google Cloud client libraries, avoiding the need for third-party MQTT brokers or complex JWT generation required by the old IoT Core protocol.22
+5.2 Topic Architecture
+The Giggle Plex uses a topic-based event taxonomy to organize communication.
+Table 2: Pub/Sub Topic Design
+Topic Name
+	Publisher
+	Subscriber
+	Purpose
+	Data Payload Example
+	giggle.telemetry
+	Raspberry Pi 5
+	Cloud Functions, BigQuery
+	System health, local sensor data
+	{ "cpu_temp": 45, "light_level": 800 }
+	giggle.commands
+	Chrome Extension
+	Raspberry Pi 5
+	Direct hardware control from the browser
+	{ "action": "DISP_JOKE", "text": "Why did the AI cross the road?" }
+	giggle.sentiment
+	Chrome Extension
+	Vertex AI
+	Long-term mood tracking and analysis
+	{ "url": "example.com", "sentiment": 0.8, "timestamp": "..." }
+	giggle.deployment
+	Cloud Build
+	Raspberry Pi 5
+	Triggering software updates (GitOps)
+	{ "version": "v1.2.0", "repo": "..." }
+	5.3 Security: Service Accounts at the Edge
+Security is paramount when connecting physical hardware to the cloud.
+* Identity: We create a specific Service Account (pi-edge-agent@...) for the Raspberry Pi.
+* Least Privilege: This account is granted only Pub/Sub Subscriber on the commands subscription and Pub/Sub Publisher on the telemetry topic. It has no other access to the Google Cloud project.
+* Key Management: The Service Account JSON key is generated once and stored securely on the Pi (e.g., in a directory restricted to the root user). In a production fleet, we would use Workload Identity Federation, but for a single cluster, a secured key file is the standard practice.23
+________________
+6. The Cognitive Backend: Vertex AI and Obsidian Replacement
+The user aims to "replace a failed attempt with Obsidian." Obsidian is powerful because of its local graph and backlinking. To replicate and exceed this in the Giggle Plex, we build a Semantic Knowledge Base using Vertex AI Vector Search.
+6.1 The Vector Search Architecture
+Instead of manual linking (Obsidian's [[link]]), the Giggle Plex uses embedding-based retrieval.
+1. Ingestion: When the user saves a note or highlights text in the Chrome Extension, the content is sent to a Cloud Function.
+2. Embedding: The function uses the Gemini Embedding API (text-embedding-gecko or similar) to convert the text into a high-dimensional vector.
+3. Indexing: This vector is stored in a Vertex AI Vector Search index.5
+6.2 The "Giggle" Retrieval Loop
+This is where the system becomes an active agent rather than a passive file cabinet.
+* Contextual Resurfacing: As the user browses a new website, the Chrome Extension (Side Panel) continuously sends the page summary to the Vector Search endpoint.
+* The "Connection": The backend queries the index: "What past notes are semantically related to this current webpage?"
+* The Output: The Side Panel proactively displays: "Hey! This reminds me of that idea you had about 'AI Ethics' three months ago!"
+* Comparison:
+   * Obsidian: User must remember a connection exists and manually create a link.
+   * Giggle Plex: The system suggests the connection automatically, fostering serendipity.
+6.3 Hybrid Model Strategy
+We employ a tiered model strategy to balance cost and capability.
+Table 3: Hybrid AI Model Hierarchy
+Tier
+	Model
+	Location
+	Role in Giggle Plex
+	Latency
+	Cost
+	Edge
+	Gemini Nano
+	Chrome (Local)
+	Real-time sentiment, UI feedback, basic summarization, "Giggle" generation.
+	< 50ms
+	$0
+	Fast Cloud
+	Gemini 1.5 Flash
+	Vertex AI
+	Vector embedding generation, quick RAG queries, intermediate reasoning.
+	~500ms
+	Low
+	Deep Cloud
+	Gemini 1.5 Pro
+	Vertex AI
+	Complex synthesis, generating long-form reports, deep code analysis.
+	2s+
+	Medium
+	________________
+7. Implementation Guide: Building the Bridge
+This section details the specific steps to assemble the components.
+7.1 Phase 1: The Chrome Extension (The Interface)
+1. Scaffold: Use Project IDX to generate a vanilla Chrome Extension structure.
+2. Permissions: Configure manifest.json with sidePanel, storage, and aiLanguageModelOriginTrial.16
+3. Authentication: Implement chrome.identity.getAuthToken to allow the extension to securely call Google Cloud APIs (Pub/Sub, Vertex AI) using the user's Google credentials.
+4. UI Construction: Build sidepanel.html with a clean, playful CSS. Embed a canvas element for p5.js.
+5. Logic: Write content.js to extract page text and send it to the Side Panel via chrome.runtime.sendMessage.
+7.2 Phase 2: The Raspberry Pi Edge (The Body)
+1. OS & Networking: Flash Raspberry Pi OS Lite. Configure config.txt for dwc2 and cmdline.txt for g_ether. Connect to Windows via USB-C. Verify the RNDIS network interface on Windows.
+2. Environment: SSH into the Pi (via the 192.168.100.2 static IP). Install Python venv and the google-cloud-pubsub library.
+3. The Daemon: Write a Python script (giggle_bot.py) that acts as the persistent agent.
+Python
+# giggle_bot.py - The Edge Agent
+from google.cloud import pubsub_v1
+import os
+import json
+
+# Load credentials securely
+os.environ = "/secrets/pi-sa-key.json"
+
+subscriber = pubsub_v1.SubscriberClient()
+subscription_path = subscriber.subscription_path("giggle-plex-core", "pi-commands-sub")
+
+def callback(message):
+   data = json.loads(message.data.decode("utf-8"))
+   print(f"Received Command: {data['action']}")
+
+   if data['action'] == 'GIGGLE':
+       # Trigger physical feedback (e.g., LED matrix, sound)
+       trigger_physical_giggle()
+
+   message.ack()
+
+# Streaming pull for real-time responsiveness
+future = subscriber.subscribe(subscription_path, callback=callback)
+
+print("Giggle Bot Listening...")
+try:
+   future.result()
+except KeyboardInterrupt:
+   future.cancel()
+
+4. Persistence: Create a systemd service file (/etc/systemd/system/giggle.service) to ensure the script runs automatically on boot.
+7.3 Phase 3: The Cloud Backend (The Brain)
+   1. Infrastructure: Use Terraform (in Project IDX) to provision the Google Cloud resources:
+   * Pub/Sub Topics (commands, telemetry).
+   * Cloud Storage Bucket (for backing up notes).
+   * Vertex AI Vector Search Index.
+   2. Functions: Deploy a Cloud Function (ingest-note) that accepts text, generates embeddings, and updates the Vector Index.
+________________
+8. Operationalizing the "Giggle"
+8.1 Gamification Mechanics
+To make the system "fun," we introduce game design elements.
+   * Positivity Score: The Chrome Extension tracks a rolling average of the sentiment of content consumed.
+   * Feedback Loop:
+   * High Score: The Pi 5 activates a specific "Happy Mode" (e.g., if equipped with an LED pHAT, it pulses green). The Chrome Extension unlocks a new "Giggle" animation style (e.g., fireworks).
+   * Low Score: The system intervenes. The Side Panel offers a "Palette Cleanser"—a curated positive news story or a joke generated by Gemini. The Pi 5 might gently pulse blue (calming).
+8.2 CI/CD and Fleet Management
+Managing code on a headless Pi via USB can be tedious. We implement a "GitOps" workflow.
+   * Repo: The Python code for the Pi lives in a Google Cloud Source Repository.
+   * Trigger: When code is pushed to main, Cloud Build is triggered.
+   * Deployment: Cloud Build creates a Docker image, pushes it to Artifact Registry, and publishes a "Update Available" message to the giggle.deployment Pub/Sub topic.
+   * Update: The Pi (listening on this topic) receives the message, pulls the new Docker image, and restarts the container. This allows the user to update the physical hardware behavior purely by pushing code in Project IDX.25
+________________
+9. Security and Privacy Considerations
+9.1 Data Privacy with Gemini Nano
+A key advantage of the Hybrid AI approach is privacy. User browsing data for sentiment analysis is processed locally by Gemini Nano. Raw text does not need to leave the machine. Only the aggregated sentiment score or explicit "save this note" actions are transmitted to the cloud. This aligns with the "positive" goal by building trust.
+9.2 USB Network Security
+The USB Gadget network (192.168.100.x) is a private network segment.
+   * Firewall: The Pi's ufw (firewall) should be configured to only accept SSH and HTTP traffic from the Windows host IP (192.168.100.1).
+   * Isolation: Since the Pi routes through the Windows machine for internet access (via Internet Connection Sharing or a proxy), it is naturally shielded from inbound internet traffic.
+________________
+10. Conclusion
+The Giggle Plex represents a sophisticated synthesis of edge computing, generative AI, and cloud-native architecture. By strictly adhering to the Google ecosystem, we eliminate integration friction and unlock powerful capabilities like the Gemini Nano local inference and Project IDX cloud development.
+The transition from Obsidian to this architecture moves the user from a paradigm of storage to one of interaction. The system does not just hold data; it understands it (Vertex AI), reacts to it (Pub/Sub + Pi 5), and engages with the user about it (Chrome Extension + Gemini). The result is a robust, secure, and genuinely "fun" digital companion that bridges the virtual browser with the physical desk, powered entirely by Google's cutting-edge stack.
+Works cited
+   1. Vertex AI Platform | Google Cloud, accessed December 9, 2025, https://cloud.google.com/vertex-ai
+   2. Model Garden – Vertex AI - Google Cloud Console, accessed December 9, 2025, https://console.cloud.google.com/vertex-ai/model-garden
+   3. DevSecOps and CICD using Google Cloud Built-in Services, accessed December 9, 2025, https://cloud.google.com/blog/products/devops-sre/devsecops-and-cicd-using-google-cloud-built-in-services
+   4. Developing a Chrome Extension with Chrome Built-in AI / Gemini Nano — SwiftGuardian | by Theodore Lee | Nov, 2025 | Medium, accessed December 9, 2025, https://medium.com/@theoleecj/developing-a-chrome-extension-with-chrome-built-in-ai-gemini-nano-swiftguardian-5998eb5af9d9
+   5. About hybrid search | Vertex AI | Google Cloud Documentation, accessed December 9, 2025, https://docs.cloud.google.com/vertex-ai/docs/vector-search/about-hybrid-search
+   6. RPi 5 USB gadget mode possible? - Raspberry Pi Forums, accessed December 9, 2025, https://forums.raspberrypi.com/viewtopic.php?t=358573
+   7. Project IDX is now part of Firebase Studio - Google, accessed December 9, 2025, https://firebase.google.com/docs/studio/idx-is-firebase-studio
+   8. Project IDX, accessed December 9, 2025, https://idx.dev/
+   9. VSCode Remote Development via SSH and Tunnel - FASRC DOCS, accessed December 9, 2025, https://docs.rc.fas.harvard.edu/kb/vscode-remote-development-via-ssh-or-tunnel/
+   10. Developing with Remote Tunnels - Visual Studio Code, accessed December 9, 2025, https://code.visualstudio.com/docs/remote/tunnels
+   11. Elevating Remote Development: Couchbase VSCode Extension Now Supports GitHub Codespaces, Google Project IDX, And More, accessed December 9, 2025, https://www.couchbase.com/blog/couchbase-vscode-remote-development-environments/
+   12. [Tutorial] How to use SSH tunnel to expose a local server to the internet | by German Gensetskiy | Go Wombat | Medium, accessed December 9, 2025, https://medium.com/gowombat/tutorial-how-to-use-ssh-tunnel-to-expose-a-local-server-to-the-internet-4e975e1965e5
+   13. Connect Raspberry Pi to Your PC Using ONLY a USB Cable (No WiFi, No Ethernet!), accessed December 9, 2025, https://www.youtube.com/watch?v=DtscCh6bv3Q
+   14. chrome.sidePanel | API - Chrome for Developers, accessed December 9, 2025, https://developer.chrome.com/docs/extensions/reference/api/sidePanel
+   15. First-time Chrome Extension developer's journey setting up Gemini Nano and Prompt API, accessed December 9, 2025, https://groups.google.com/a/chromium.org/g/chrome-ai-dev-preview-discuss/c/8M6mL5uOnBQ
+   16. The Prompt API | AI on Chrome, accessed December 9, 2025, https://developer.chrome.com/docs/ai/prompt-api
+   17. Get started with built-in AI | AI on Chrome, accessed December 9, 2025, https://developer.chrome.com/docs/ai/get-started
+   18. webmachinelearning/prompt-api: A proposal for a web API for prompting browser-provided language models - GitHub, accessed December 9, 2025, https://github.com/webmachinelearning/prompt-api
+   19. Examples - p5.js, accessed December 9, 2025, https://p5js.org/examples/
+   20. Coding Challenge #83: Chrome Extension with p5.js Sketch - YouTube, accessed December 9, 2025, https://www.youtube.com/watch?v=IXXNIcQQLU8
+   21. Top 10 Google Cloud IoT Core Alternatives & Competitors in 2025 - G2, accessed December 9, 2025, https://www.g2.com/products/google-cloud-iot-core/competitors/alternatives
+   22. The Best Alternative to Google Cloud IoT Core for Integrating Your MQTT Data with GCP, accessed December 9, 2025, https://www.hivemq.com/blog/best-alternative-google-cloud-iot-core-integrating-mqtt-data-with-gcp/
+   23. Google Cloud Functions - How to securely store service account private key when using Google Source Repository? - Stack Overflow, accessed December 9, 2025, https://stackoverflow.com/questions/48602546/google-cloud-functions-how-to-securely-store-service-account-private-key-when
+   24. How to securely use Google API service account credentials in a public repo, accessed December 9, 2025, https://dev.to/wilsonparson/how-to-securely-use-google-apis-service-account-credentials-in-a-public-repo-4k65
+   25. Cloud Build triggers | Google Cloud Documentation, accessed December 9, 2025, https://docs.cloud.google.com/build/docs/triggers
+   26. Using Google Cloud Serverless to show automated deployment using Cloud Run Cloud Build Artifact Registry Pub/Sub, accessed December 9, 2025, https://cloud.google.com/blog/products/serverless/the-squires-guide-to-automated-deployments-with-cloud-build

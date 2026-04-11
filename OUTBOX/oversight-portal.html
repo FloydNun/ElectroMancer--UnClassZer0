@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civil Oversight & Grievance Resolution Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Warm neutral light gray */
+            color: #1f2937;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .card-shadow:hover {
+            transform: translateY(-2px);
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #e5e7eb;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        
+        .nav-active {
+            border-bottom: 2px solid #2563eb;
+            color: #2563eb;
+        }
+    </style>
+    <!-- Chosen Palette: "Regulatory Clarity" - Slate/Gray backgrounds (neutral), Blue (trust/agency), Red (alert/critical issue). -->
+    <!-- Application Structure Plan: 
+         1. Dashboard Header: Summary of the user's intent (Action/Resolution).
+         2. Agency Chain (Network): The core request. A visual selector for FCC, FTC, DOJ, HUD. Updates a detail pane.
+         3. Resource Audit (Quant): Visualizing the "Credits vs. Outcome" disparity described.
+         4. Impact Triad (Qual): Grouping the grievances into Tech, Housing, and Civil Rights.
+         5. Action Timeline: Chronological flow of the narrative for documentation purposes.
+         Rationale: This structure imposes order on the complex narrative, separating "Who to call" from "What was lost" and "When it happened."
+    -->
+    <!-- Visualization & Content Choices:
+         - Agency Chain: Flexbox grid of cards acting as buttons. Goal: Navigation/Info. Interaction: Click to reveal specific contact focus.
+         - Resource Audit: Bar Chart. Goal: Quantify loss. Interaction: None (static proof). Justification: Shows the gap between "Paid" and "Received".
+         - Timeline: Vertical Layout. Goal: Documentation. Interaction: Scroll.
+         - Impact Triad: 3-Column Grid. Goal: Categorize qualitative issues.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-scale-balanced text-blue-700 text-2xl mr-3"></i>
+                    <span class="font-bold text-xl tracking-tight text-gray-800">Oversight & Resolution Portal</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-btn nav-active px-3 py-2 text-sm font-medium hover:text-blue-600 transition">Dashboard</button>
+                    <button onclick="navigate('agency-chain')" id="nav-agency-chain" class="nav-btn px-3 py-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition">Agency Chain</button>
+                    <button onclick="navigate('evidence')" id="nav-evidence" class="nav-btn px-3 py-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition">Resource Audit</button>
+                </div>
+                <!-- Mobile Menu Button (Functional Placeholder) -->
+                <div class="flex items-center md:hidden">
+                    <button class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- DASHBOARD VIEW -->
+        <section id="dashboard" class="space-y-8 animate-fade-in">
+            
+            <!-- Introduction Block -->
+            <div class="bg-white rounded-lg p-6 card-shadow border-l-4 border-blue-600">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">Case Overview: Systemic Service Denial & Civil Rights</h1>
+                <p class="text-gray-600 leading-relaxed">
+                    This portal organizes the complex grievances regarding telecommunications service revocation, digital redlining, and the subsequent impact on housing and mental health. 
+                    It synthesizes the "Source Narrative" into actionable data points, contact chains for federal oversight, and a clear record of resource disparity.
+                    Use the sections below to explore the escalation path and the evidence of service failure.
+                </p>
+            </div>
+
+            <!-- Key Metrics / Status Indicators -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-lg card-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Service Status</h3>
+                        <i class="fa-solid fa-ban text-red-500"></i>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-800">Restricted</p>
+                    <p class="text-xs text-red-600 mt-1">Access denied despite active billing</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg card-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Financial Impact</h3>
+                        <i class="fa-solid fa-wallet text-amber-500"></i>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-800">Critical</p>
+                    <p class="text-xs text-gray-500 mt-1">Subscription costs vs. 0% Output</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg card-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Risk Level</h3>
+                        <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-800">High</p>
+                    <p class="text-xs text-gray-500 mt-1">Housing stability & ADA compliance</p>
+                </div>
+            </div>
+
+            <!-- Impact Triad -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+                <!-- Tech/Billing -->
+                <div class="bg-white rounded-lg overflow-hidden card-shadow">
+                    <div class="bg-slate-100 px-4 py-3 border-b border-gray-200">
+                        <h3 class="font-bold text-slate-800"><i class="fa-solid fa-server mr-2"></i>Technical & Billing</h3>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <p class="text-sm text-gray-600">Documentation of billing irregularities across multiple accounts (Pro, Dev Premium). Highlights the "shell game" of service connection/disconnection preventing project completion.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-gray-100 text-xs font-medium rounded text-gray-600">API Credits</span>
+                            <span class="px-2 py-1 bg-gray-100 text-xs font-medium rounded text-gray-600">Account Linking</span>
+                            <span class="px-2 py-1 bg-gray-100 text-xs font-medium rounded text-gray-600">Data Export</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Civil Rights -->
+                <div class="bg-white rounded-lg overflow-hidden card-shadow">
+                    <div class="bg-slate-100 px-4 py-3 border-b border-gray-200">
+                        <h3 class="font-bold text-slate-800"><i class="fa-solid fa-universal-access mr-2"></i>ADA & Civil Rights</h3>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <p class="text-sm text-gray-600">Analysis of the refusal to provide reasonable accommodation for ADA paperwork assembly. Addresses the categorization of the user as "unclass" or resource-denied based on demographics.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-red-50 text-xs font-medium rounded text-red-600">Accommodation Refusal</span>
+                            <span class="px-2 py-1 bg-red-50 text-xs font-medium rounded text-red-600">Profiling</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Housing -->
+                <div class="bg-white rounded-lg overflow-hidden card-shadow">
+                    <div class="bg-slate-100 px-4 py-3 border-b border-gray-200">
+                        <h3 class="font-bold text-slate-800"><i class="fa-solid fa-house-chimney-crack mr-2"></i>Housing Stability</h3>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <p class="text-sm text-gray-600">Connecting digital service failure to real-world housing threats. Highlights the lack of oversight in PSH funding and property management compliance in Ohio.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-amber-50 text-xs font-medium rounded text-amber-600">Eviction Risk</span>
+                            <span class="px-2 py-1 bg-amber-50 text-xs font-medium rounded text-amber-600">PSH Compliance</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-6">
+                <button onclick="navigate('agency-chain')" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg">
+                    Proceed to Agency Contact Chain <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- AGENCY CHAIN VIEW -->
+        <section id="agency-chain" class="hidden space-y-8 animate-fade-in">
+            <div class="bg-white rounded-lg p-6 mb-6 border-b border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900">Federal & State Oversight Chain</h2>
+                <p class="text-gray-600 mt-2">
+                    Select an agency below to view the specific grievance category and the appropriate escalation path based on your report. This maps the "Contact Info Chain" you requested, linking corporate failure to regulatory oversight.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Agency Selector (Left Col) -->
+                <div class="lg:col-span-4 space-y-3">
+                    <button onclick="updateAgencyDetails('fcc')" class="agency-btn w-full text-left p-4 bg-white rounded-lg card-shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 transition border-l-4 border-transparent hover:border-blue-500 active-agency" data-target="fcc">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-gray-800">FCC</span>
+                            <i class="fa-solid fa-tower-broadcast text-gray-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Telecommunications & Connectivity</p>
+                    </button>
+
+                    <button onclick="updateAgencyDetails('ftc')" class="agency-btn w-full text-left p-4 bg-white rounded-lg card-shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 transition border-l-4 border-transparent hover:border-blue-500" data-target="ftc">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-gray-800">FTC</span>
+                            <i class="fa-solid fa-shield-halved text-gray-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Consumer Protection & Fraud</p>
+                    </button>
+
+                    <button onclick="updateAgencyDetails('doj')" class="agency-btn w-full text-left p-4 bg-white rounded-lg card-shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 transition border-l-4 border-transparent hover:border-blue-500" data-target="doj">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-gray-800">DOJ (Civil Rights)</span>
+                            <i class="fa-solid fa-scale-unbalanced text-gray-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">ADA Enforcement & Discrimination</p>
+                    </button>
+                    
+                    <button onclick="updateAgencyDetails('hud')" class="agency-btn w-full text-left p-4 bg-white rounded-lg card-shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 transition border-l-4 border-transparent hover:border-blue-500" data-target="hud">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-gray-800">HUD / State AG</span>
+                            <i class="fa-solid fa-building text-gray-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Housing & Funding Compliance</p>
+                    </button>
+                </div>
+
+                <!-- Agency Detail Panel (Right Col) -->
+                <div class="lg:col-span-8">
+                    <div id="agency-content" class="bg-white rounded-lg card-shadow p-8 h-full">
+                        <!-- Content injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVIDENCE / RESOURCE AUDIT VIEW -->
+        <section id="evidence" class="hidden space-y-8 animate-fade-in">
+             <div class="bg-white rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Resource Audit & Systemic Timeline</h2>
+                <p class="text-gray-600 mt-2">
+                    Visualizing the disparity between purchased capacity and delivered utility, alongside the timeline of service degradation.
+                </p>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart 1: Credits vs Usage -->
+                <div class="bg-white p-6 rounded-lg card-shadow">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Resource Allocation vs. Effective Utility</h3>
+                    <div class="chart-container">
+                        <canvas id="resourceChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4 italic">
+                        "3k build credits, 600 API, 2 pro accounts... could not get any one service or project to a completion state."
+                    </p>
+                </div>
+
+                <!-- Timeline Section -->
+                <div class="bg-white p-6 rounded-lg card-shadow overflow-hidden relative">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Timeline of Systemic Failure</h3>
+                    <div class="relative pl-8 h-[350px] overflow-y-auto pr-2">
+                        <!-- Vertical Line -->
+                        <div class="timeline-line rounded"></div>
+
+                        <!-- Timeline Items -->
+                        <div class="mb-6 relative">
+                            <div class="absolute -left-8 top-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white"></div>
+                            <h4 class="font-bold text-gray-800">May (Prior)</h4>
+                            <p class="text-sm text-gray-600">Gemini refusal to assist with ADA paperwork assembly. Initial resource denial.</p>
+                        </div>
+
+                        <div class="mb-6 relative">
+                            <div class="absolute -left-8 top-1 w-4 h-4 bg-amber-500 rounded-full border-2 border-white"></div>
+                            <h4 class="font-bold text-gray-800">Account Connectivity Issues</h4>
+                            <p class="text-sm text-gray-600">Billing "shenanigans." Pro subscription disconnected on one account, API billing on another. "Shell game" of services.</p>
+                        </div>
+
+                        <div class="mb-6 relative">
+                            <div class="absolute -left-8 top-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
+                            <h4 class="font-bold text-gray-800">Current Crisis</h4>
+                            <p class="text-sm text-gray-600">Housing eviction threat. "Unclass" categorization. Denial of virtual help exacerbating real-world vulnerability.</p>
+                        </div>
+                        
+                         <div class="mb-6 relative">
+                            <div class="absolute -left-8 top-1 w-4 h-4 bg-gray-400 rounded-full border-2 border-white"></div>
+                            <h4 class="font-bold text-gray-800">Future Litigation</h4>
+                            <p class="text-sm text-gray-600">Evidence collection (Takeout, Screenshots). Intent to pursue public hearing/class action.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Action Box -->
+            <div class="bg-slate-800 text-white p-6 rounded-lg mt-8 flex flex-col md:flex-row justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-bold">Evidence Repository</h3>
+                    <p class="text-slate-300 text-sm mt-1">Ensure all "Takeout" data, audio/video recordings, and billing receipts are backed up offline.</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <button class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded border border-slate-500">
+                        <i class="fa-solid fa-download mr-2"></i>View Data Points
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-xs text-gray-400">
+                Generated based on User Narrative Report. This tool acts as an informational dashboard and does not constitute legal or medical advice.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // State Management
+        const state = {
+            currentView: 'dashboard',
+            selectedAgency: 'fcc'
+        };
+
+        // Data Store (Source Report Content)
+        const agencyData = {
+            fcc: {
+                title: "Federal Communications Commission (FCC)",
+                icon: "fa-tower-broadcast",
+                focus: "Telecommunications Fraud & Access",
+                description: "The primary regulator for the 'common federally regulated communications medium' mentioned. Jurisdiction covers refusal of service and fraudulent billing practices by telecom/ISP entities.",
+                actions: [
+                    "File Informal Consumer Complaint (Telecom Billing)",
+                    "Report Unjustified Service Revocation",
+                    "Censorship/filtering of lawful content"
+                ],
+                context: "Relevant to the 'fraudulent revocation of services' and connectivity issues described."
+            },
+            ftc: {
+                title: "Federal Trade Commission (FTC)",
+                icon: "fa-shield-halved",
+                focus: "Consumer Protection & Unfair Practices",
+                description: "Deals with 'active profiting off a nationwide mental health epidemic' and 'billing shenanigans'. Enforces laws against deceptive business practices.",
+                actions: [
+                    "Report Fraud (ReportFraud.ftc.gov)",
+                    "Identity Theft Reports",
+                    "Unfair Business Practices complaint"
+                ],
+                context: "Addresses the 'upsold and resource denied' and misleading subscription management issues."
+            },
+            doj: {
+                title: "Department of Justice (DOJ) - Civil Rights",
+                icon: "fa-scale-unbalanced",
+                focus: "ADA Compliance & Discrimination",
+                description: "The lead agency for 'refusal of reasonable accommodation' (wheelchair/virtual help) and algorithmic bias ('unclass' categorization).",
+                actions: [
+                    "File ADA Complaint (Civil Rights Division)",
+                    "Report discrimination in public accommodations",
+                    "Disability Rights Section investigations"
+                ],
+                context: "Directly addresses the 'need a wheelchair' and 'refused reasonable accommodation' grievance."
+            },
+            hud: {
+                title: "HUD & State Attorney General",
+                icon: "fa-building",
+                focus: "Housing Compliance (PSH)",
+                description: "Oversight for 'Fairfield integrated', 'Samson', and PSH (Permanent Supportive Housing) funding. Addresses the 'protected stakeholders' and eviction threats.",
+                actions: [
+                    "Inspector General Audit Request",
+                    "Fair Housing Complaint (Discrimination)",
+                    "State AG Consumer Protection Division (Ohio)"
+                ],
+                context: "For the 'millions in rear takebacks' and failure to hold PSH funding recipients accountable."
+            }
+        };
+
+        // DOM Elements
+        const views = {
+            dashboard: document.getElementById('dashboard'),
+            'agency-chain': document.getElementById('agency-chain'),
+            evidence: document.getElementById('evidence')
+        };
+        const navButtons = {
+            dashboard: document.getElementById('nav-dashboard'),
+            'agency-chain': document.getElementById('nav-agency-chain'),
+            evidence: document.getElementById('nav-evidence')
+        };
+        const agencyContent = document.getElementById('agency-content');
+
+        // Core Navigation Logic
+        function navigate(viewId) {
+            // Update State
+            state.currentView = viewId;
+
+            // Update UI Views
+            Object.keys(views).forEach(key => {
+                if (key === viewId) {
+                    views[key].classList.remove('hidden');
+                } else {
+                    views[key].classList.add('hidden');
+                }
+            });
+
+            // Update Nav Styling
+            Object.keys(navButtons).forEach(key => {
+                if (key === viewId) {
+                    navButtons[key].classList.add('nav-active', 'text-blue-600');
+                    navButtons[key].classList.remove('text-gray-500');
+                } else {
+                    navButtons[key].classList.remove('nav-active', 'text-blue-600');
+                    navButtons[key].classList.add('text-gray-500');
+                }
+            });
+
+            // Trigger Charts if entering Evidence view
+            if (viewId === 'evidence') {
+                renderCharts();
+            }
+        }
+
+        // Agency Details Logic
+        function updateAgencyDetails(agencyKey) {
+            state.selectedAgency = agencyKey;
+            const data = agencyData[agencyKey];
+
+            // Update Buttons Styling
+            document.querySelectorAll('.agency-btn').forEach(btn => {
+                if(btn.dataset.target === agencyKey) {
+                    btn.classList.add('border-blue-500', 'bg-blue-50');
+                    btn.classList.remove('border-transparent', 'bg-white');
+                } else {
+                    btn.classList.remove('border-blue-500', 'bg-blue-50');
+                    btn.classList.add('border-transparent', 'bg-white');
+                }
+            });
+
+            // Render Content
+            agencyContent.innerHTML = `
+                <div class="animate-fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="p-3 bg-blue-100 rounded-full mr-4">
+                            <i class="fa-solid ${data.icon} text-blue-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">${data.title}</h3>
+                            <span class="inline-block px-2 py-1 bg-gray-100 text-xs font-semibold text-gray-600 rounded mt-1">${data.focus}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <p class="text-sm text-yellow-800 font-medium">Relevance to Grievance:</p>
+                        <p class="text-sm text-yellow-700 italic">"${data.context}"</p>
+                    </div>
+
+                    <p class="text-gray-700 mb-6 leading-relaxed">
+                        ${data.description}
+                    </p>
+
+                    <h4 class="font-bold text-gray-800 mb-3 border-b border-gray-100 pb-2">Recommended Action Steps</h4>
+                    <ul class="space-y-2 mb-8">
+                        ${data.actions.map(action => `
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                <span class="text-gray-700">${action}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+
+                    <div class="bg-gray-50 p-4 rounded text-center">
+                         <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Status</span>
+                         <div class="text-lg font-bold text-gray-800 mt-1">Pending Submission</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Chart Initialization
+        let resourceChartInstance = null;
+
+        function renderCharts() {
+            if (resourceChartInstance) return; // Prevent re-rendering
+
+            const ctx = document.getElementById('resourceChart').getContext('2d');
+            
+            // Data derived from user narrative:
+            // "3k build credits", "600 api", "2 pro accounts", "Dev premium" -> HIGH INPUT
+            // "0 projects to completion state", "spend 1$ into those funds" -> LOW/ZERO OUTPUT
+            
+            resourceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Build Credits', 'API Capacity', 'Pro Subs', 'Completed Projects', 'Value Realized'],
+                    datasets: [{
+                        label: 'Allocated/Paid',
+                        data: [100, 80, 90, 0, 0], // Normalized scale for visual comparison
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)', // Blue
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Accessible/Utilized',
+                        data: [5, 10, 10, 0, 0], // Minimal utility described
+                        backgroundColor: 'rgba(239, 68, 68, 0.5)', // Red
+                        borderColor: 'rgb(239, 68, 68)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { display: false }, // Abstract scale
+                            title: {
+                                display: true,
+                                text: 'Relative Capacity Unit'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initial Setup
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAgencyDetails('fcc');
+        });
+
+    </script>
+</body>
+</html>

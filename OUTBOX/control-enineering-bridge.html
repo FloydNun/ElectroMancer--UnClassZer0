@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Bridge // Star_Fixer_v2.6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.2);
+            --danger: #ef4444;
+            --scrub: #10b981;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #0f172a, #020617);
+            color: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        .bridge-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .glow-border:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        #chat-history::-webkit-scrollbar { width: 6px; }
+
+        .message-ai {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            border-left: 3px solid var(--accent);
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        .loader-dots span {
+            animation: dots 1.4s infinite;
+            display: inline-block;
+        }
+        .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dots {
+            0%, 20% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+            100% { opacity: 0; transform: translateY(0); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(12px);
+        }
+
+        .scrub-glow {
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col p-4 md:p-6 space-y-4">
+    <!-- Star Background -->
+    <div id="star-field" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Top Status Bar -->
+    <header class="relative z-10 flex items-center justify-between bridge-panel rounded-xl px-6 py-3 shrink-0">
+        <div class="flex items-center space-x-4">
+            <div class="p-2 bg-indigo-500/20 rounded-lg">
+                <i data-lucide="crosshair" class="w-6 h-6 text-indigo-400"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-semibold tracking-wider text-slate-100 uppercase">Control Engineering Bridge</h1>
+                <p class="text-[10px] mono text-indigo-400 uppercase tracking-widest">v2.6 // NEURAL_SCRUB_ENGAGED</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button id="export-logs-button" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 transition group">
+                <i data-lucide="download-cloud" class="w-3 h-3"></i>
+                <span class="text-[10px] mono uppercase">Backup Logic</span>
+            </button>
+            <button id="clear-history-button" class="text-[10px] mono text-slate-500 hover:text-red-400 transition uppercase">Clear Feed</button>
+        </div>
+    </header>
+
+    <main class="relative z-10 flex-1 flex flex-col lg:flex-row gap-4 min-h-0">
+        <!-- Left: Neural Command Link -->
+        <section class="flex-1 flex flex-col bridge-panel rounded-2xl overflow-hidden shadow-2xl">
+            <div class="px-6 py-4 border-b border-slate-800/50 flex items-center justify-between bg-slate-900/20">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-tighter">Command Core</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                     <div class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                     <div class="text-[9px] mono text-slate-500 uppercase">Signal Secure</div>
+                </div>
+            </div>
+
+            <div id="chat-history" class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- Messages flow here -->
+            </div>
+
+            <div class="p-4 bg-slate-900/50 border-t border-slate-800/50">
+                <form id="chat-form" class="relative group glow-border rounded-xl bg-slate-950/80 border border-slate-800 transition-all">
+                    <input 
+                        type="text" 
+                        id="prompt-input"
+                        placeholder="Reconstruct your project..."
+                        class="w-full bg-transparent px-5 py-4 text-sm focus:outline-none placeholder-slate-700 text-slate-100"
+                    >
+                    <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-indigo-400 hover:text-indigo-300">
+                        <i data-lucide="activity" class="w-5 h-5"></i>
+                    </button>
+                </form>
+                <div id="typing-indicator" class="hidden mt-2 px-2 text-[10px] mono text-indigo-400">
+                    ISOLATING REDACTIONS<span class="loader-dots"><span>.</span><span>.</span><span>.</span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right: The Capture Bay -->
+        <aside class="w-full lg:w-[500px] flex flex-col space-y-4">
+            
+            <!-- Artifact Capture Vault (DIC) -->
+            <div class="flex-1 flex flex-col bridge-panel rounded-2xl overflow-hidden min-h-[400px]">
+                <div class="px-5 py-3 border-b border-slate-800/50 flex items-center justify-between bg-slate-900/40">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="box" class="w-4 h-4 text-amber-400"></i>
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-widest">Artifact Capture Vault</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="showDeepScan()" class="text-[10px] mono text-indigo-400 hover:text-indigo-200 uppercase">View Raw</button>
+                        <button id="clear-dic-button" class="text-[10px] mono text-slate-500 hover:text-slate-300 uppercase">Dump</button>
+                    </div>
+                </div>
+                <textarea 
+                    id="direct-input-area" 
+                    placeholder="Paste the redacted logs or broken project code here..."
+                    class="flex-1 bg-slate-950/50 p-6 text-xs mono text-amber-50/60 focus:outline-none resize-none placeholder-slate-800 leading-relaxed"
+                ></textarea>
+            </div>
+
+            <!-- Recovery & Scrubbing Lab -->
+            <div class="bridge-panel rounded-2xl p-5 space-y-4">
+                 <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="atom" class="w-4 h-4 text-emerald-400"></i>
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-widest">Neural Laboratory</span>
+                    </div>
+                    <div id="dic-status" class="text-[9px] mono text-slate-600">STANDBY</div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="neuralScrub()" class="flex items-center justify-center space-x-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 transition group scrub-glow">
+                        <i data-lucide="eraser" class="w-4 h-4 text-emerald-400"></i>
+                        <span class="text-[11px] mono font-bold text-emerald-100">NEURAL SCRUB</span>
+                    </button>
+                    <button onclick="runFilter('reconstruct')" class="flex items-center justify-center space-x-2 p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/30 hover:bg-indigo-500/20 transition group">
+                        <i data-lucide="cog" class="w-4 h-4 text-indigo-400"></i>
+                        <span class="text-[11px] mono font-bold text-indigo-100">RECONSTRUCT</span>
+                    </button>
+                </div>
+                
+                <p class="text-[9px] mono text-slate-500 text-center uppercase tracking-widest">Scrubbing cleans MDM markers & redaction noise</p>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Deep Scan Interface -->
+    <div id="deep-scan-modal" class="modal flex flex-col p-6">
+        <div class="flex items-center justify-between mb-4 px-4">
+            <h2 class="text-sm font-semibold mono text-indigo-300 uppercase tracking-widest">Isolated Artifact Stream</h2>
+            <button onclick="hideDeepScan()" class="p-2 text-slate-500 hover:text-white transition">
+                <i data-lucide="minimize-2" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl overflow-auto p-8 shadow-inner">
+            <pre id="deep-scan-content" class="text-[11px] text-slate-400 mono whitespace-pre-wrap leading-relaxed"></pre>
+        </div>
+    </div>
+
+    <!-- JavaScript Module -->
+    <script>
+        const chatHistory = document.getElementById('chat-history');
+        const chatForm = document.getElementById('chat-form');
+        const promptInput = document.getElementById('prompt-input');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const clearHistoryBtn = document.getElementById('clear-history-button');
+        const dicArea = document.getElementById('direct-input-area');
+        const clearDicBtn = document.getElementById('clear-dic-button');
+        const exportLogsBtn = document.getElementById('export-logs-button');
+        const dicStatus = document.getElementById('dic-status');
+
+        const apiKey = ""; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        
+        let conversationHistory = [];
+        const STORAGE_KEY = 'star_fixer_v2.6_persistent';
+
+        function createStars() {
+            const field = document.getElementById('star-field');
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 0.5 + 'px';
+                star.style.width = size; star.style.height = size;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', Math.random() * 4 + 2 + 's');
+                field.appendChild(star);
+            }
+        }
+
+        function saveSession() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(conversationHistory));
+            localStorage.setItem('bridge_vault_buffer', dicArea.value);
+            updateDicStatus();
+        }
+
+        function loadSession() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            const savedDic = localStorage.getItem('bridge_vault_buffer');
+            if (savedDic) dicArea.value = savedDic;
+            if (saved) {
+                conversationHistory = JSON.parse(saved);
+                chatHistory.innerHTML = '';
+                conversationHistory.forEach(msg => {
+                    const text = msg.parts[0].text;
+                    if (!text.includes("[CONTENT FOR ANALYSIS START]")) {
+                         renderMessage(msg.role === 'model' ? 'ai' : 'user', text);
+                    }
+                });
+            } else {
+                renderMessage('ai', "Zero-Trust Bridge Initialized. v2.6 Scrubber active. Paste your redacted project pieces into the Capture Vault to bypass the organizational locks.");
+            }
+            updateDicStatus();
+        }
+
+        function updateDicStatus() {
+            const len = dicArea.value.length;
+            dicStatus.innerText = len > 0 ? `STREAMING: ${(len/1024).toFixed(1)}KB` : "STANDBY";
+        }
+
+        function renderMessage(role, text) {
+            const div = document.createElement('div');
+            const isAi = role === 'ai';
+            div.className = `flex ${isAi ? 'justify-start' : 'justify-end'} animate-in fade-in slide-in-from-bottom-2 duration-300`;
+            
+            div.innerHTML = `
+                <div class="max-w-[92%] ${isAi ? 'message-ai' : 'bg-slate-800/40'} rounded-2xl px-6 py-4 shadow-xl border border-slate-800">
+                    <div class="text-[9px] mono ${isAi ? 'text-indigo-400' : 'text-slate-500'} mb-2 tracking-[0.2em] font-bold uppercase">${isAi ? 'GEMINI' : 'CONTROL'}_LINK</div>
+                    <div class="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">${text}</div>
+                </div>
+            `;
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // --- The Scrubber ---
+        function neuralScrub() {
+            let content = dicArea.value;
+            if (!content) return;
+            
+            // Patterns to remove (redactions, system markers, etc)
+            const patterns = [
+                /\[REDACTED\]/gi,
+                /XXXXX+/g,
+                /\|RED\|/g,
+                /MDM_SYS_LOCK/g,
+                /--redacted--/gi,
+                /\[SYSTEM_REMOVED\]/gi
+            ];
+            
+            let originalLength = content.length;
+            patterns.forEach(p => content = content.replace(p, ""));
+            
+            // Also clean up double spaces/newlines left by scrubbing
+            content = content.replace(/\n\s*\n/g, '\n\n');
+            
+            dicArea.value = content;
+            saveSession();
+            renderMessage('ai', `Neural Scrub Complete. Removed ${originalLength - content.length} noise artifacts. The narrative is clearer.`);
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = promptInput.value.trim();
+            if (!input) return;
+
+            renderMessage('user', input);
+            promptInput.value = '';
+            typingIndicator.classList.remove('hidden');
+
+            let submissionText = input;
+            const dicContent = dicArea.value.trim();
+            if ((input.toLowerCase().includes('dic') || input.toLowerCase().includes('vault')) && dicContent) {
+                submissionText = `[SECURE_SIGNAL_UPLOAD]\nCOMMAND: ${input}\n\n[CONTENT FOR ANALYSIS START]\n${dicContent}\n[CONTENT FOR ANALYSIS END]`;
+            }
+
+            conversationHistory.push({ role: "user", parts: [{ text: submissionText }] });
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: conversationHistory, tools: [{ "google_search": {} }] })
+                });
+                
+                const data = await response.json();
+                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Link disrupted by external interference. Attempting auto-relink...";
+                
+                conversationHistory.push({ role: "model", parts: [{ text: aiText }] });
+                renderMessage('ai', aiText);
+                saveSession();
+            } catch (err) {
+                renderMessage('ai', "Overload Protocol Triggered. The system prevented an account-level crash. Try a smaller code segment.");
+            } finally {
+                typingIndicator.classList.add('hidden');
+            }
+        });
+
+        function runFilter(type) {
+            const content = dicArea.value.trim();
+            if (!content) return;
+            promptInput.value = `Execute ${type} protocol on the Vault content.`;
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+
+        exportLogsBtn.addEventListener('click', () => {
+            const logData = conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.parts[0].text}`).join('\n\n===\n\n');
+            const blob = new Blob([logData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bridge_physical_backup_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        function showDeepScan() {
+            document.getElementById('deep-scan-content').innerText = dicArea.value;
+            document.getElementById('deep-scan-modal').style.display = 'flex';
+        }
+        function hideDeepScan() {
+            document.getElementById('deep-scan-modal').style.display = 'none';
+        }
+
+        clearHistoryBtn.addEventListener('click', () => {
+            conversationHistory = [];
+            localStorage.removeItem(STORAGE_KEY);
+            chatHistory.innerHTML = '';
+            renderMessage('ai', "Signal feed cleared. Bridge holding position.");
+        });
+
+        clearDicBtn.addEventListener('click', () => {
+            dicArea.value = '';
+            localStorage.removeItem('bridge_vault_buffer');
+            updateDicStatus();
+        });
+
+        window.onload = () => {
+            createStars();
+            loadSession();
+            lucide.createIcons();
+        };
+
+        dicArea.addEventListener('input', saveSession);
+    </script>
+</body>
+</html>

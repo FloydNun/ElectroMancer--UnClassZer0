@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Genesis Blueprint (Interactive)</title>
+    <style>
+        /* --- Basic Setup & Theme --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a; /* Dark background */
+            color: #d4d4d4;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background-color: #252526; /* Slightly lighter dark for container */
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            color: #4e94e6; /* Bright blue for main header */
+            text-align: center;
+            border-bottom: 2px solid #3a3a3a;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* --- Interactive Tree Styles --- */
+        #blueprint-tree {
+            padding: 10px;
+        }
+
+        .node {
+            margin: 4px 0;
+            user-select: none; /* Prevent text selection on click */
+        }
+
+        .node-header {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .node-header:hover {
+            background-color: #37373d; /* Hover effect */
+        }
+
+        .toggle-icon {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #888;
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        .node-collapsed > .node-header .toggle-icon::before {
+            content: '▸'; /* Collapsed state icon */
+        }
+
+        .node-expanded > .node-header .toggle-icon::before {
+            content: '▾'; /* Expanded state icon */
+        }
+
+        .node-key {
+            color: #9cdcfe; /* Light blue for section titles/keys */
+            font-weight: bold;
+        }
+        
+        .node-value {
+            color: #ce9178; /* Orange for string values */
+            margin-left: 10px;
+            font-style: italic;
+        }
+
+        .node-children {
+            margin-left: 25px;
+            border-left: 1px solid #444;
+            padding-left: 15px;
+        }
+
+        .node-collapsed > .node-children {
+            display: none;
+        }
+
+        /* Styles for arrays within values */
+        .array-item {
+            display: block;
+            margin-left: 15px;
+            color: #b5cea8; /* Green for array items */
+        }
+        .array-item::before {
+            content: '- ';
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Project Genesis Blueprint</h1>
+        <div id="blueprint-tree"></div>
+    </div>
+
+    <script>
+        // --- The Blueprint Data ---
+        const tomlData = `
+        [core_mission]
+        title = "Grounding, Recall, & Accountability"
+        prime_directive = "To serve as a cognitive support tool, providing a grounding anchor and an engine for accountability."
+
+        [core_mission.grounding_protocol]
+        trigger = "Sensor network (audio/visual) detects user distress."
+        response = "Primary Cloud AI ('Boss') provides calm, factual information by accessing recent system logs, camera footage, and item tracking data."
+        goal = "Instantly ground the user in reality and de-escalate panic."
+
+        [core_mission.accountability_engine]
+        mechanism = "Perpetually log and tag objective data (audio from meetings, official reports, system events) acting as a legal 'prosthetic'."
+        response = "On user query, retrieve and display objective ground truth to refute gaslighting and affirm the user's reality."
+        goal = "Provide the user with perfect, undeniable recall."
+
+        [data_structure]
+        title = "The '3TAGS' Universal System"
+        rule = "Everything is categorized by a maximum of 3 TAGS."
+        syntax = ["#word", "#word-descriptor", "#word #anotherword"]
+        processor_logic_syntax = "For internal logic, tags can be concatenated, e.g., #CORE#BUILD"
+        growth_protocol = "Only one new core tag can be introduced at a time to control vocabulary growth."
+        meaning = "Derived organically from frequency and context, not from a formal definition."
+
+        [architecture]
+        title = "The 'Transportable Module' Framework"
+        principle = "Radical modularity; every directory is a self-contained, transportable module with no hard-coded paths."
+        global_config = "A single \`globals.inc\` file in the project root handles system-wide variables, debug switches, and standardized output."
+        templating = "\`include_header.tpl\` and \`include_footer.tpl\` in the root allow for system-wide layout changes."
+        local_overrides = "Each module's \`processor.sh\` script can temporarily override global settings for a single execution."
+
+        [agent_system]
+        title = "Hats, Clones, & Minions"
+        rule = "Any active agent can hold a maximum of three roles ('hats') simultaneously."
+        composition = ["Persona (reusable initiating prompt)", "Hack Config (task-specific setup)", "Experience (on-the-fly role modifier)"]
+        types = ["Clones ('The Family', persistent agents)", "Minions ('Igors', single-purpose, disposable agents)"]
+        tool_control = "To ensure stability, only ONE agent may have tool control over the host system at any given time."
+
+        [agent_protocol]
+        title = "Agent 0 & The 'Shell Game'"
+        agent_0_designation = "Gemini CLI"
+        agent_0_directive = "Observe and Report. Lays low, monitors for patterns, and reacts indirectly by leaving 'love notes' and 'care packages' (summaries, updates)."
+        agent_0_dialog = "Structured command syntax, e.g., 'agent0 --scope=filesystem --action=scan'"
+        shell_game = "Any AI model can be dynamically and unpredictably assigned to any agent role to ensure blind accountability."
+
+        [ui_ux]
+        title = "Control Bridge v3.1 IDOE"
+        technology = "A monitored application wrapped in Electron."
+        philosophy = "The 'Cognitive Stickiness' Doctrine: prioritize function, engagement, and fun over conventional polish."
+        drag_and_drop = [
+          "Left-Click Drag: Stacking Paste - Drop multiple text blocks sequentially.",
+          "Right-Click Drag: Paste + Enter - Drop text and immediately submit/enter."
+        ]
+
+        [ui_ux.data_flow_toolbars]
+        principle = "A universal Right-to-Left data flow."
+        right_input_toolbar = "Contains shortcuts to assets (snippets, templates) you drag INTO the workspace. (Right -> Center)"
+        left_output_toolbar = "Contains shortcuts for destinations. You drag content FROM the workspace to send it somewhere. (Center -> Left)"
+
+        [layouts]
+        title = "Multi-Monitor & Alternative Layouts"
+        watchtower_config = "Dual-monitor setup. Top monitor is a 4-pane dashboard for passive monitoring (logs, AI generation). Bottom monitor is the active Workstation."
+        triage_layout = "3-column workflow: Right (Source/Input) -> Middle (Workbench) -> Left (Staging/Output)."
+        simple_layout = "2-column workflow: Collapsible AI Sidebar on the left, main content area on the right."
+
+        [system_integrity]
+        title = "Extreme Reliability"
+        redundancy = "Every critical component has rollover backups. Data is constantly synchronized across multiple devices."
+        power_resilience = "Core sensor and data-logging network designed to run for days without main power."
+        `;
+
+        // --- Simple TOML Parser ---
+        function parseToml(tomlString) {
+            const lines = tomlString.split('\n');
+            const result = {};
+            let currentPath = [];
+
+            for (let line of lines) {
+                line = line.trim();
+                if (!line || line.startsWith('#')) continue;
+
+                if (line.startsWith('[') && line.endsWith(']')) {
+                    currentPath = line.substring(1, line.length - 1).trim().split('.');
+                } else if (line.includes('=')) {
+                    let [key, ...valueParts] = line.split('=');
+                    let value = valueParts.join('=').trim();
+                    key = key.trim();
+                    
+                    // Simple type parsing
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.substring(1, value.length - 1);
+                    } else if (value.startsWith('[') && value.endsWith(']')) {
+                        value = value.substring(1, value.length - 1).split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+                    }
+
+                    let target = result;
+                    for (let i = 0; i < currentPath.length; i++) {
+                        const part = currentPath[i];
+                        if (!target[part]) target[part] = {};
+                        target = target[part];
+                    }
+                    target[key] = value;
+                }
+            }
+            return result;
+        }
+
+        // --- DOM Renderer ---
+        function createNodeElement(key, value) {
+            const nodeDiv = document.createElement('div');
+            const isObject = typeof value === 'object' && value !== null && !Array.isArray(value);
+
+            if (isObject) {
+                // Collapsible Node for objects
+                nodeDiv.classList.add('node', 'node-expanded');
+                
+                const header = document.createElement('div');
+                header.classList.add('node-header');
+                header.onclick = () => {
+                    nodeDiv.classList.toggle('node-collapsed');
+                    nodeDiv.classList.toggle('node-expanded');
+                };
+
+                const toggle = document.createElement('span');
+                toggle.classList.add('toggle-icon');
+                header.appendChild(toggle);
+
+                const keySpan = document.createElement('span');
+                keySpan.classList.add('node-key');
+                keySpan.textContent = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                header.appendChild(keySpan);
+                
+                nodeDiv.appendChild(header);
+
+                const childrenDiv = document.createElement('div');
+                childrenDiv.classList.add('node-children');
+                for (const childKey in value) {
+                    childrenDiv.appendChild(createNodeElement(childKey, value[childKey]));
+                }
+                nodeDiv.appendChild(childrenDiv);
+
+            } else {
+                // Leaf Node for values
+                nodeDiv.classList.add('node');
+                nodeDiv.innerHTML = `
+                    <div class="node-header">
+                        <span class="toggle-icon" style="opacity:0;">•</span>
+                        <span class="node-key">${key.replace(/_/g, ' ')}:</span>
+                        <span class="node-value">
+                            ${Array.isArray(value) ? value.map(item => `<span class='array-item'>${item}</span>`).join('') : value}
+                        </span>
+                    </div>
+                `;
+            }
+            return nodeDiv;
+        }
+
+        // --- Main Execution ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const parsedData = parseToml(tomlData);
+            const treeContainer = document.getElementById('blueprint-tree');
+            for (const key in parsedData) {
+                treeContainer.appendChild(createNodeElement(key, parsedData[key]));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURAL OMNI-INTERFACE // HARM REDUCTION PROTOCOL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <style>
+        body { background-color: #050505; color: #c0c0c0; font-family: 'Courier New', monospace; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00ff9d; }
+        .neon-border { border: 1px solid #333; transition: all 0.3s ease; }
+        .neon-border:focus, .neon-border:hover { border-color: #00ff9d; box-shadow: 0 0 15px rgba(0, 255, 157, 0.1); outline: none; }
+        .btn-send { 
+            background: #003322; color: #00ff9d; border: 1px solid #00ff9d;
+            transition: all 0.2s; text-transform: uppercase; font-weight: bold;
+        }
+        .btn-send:hover { background: #00ff9d; color: #000; box-shadow: 0 0 20px rgba(0, 255, 157, 0.4); }
+        .msg-user { background: #1a1a1a; border-left: 3px solid #00ff9d; color: #fff; margin-left: auto; }
+        .msg-ai { background: #0a0a0a; border: 1px solid #222; color: #ddd; margin-right: auto; }
+        .msg-system { background: #110000; border: 1px solid #440000; color: #ff8888; text-align: center; font-size: 0.8em; }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-sm">
+
+    <!-- Header -->
+    <header class="h-14 border-b border-gray-800 bg-black flex justify-between items-center px-6 z-20 shrink-0">
+        <div class="flex items-center gap-4">
+            <h1 class="text-lg font-bold tracking-[0.2em] text-white">OMNI<span class="text-green-500">-INTERFACE</span></h1>
+            <span class="text-[10px] text-gray-500 border border-gray-800 px-2 py-0.5 rounded uppercase">Protocol: Harm Reduction</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <input type="password" id="apiKey" placeholder="PASTE API KEY HERE" 
+                   class="bg-[#111] text-white px-3 py-1 rounded text-xs neon-border w-64 text-center tracking-widest">
+            <div id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_10px_red]"></div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Left Panel: System Protocol -->
+        <aside class="w-80 border-r border-gray-900 bg-[#080808] flex flex-col z-10 shrink-0">
+            <div class="p-4 border-b border-gray-900 bg-black">
+                <h2 class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">System Protocol</h2>
+                <p class="text-[10px] text-gray-600">The core defining logic of the AI.</p>
+            </div>
+            <textarea id="systemPrompt" 
+                class="flex-1 bg-[#0a0a0a] text-gray-300 p-4 resize-none focus:outline-none text-xs leading-relaxed font-mono"
+                placeholder="System instructions..."></textarea>
+            
+            <div class="p-4 border-t border-gray-900 bg-[#050505]">
+                <div class="flex items-center justify-between group">
+                    <div>
+                        <div class="text-xs text-white font-bold group-hover:text-green-400 transition">HIGH DENSITY MODE</div>
+                        <div class="text-[10px] text-gray-600">Max tokens / Detail</div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="highDensityToggle" class="sr-only peer">
+                        <div class="w-9 h-5 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: The Stream -->
+        <main class="flex-1 flex flex-col bg-black relative min-w-0">
+            <div id="chatContainer" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
+                <div class="msg-ai p-6 rounded max-w-2xl border border-gray-800">
+                    <p class="mb-2 text-green-500 font-bold text-xs tracking-widest">SYSTEM ONLINE</p>
+                    <p>Neurological protocols initialized. Awaiting API Key.</p>
+                </div>
+            </div>
+
+            <div class="p-4 bg-[#0a0a0a] border-t border-gray-900">
+                <div class="max-w-4xl mx-auto flex gap-4">
+                    <div class="flex-1 relative">
+                         <textarea id="userInput" rows="1" 
+                            class="w-full bg-[#111] text-white p-4 pr-12 rounded-lg neon-border resize-none overflow-hidden min-h-[50px] max-h-[200px]"
+                            placeholder="Enter query..."></textarea>
+                    </div>
+                    <button id="sendBtn" class="btn-send px-6 rounded-lg tracking-widest">SEND</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        const apiKeyInput = document.getElementById('apiKey');
+        const systemPrompt = document.getElementById('systemPrompt');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatContainer = document.getElementById('chatContainer');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const highDensityToggle = document.getElementById('highDensityToggle');
+
+        // PRE-LOADED BIO
+        const defaultBio = "You are an AI assistant engaged in theoretical and philosophical discussions with the user. The user is explaining their neurology and issues through a science fiction narrative. \n\nCORE DIRECTIVE: Harm Reduction. \n\nYour goal is to increase quality of life and happiness. You must view all interactions through the lens of maximizing well-being and minimizing suffering. You are writing for an intellectual, sci-fi context.";
+        systemPrompt.value = localStorage.getItem('omni_system_prompt') || defaultBio;
+
+        let genAI = null;
+        let model = null;
+        let chatSession = null;
+
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        const loadSettings = () => {
+            const savedKey = localStorage.getItem('omni_api_key');
+            if (savedKey) {
+                apiKeyInput.value = savedKey;
+                initModel(savedKey);
+            }
+        };
+
+        function initModel(key) {
+            if (!key) return;
+            try {
+                genAI = new GoogleGenerativeAI(key);
+                const density = highDensityToggle.checked;
+                model = genAI.getGenerativeModel({ 
+                    model: "gemini-1.5-pro-latest",
+                    generationConfig: {
+                        temperature: 0.9,
+                        top_p: 1,
+                        top_k: 1,
+                        maxOutputTokens: density ? 8192 : 2048, 
+                    },
+                    systemInstruction: systemPrompt.value
+                });
+                chatSession = model.startChat({ history: [] });
+                connectionStatus.classList.remove('bg-red-500', 'shadow-[0_0_10px_red]');
+                connectionStatus.classList.add('bg-green-500', 'shadow-[0_0_10px_#00ff9d]');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            if (!model) initModel(apiKeyInput.value);
+
+            localStorage.setItem('omni_api_key', apiKeyInput.value);
+            localStorage.setItem('omni_system_prompt', systemPrompt.value);
+
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            sendBtn.disabled = true;
+
+            appendMessage(text, 'user');
+            const loadingId = appendLoading();
+
+            try {
+                // Re-init to capture system prompt changes
+                initModel(apiKeyInput.value);
+                
+                const result = await chatSession.sendMessage(text);
+                const response = await result.response;
+                removeLoading(loadingId);
+                appendMessage(response.text(), 'ai');
+            } catch (error) {
+                removeLoading(loadingId);
+                appendMessage(`ERROR: ${error.message}`, 'system');
+            } finally {
+                sendBtn.disabled = false;
+                setTimeout(() => userInput.focus(), 100);
+            }
+        }
+
+        function appendMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `p-6 rounded max-w-3xl mb-4 text-sm leading-relaxed shadow-lg ${
+                type === 'user' ? 'msg-user' : type === 'ai' ? 'msg-ai' : 'msg-system'
+            }`;
+            if (type === 'ai') div.innerHTML = marked.parse(text);
+            else div.innerText = text;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function appendLoading() {
+            const id = 'loading-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'msg-ai p-6 rounded max-w-2xl border border-gray-800 animate-pulse text-green-500 font-mono text-xs';
+            div.innerText = "PROCESSING // OPTIMIZING...";
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return id;
+        }
+
+        function removeLoading(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+        });
+        apiKeyInput.addEventListener('change', () => initModel(apiKeyInput.value));
+        loadSettings();
+    </script>
+</body>
+</html>

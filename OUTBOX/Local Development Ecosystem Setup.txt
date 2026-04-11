@@ -1,0 +1,380 @@
+﻿Integrated Heterogeneous Development Ecosystems: Architecting the Editor-Preview Workflow on Distributed Edge Clusters
+1. Executive Summary
+The paradigm of software development environments is undergoing a radical transformation, shifting from monolithic workstations to distributed, heterogeneous clusters. This report presents a comprehensive architectural blueprint and implementation strategy for constructing a "Heterogeneous Edge Cluster" (HEC). This ecosystem integrates a primary Windows host, clustered Android devices acting as intelligent visual nodes, and low-end Linux units serving as dedicated compute offload targets. The central objective is to synthesize these disparate hardware elements into a unified, high-performance development grid managed via a custom "Editor-Preview" workflow within Chrome Canary.
+Traditional development setups often suffer from resource contention, where the Integrated Development Environment (IDE), compilation processes, local servers, and browser instances compete for the same CPU cycles and RAM. The HEC architecture addresses this by decoupling these functions. The Windows host acts as the Orchestrator, focusing on the text editing experience and cluster management. Android devices are repurposed not merely as passive testing targets but as active "Smart Displays" and "Edge AI Inference Nodes" running local Large Language Models (LLMs) like Gemma and Gemini Nano. Linux nodes handle background compilation and persistent services.
+A custom Python-based controller, leveraging the watchdog library for file system monitoring and Flask for dynamic server management, serves as the nervous system of this cluster. This controller dynamically spawns ephemeral server instances—termed "flats"—and routes them to specific displays or browser tabs based on contextual triggers. Furthermore, the ecosystem integrates mitmproxy to intercept network traffic, injecting AI-generated content and automation triggers directly into the data stream. This report provides an exhaustive technical analysis of the required software stacks, network topologies, automation scripts, and AI integration strategies necessary to realize this next-generation development environment.
+2. Architectural Framework and Topology
+2.1 The Hub-and-Spoke Topology
+The HEC operates on a sophisticated Hub-and-Spoke topology, designed to maximize throughput and minimize latency between the control plane and the execution nodes. In this model, the Windows machine functions as the central Hub (Orchestrator), while the Android and Linux devices operate as specialized Spokes (Nodes). This separation of concerns allows for distinct optimization strategies for each node type.
+Role
+	Device Type
+	Primary Functionality
+	Connectivity Protocol
+	Resource Focus
+	Orchestrator
+	Windows Host
+	Code Editing, Cluster Management, Proxy Routing, ADB Server
+	USB 3.0 / Wi-Fi 6 (TCP/IP)
+	High Single-Thread Performance
+	Visual Node
+	Android Devices
+	Real-time Preview, Touch Input, Local LLM Inference, Voice I/O
+	ADB over TCP, Scrcpy, HTTP
+	High-DPI Rendering, NPU Acceleration
+	Compute Node
+	Low-end Linux
+	Background Services, Database Hosting, CI/CD Runners, Compilation
+	SSH, HTTP, WebSocket
+	Multi-core Parallelism
+	The Windows Host runs the primary "Controller" daemon. This Python-based service is responsible for maintaining the state of the cluster, tracking connected devices via adbutils, and managing the lifecycle of the "flats." The choice of Windows as the host leverages its robust window management APIs (Win32) and compatibility with Chrome Canary's latest experimental features.
+2.2 Network Layer and Connectivity Strategy
+The integrity of the HEC relies heavily on a robust, low-latency local network layer. While standard Wi-Fi is sufficient for control signals, the requirements for video mirroring (via scrcpy) and massive file synchronization necessitate a hybrid approach utilizing both wired and wireless pathways.
+2.2.1 ADB Transport Layer and Optimization
+The Android Debug Bridge (ADB) serves as the primary transport layer for the Android nodes. However, the standard USB connection restricts physical placement and "ecosystem" fluidity. To achieve the desired "wireless grid" aesthetic, ADB over TCP/IP is mandated. The Controller must automate the transition from USB to TCP mode to ensure seamless operation.2
+* Handshake Automation: The Controller detects a USB connection event. It then issues adb tcpip 5555 to restart the ADB daemon on the device in TCP mode. It queries the device's IP address via adb shell ip route and subsequently executes adb connect <IP>:5555.
+* Port Management: Supporting multiple Android devices requires a strategy for port allocation. The Controller assigns unique TCP ports (e.g., 5555, 5557, 5559) to each device or relies on unique IP addresses if the local router's DHCP is configured with static leases.
+* Keep-Alive Mechanisms: Android devices aggressively conserve battery, often killing background debugging sessions. The Controller implements a heartbeat mechanism, periodically pinging the device or sending a specific "wake" intent (adb shell input keyevent WAKEUP) to prevent disconnection and deep sleep states.4
+2.2.2 Reverse Proxy and Traffic Routing
+A critical requirement is resolving local refresh issues and allowing Android devices—which exist on a separate network interface or VLAN—to access the "flats" running on the Windows host. A reverse proxy strategy is essential here.
+* ADB Reverse Tunneling: The command adb reverse tcp:5000 tcp:5000 allows the Android device to access the Host's port 5000 via its own localhost interface. This is crucial for low-latency testing as it routes traffic over the ADB transport (USB or TCP) rather than the general Wi-Fi network, reducing jitter.6
+* Network Binding: For broader accessibility, particularly for Linux nodes that do not support ADB reverse tunneling natively, Flask instances on the Host bind to 0.0.0.0. The Controller then resolves the Host's LAN IP and directs remote nodes to this address.
+2.3 The "Flats" Concept: Dynamic Ephemeral Servers
+In this architecture, a "flat" represents a self-contained, ephemeral web server instance mapped to a specific project directory. Unlike a monolithic staging server that runs continuously, "flats" are spawned on-demand based on developer activity.
+* Instantiation: When the user focuses on a project directory in the Editor or modifies a file, the Controller spawns a dedicated Flask instance serving that specific root.
+* Registry Management: The Controller maintains an internal state registry mapping Project_ID -> {Process_ID, Port_Number, Active_Clients, Last_Activity_Timestamp}.
+* Garbage Collection: To conserve system resources—a critical consideration when managing multiple projects simultaneously—flats are terminated after a configurable period of inactivity. This "serverless-like" behavior ensures that the development environment remains lightweight and responsive.
+3. The Orchestrator Core: Python Controller Design
+The heart of the HEC is the Python-based Controller. This is not merely a script but a persistent, multi-threaded service that fuses file system events with network commands and process management.
+3.1 File System Monitoring with Watchdog
+To achieve the "Editor-Preview" workflow where changes are immediately reflected across the cluster, we utilize the Python watchdog library. The standard LoggingEventHandler provided in examples is insufficient for this complex logic; a custom subclass of FileSystemEventHandler is required to trigger the sophisticated pipelines of the HEC.8
+3.1.1 Event Coalescing and Debouncing
+File save operations in modern editors often trigger multiple file system events in rapid succession (e.g., a file modification followed by a metadata update). A naive implementation would trigger multiple server restarts or page reloads, causing visual stutter on the Android nodes. The Controller must implement a "debounce" or coalescing logic. Events occurring within a defined window (e.g., 500ms) are aggregated into a single "Change Action."
+3.1.2 Context-Aware Event Handling
+The custom handler intercepts on_modified and on_created events and applies context-aware logic:
+1. Path Resolution: It determines which "flat" owns the modified file by traversing up the directory tree to find a marker file (e.g., .flat-config or package.json).
+2. Filter Logic: It aggressively filters out temporary files (e.g., .tmp, .swp, __pycache__, .git) to avoid false positives that would disrupt the workflow.
+3. Action Dispatch: Upon a valid change, it dispatches a signal to the Orchestrator Core. This signal can trigger diverse actions:
+   * Hot Reload: Sending a WebSocket message to the browser client to refresh CSS/JS without a full page load.
+   * Server Restart: If a backend Python file (app.py, models.py) is modified, the specific Flask instance (flat) is restarted.
+   * Content Injection: If an HTML file is changed, the MITM proxy (discussed in Section 11) may be signaled to clear its cache or re-inject triggers.
+3.2 Dynamic Flask Controller and Subprocess Management
+The Controller uses Flask not just for serving content, but as a control plane for the entire cluster. It exposes a REST API (e.g., POST /api/cluster/spawn) that the Windows Host or Linux nodes can call to request resources.
+3.2.1 Dynamic Port Allocation
+To avoid port conflicts when running multiple "flats," the Controller uses Python's socket library to identify an available ephemeral port immediately before spawning a new server.
+
+
+Python
+
+
+
+
+import socket
+
+def get_free_port():
+   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+       s.bind(('', 0))
+       return s.getsockname()[1]
+
+This ensured port is then passed as an environment variable (PORT) to the subprocess spawning the flat. This dynamic allocation is superior to static port ranges, as it eliminates collisions with other system services.10
+3.2.2 Subprocess Lifecycle Management
+The Controller utilizes the subprocess module to manage the lifecycles of flats. Crucially, it must handle SIGINT and SIGTERM signals to ensure that when the Controller shuts down, all spawned flats are also terminated to prevent "zombie" processes. On Windows, this requires distinct handling compared to POSIX systems, often necessitating the use of Job Objects or the creationflags=subprocess.CREATE_NEW_PROCESS_GROUP parameter to ensure clean teardowns of process trees.12
+3.3 Routing and Reservation Logic
+The "Routing" mechanism is the decision engine that directs specific "flats" to specific screens. This mapping is maintained in the Controller's registry and can be either static or dynamic.
+* Static Reservation: A configuration file (cluster.yaml) maps a Project Directory to a specific Device Serial Number.
+   * Example: Project_A -> Pixel_7_Serial
+* Dynamic Reservation: When a file in Project_B is modified, the Controller checks if Project_B is active. If not, it scans for an idle Android node in the adb devices list. It then:
+   1. Starts the Flat for Project_B on Port 5001.
+   2. Uses adb -s <Serial> shell am start to force the Android Chrome browser to http://<Host_IP>:5001.2
+   3. Updates the registry: Pixel_7 is now "reserved" for Project_B.
+4. Visual Interface: Chrome Canary & Split View
+The primary user interface for this ecosystem is Chrome Canary running on the Windows Host. The goal is to replicate the functionality of an Integrated Development Environment (IDE) using the browser's rendering engine, augmented by experimental features.
+4.1 Split View Architecture
+Chrome Canary's experimental "Split View" (enabled via --enable-features=SideBySide) allows two tabs to share a single window side-by-side, mimicking the Editor/Preview pane layout of tools like VS Code. This feature is critical for the "Editor-Preview" workflow as it consolidates the workspace into a single window, reducing alt-tab friction.15
+4.1.1 Enabling Split View via Flags
+To utilize this, Chrome Canary must be launched with specific command-line arguments. The Controller script manages the launch process to ensure these flags are active:
+* --enable-features=SideBySide
+* --enable-features=OptimizationGuideOnDeviceModel (for local AI features)
+* --enable-features=PromptAPIForGeminiNano
+While CLI flags enable the capability, there is currently no direct CLI switch to "open URL A and URL B in split view" directly upon launch. The Controller must therefore rely on simulating user interaction or using specific extension APIs to arrange the tabs once the browser is open.17
+4.2 Window Management Automation
+Since native Chrome CLI support for precise split-view layouts is experimental and limited, the robust solution involves external Window Management on Windows 11.
+4.2.1 Python pywin32 Implementation
+The Controller utilizes the pywin32 library to manipulate window handles (HWND) directly. This allows for pixel-perfect positioning of browser windows.
+1. Launch: The Controller executes subprocess.Popen(['chrome.exe', '--new-window', url_editor]) and subprocess.Popen(['chrome.exe', '--new-window', url_preview]).
+2. Discovery: It uses EnumWindows to iterate through top-level windows, filtering by "Chrome" in the window title to identify the correct instances.
+3. Geometry Calculation: The Controller calculates the screen resolution (e.g., 1920x1080) and determines the coordinates for a split layout.
+   * Editor Window: MoveWindow(hwnd_editor, 0, 0, 960, 1080) (Left half).
+   * Preview Window: MoveWindow(hwnd_preview, 960, 0, 960, 1080) (Right half).
+4. Z-Order Management: SetForegroundWindow ensures the new workspace pops to the front, ready for user interaction.19
+4.2.2 AutoHotKey Integration
+For users preferring a scriptable approach with less maintenance overhead than pywin32, an AutoHotKey (AHK) script can be triggered by the Python Controller. AHK's WinMove and WinSet commands are highly optimized for Windows' snapping behavior and handle edge cases (like DPI scaling) more gracefully than raw Win32 calls. The Controller can execute subprocess.run(['AutoHotKey.exe', 'tile_script.ahk', url1, url2]) to perform the layout operation.22
+5. Android Node Integration: The Visual Grid
+The Android nodes serve two critical functions: they act as high-DPI preview screens for mobile responsiveness testing, and they provide a touch-input surface for interaction. Managing them requires deep interaction with ADB and screen mirroring protocols.
+5.1 ADB Automation via adbutils
+The adbutils Python library provides a more pythonic and robust interface to ADB than parsing raw shell output. It allows the Controller to implement event-driven device management.
+* Event Listening: The Controller listens for connection events (device connected, device disconnected), allowing it to dynamically update the routing table.
+* Tunneling: It programmatically sets up reverse port forwarding (adb.reverse()), ensuring that each "flat" is accessible to the corresponding Android device.
+* Shell Execution: It can launch browsers, kill background apps, or query battery status to monitor the health of the grid nodes.24
+5.1.1 Browser Intent Automation
+To dynamically route a "flat" to a specific Android screen, the Controller constructs and broadcasts an Android Intent.
+* Command: adb -s <SERIAL> shell am start -a android.intent.action.VIEW -d "http://<HOST_IP>:<PORT>".2
+* Browser Selection: To ensure consistency, the package name is explicitly specified (e.g., -n com.android.chrome/com.google.android.apps.chrome.Main). This prevents the "Open with..." dialog from blocking the automation workflow.27
+* Tab Management: Chrome on Android recycles tabs by default. To force a clean state, the Controller may issue am force-stop com.android.chrome before launching the new URL, ensuring that the "flat" runs in a fresh process, although this incurs a slight performance penalty.28
+5.2 Scrcpy Grid Management
+Scrcpy is the industry standard for high-performance screen mirroring. To create a "Grid" of devices on the Windows Host—allowing the developer to see all mobile screens simultaneously—the Controller spawns multiple scrcpy processes.
+5.2.1 The Grid Layout Script
+The Controller dynamically generates a batch script or executes a sequence of subprocesses to arrange the mirrored windows:
+1. Enumeration: List all connected devices via adb devices.
+2. Positioning: Calculate grid coordinates (X, Y) for each window based on the monitor resolution.
+3. Launch Command:
+Bash
+scrcpy -s <SERIAL_1> --window-x 0 --window-y 0 --window-width 400 --window-height 800
+scrcpy -s <SERIAL_2> --window-x 400 --window-y 0 --window-width 400 --window-height 800
+
+Note: Newer versions of scrcpy support window position parameters directly, facilitating this grid layout without external tools.29
+5.2.2 Wireless Automation and Recovery
+To maintain the "ecosystem" feel, devices should function wirelessly. The Controller automates the TCP/IP switch. If a device reboots, it typically reverts to USB mode. The Controller detects the "offline" state, waits for a USB re-connection, and automatically re-enables TCP mode (adb tcpip 5555), then notifies the user to disconnect the cable. This self-healing capability is essential for a frictionless workflow.4
+6. Linux Node Integration: The Compute Backbone
+While Android devices handle visualization and inference, low-end Linux nodes (e.g., Raspberry Pi 4/5, Orange Pi, or NUCs) serve as the "Compute Backbone." Their role is to offload heavy, blocking tasks from the Windows Host, preventing the UI lag that often accompanies local development.
+6.1 Backend Offloading via SSH
+The Controller manages these nodes via SSH tunnels. Using Python's paramiko library, the Windows Host can execute commands on the Linux nodes as if they were local.
+   * Compilation Offload: Heavy compilation tasks (e.g., compiling large C++ libraries or building Docker images) are routed to the Linux nodes. The source code is synchronized via rsync or shared volumes (Samba/NFS), and the build command is triggered remotely.
+   * Persistent Services: Databases (PostgreSQL, Redis) and message queues (RabbitMQ) are hosted on the Linux nodes. This keeps the Windows Host clean of background daemons that consume RAM.
+6.2 The "Flats" Extension to Linux
+The "flats" concept extends to these nodes. The Controller can spawn a Flask server on a Linux node just as easily as on Windows.
+   * Tunneling: To make a remote flat accessible to the Android devices, the Controller establishes an SSH Local Port Forward (-L) or a Remote Port Forward (-R).
+   * Scenario: A specialized backend service running on a Linux node (port 8080) is port-forwarded to the Windows Host (port 8080). The Android device accesses it via the Windows Host's IP, unaware that the compute is happening on a separate Linux unit.
+7. Edge AI Integration: Local LLMs on Android Nodes
+A pivotal feature of this HEC is utilizing the Android nodes as "Edge Intelligence" units. Rather than paying for cloud API credits or saturating the Windows GPU, the system offloads LLM tasks (code suggestion, content generation, summarization) to the idle Android processors, leveraging their powerful NPUs (Neural Processing Units) found in SoCs like the Snapdragon 8 Gen 2/3.
+7.1 Execution Environments
+There are two primary pathways to running LLMs on Android, each with distinct advantages:
+A. Native Android Apps (MLC LLM / MediaPipe):
+   * MLC LLM: This framework uses machine learning compilation to run quantized models (Llama-3, Gemma, RedPajama) directly on the mobile GPU (Adreno/Mali) via OpenCL or Vulkan. This approach offers the highest inference performance.
+   * MediaPipe: Google's solution for running Gemini Nano or Gemma. It is optimized for CPU/GPU execution but currently focuses more on Java/Kotlin integration within an app context rather than functioning as a general-purpose standalone server.31
+B. Linux Environment (Termux):
+   * Termux: By installing a terminal emulator that provides a Linux userland, developers can compile llama.cpp or run Ollama (where supported) directly on the phone.
+   * Advantage: This provides a standard CLI and Python environment, making it significantly easier to expose the LLM via a Flask wrapper running on the phone itself. It turns the phone into a standard Linux server node.35
+7.2 Exposing LLM as a REST Service
+To integrate the Android LLM into the Windows-based Controller, it must be accessible via the network as a RESTful service.
+The "Sidecar" Server Strategy:
+We deploy a lightweight HTTP server on the Android device to wrap the LLM inference engine.
+   * Scenario A (MLC LLM): The MLC LLM Android demo application supports a "Server Mode" where it acts as an OpenAI-compatible REST endpoint. The Controller simply sends HTTP POST requests to http://<ANDROID_IP>:8000/v1/chat/completions.37
+   * Scenario B (Termux): A Python script running in Termux loads the model (e.g., using llama-cpp-python) and exposes a Flask route.
+Python
+# Termux Script: llm_server.py
+from flask import Flask, request, jsonify
+from llama_cpp import Llama
+
+llm = Llama(model_path="./gemma-2b.gguf")
+app = Flask(__name__)
+
+@app.route('/generate', methods=)
+def generate():
+   data = request.json
+   output = llm(data['prompt'], max_tokens=100)
+   return jsonify(output)
+
+if __name__ == '__main__':
+   app.run(host='0.0.0.0', port=8080)
+
+This script effectively transforms the smartphone into a dedicated API server for the development cluster, accessible by the Host and other nodes.38
+8. Chrome DevTools & Native Messaging: The Integration Bridge
+On the Host side (Windows), the "Split View" Editor can be significantly augmented with AI capabilities. To deeply integrate these capabilities, we utilize Chrome Extensions and the Native Messaging API.
+8.1 The Native Messaging Bridge
+Chrome Extensions are sandboxed and cannot directly spawn processes or access the full file system. To bypass this, we use the Native Messaging API.
+      1. Manifest Configuration: The extension's manifest.json declares the nativeMessaging permission.
+      2. Host Manifest: A JSON file registered in the Windows Registry points Chrome to a local Python script (the "Native Host").
+      3. Communication Loop:
+      * The Extension sends a message (JSON) to the Native Host via chrome.runtime.sendNativeMessage.
+      * Chrome launches the Python script and passes the message via stdin.
+      * The Python script processes the message (e.g., "Start Server for Project X", "Query Android LLM") and writes the response to stdout.
+      * Chrome reads stdout and passes the data back to the Extension.39
+This bridge is the critical link that allows a button click in Chrome DevTools to trigger the Python Controller to spawn a new "flat" or reconfigure the Android grid.
+8.2 DevTools Extension Architecture
+To integrate AI directly into the inspection workflow, we build a custom Chrome DevTools extension.
+      1. Sidebar Pane: The extension utilizes chrome.devtools.panels.elements.createSidebarPane to add a custom UI panel to the Elements tab.41
+      2. Context Awareness: It reads the currently selected DOM element ($0) using chrome.devtools.inspectedWindow.eval.
+      3. AI Query Pipeline:
+      * The extension grabs the HTML of the selected element.
+      * It sends this HTML to the Native Host via the messaging bridge.
+      * The Native Host forwards the HTML context to the Android LLM (via the REST API established in Section 7.2).
+      * The Android LLM generates a suggestion (e.g., "Refactor this CSS for better accessibility").
+      * The response travels back: Android -> Native Host -> Extension -> Sidebar Pane.
+      4. Action: The developer sees the AI suggestion in the sidebar and can apply it with a click.
+8.3 Window.ai API Integration
+Chrome Canary is experimenting with the window.ai API (Prompt API), which allows web apps to access a built-in Gemini Nano model without external calls.
+      * Integration: The Controller serves a specialized "Editor Web App" that utilizes await window.ai.createTextSession().
+      * Use Case: This allows the Editor pane to have "smart" features (e.g., "Summarize this code block") that run entirely locally in the browser, providing a second layer of AI capability distinct from the Android-hosted models.42
+9. The Interception Layer: MITM Proxy Automation
+To glue the file system changes, browser state, and AI capabilities together without requiring invasive modifications to the source code of every project, the HEC utilizes mitmproxy.
+9.1 Concept: The Programmable Network
+The Controller configures the Chrome instances (and Android Wi-Fi proxy settings) to route traffic through a local mitmproxy instance running on the Host. This allows the Controller to "see" and "modify" the development traffic in real-time. This essentially turns the network layer into a programmable interface.
+9.2 Trigger Tags and Injection Strategy
+This represents a powerful "Second Order" insight: while the file system is static, the network stream is dynamic and mutable. We can inject "Trigger Tags" into the HTML stream to force actions on the client side.
+Implementation Logic: A custom mitmproxy script (injector.py) intercepts all responses with content-type: text/html.44
+      1. Detection: It scans the response body for specific comment tags, e.g., ``.
+      2. Processing: When such a tag is found, the proxy holds the request. It extracts the surrounding HTML context and sends it to the Android LLM node via the REST API.
+      3. Injection: The LLM returns the generated HTML component (e.g., a fully styled navigation bar). The proxy replaces the comment tag with this generated content before the response reaches the browser.
+      4. Result: The developer types a comment in the code, hits save, and the browser renders the AI-generated component instantly. This enables "Just-in-Time" UI generation.
+9.3 Auto-Refresh and Synchronization
+Instead of relying on generic "Live Reload" scripts that must be manually added to every project, mitmproxy can inject a WebSocket client into every HTML response automatically.46
+      * Mechanism: The Controller (watching files via watchdog) sends a message to the WebSocket server managed by the proxy.
+      * Trigger: The injected JavaScript client receives this message and triggers location.reload().
+      * Benefit: This creates a universal hot-reload capability that works on any project served through the proxy, regardless of its tech stack (static HTML, PHP, Python, Node.js). It unifies the refresh behavior across the Windows Preview and Android Screens simultaneously.
+10. Detailed Implementation Plan and Scripts
+This section outlines the specific configuration and code logic required to build the core components of the HEC.
+10.1 The "Watchdog" Controller (Python)
+Dependencies: watchdog, flask, requests, adbutils, pywin32.
+Core Logic Structure:
+
+
+Python
+
+
+
+
+import subprocess
+import time
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+from adbutils import AdbClient
+
+class ClusterController(FileSystemEventHandler):
+   def __init__(self):
+       self.registry = {} # {path: {port: 5000, pid: 1234, device: 'serial'}}
+       self.adb = AdbClient(host="127.0.0.1", port=5037)
+       self.observer = Observer()
+
+   def start_flat(self, project_path):
+       port = self.get_free_port()
+       # Start Flask as subprocess, listening on 0.0.0.0
+       # Passing PORT as env var ensures the flat binds correctly
+       proc = subprocess.Popen(['python', 'app.py'], cwd=project_path, env={'PORT': str(port)})
+       return port, proc
+
+   def on_modified(self, event):
+       # Debounce logic here
+       if self.is_temporary_file(event.src_path):
+           return
+       
+       path = event.src_path
+       project = self.resolve_project(path)
+       
+       if project in self.registry:
+           # Trigger refresh via WebSocket or ADB
+           self.refresh_browsers(self.registry[project])
+       else:
+           # New project context detected: Spawn Flat
+           port, proc = self.start_flat(project)
+           device = self.get_idle_device()
+           if device:
+               # Route flat to Android Device
+               self.launch_url_on_device(device, f"http://{HOST_IP}:{port}")
+               self.registry[project] = {'port': port, 'pid': proc.pid, 'device': device.serial}
+
+   def launch_url_on_device(self, device, url):
+       # Construct Intent
+       cmd = f"am start -a android.intent.action.VIEW -d {url} -n com.android.chrome/com.google.android.apps.chrome.Main"
+       device.shell(cmd)
+
+10.2 Chrome Split-View Orchestration (AutoHotKey)
+A robust AHK script is preferred over pure Python for window management due to its superior handling of Windows snapping behaviors and timing issues.
+Script: TileScript.ahk
+
+
+AutoHotkey
+
+
+
+
+; Arguments: %1% = Editor URL, %2% = Preview URL
+Run, chrome.exe --new-window "%1%" ; Launch Editor
+WinWaitActive, ahk_exe chrome.exe
+; Move to Left Half: x=0, y=0, w=ScreenW/2, h=ScreenH
+WinMove, A, , 0, 0, A_ScreenWidth/2, A_ScreenHeight
+
+Run, chrome.exe --new-window "%2%" ; Launch Preview
+WinWaitActive, ahk_exe chrome.exe
+; Move to Right Half: x=ScreenW/2, y=0, w=ScreenW/2, h=ScreenH
+WinMove, A, , A_ScreenWidth/2, 0, A_ScreenWidth/2, A_ScreenHeight
+
+The Python Controller executes this script using subprocess.run().
+10.3 Android LLM Setup (Termux Route)
+For maximum flexibility, the Termux route is recommended over a compiled APK, as it allows on-the-fly Python script adjustments.
+      1. Install Termux & Python: pkg install python git rust build-essential.
+      2. Install LLM Engine: pip install llama-cpp-python.
+      3. Download Model: wget <huggingface_url_to_gemma_gguf>.
+      4. Run Server:
+Bash
+python3 -m llama_cpp.server --model./gemma-2b.gguf --host 0.0.0.0 --port 8080
+
+      5. Access: The Windows Host can now query http://<ANDROID_IP>:8080/v1/chat/completions.
+11. Insights and Future Implications
+11.1 The "Dumb Host, Smart Peripherals" Shift
+This architecture represents a fundamental paradigm shift. Typically, the PC is viewed as the "smart" unit and the phone as a "dumb" screen. Here, we invert this relationship: the PC becomes a high-bandwidth orchestrator and visual canvas, while the compute-heavy AI tasks are offloaded to the phone (NPU) and Linux nodes (Background services). This distribution reduces thermal throttling on the Windows laptop, keeping the UI snappy—a critical factor for developer productivity.
+11.2 The "Ephemeral Staging" Model
+The concept of "flats"—spawning a server only when a file is touched and killing it shortly after—mimics "Serverless" architecture but applied to the local development loop. This allows a developer to have dozens of projects "open" in the editor but only consume system resources for the one currently being edited. This is a crucial optimization for running this complex ecosystem on limited hardware.
+11.3 AI-Driven Development (AIDD)
+The integration of mitmproxy triggers creates a new form of "Just-in-Time" UI generation. Instead of writing boilerplate code, the developer writes a request for the code (as a comment), and the ecosystem "fills it in" dynamically during the request-response cycle. This accelerates prototyping velocity significantly, moving from "Code-Compile-Run" to "Request-Generate-Refine."
+12. Security Considerations
+         * ADB Exposure: Enabling ADB over TCP/IP opens port 5555. On a public Wi-Fi network, this represents a significant security risk. The Controller must ensure this mode is only enabled when the device is connected to a trusted, private LAN or VLAN.
+         * 0.0.0.0 Binding: Binding Flask to all interfaces (0.0.0.0) exposes the development code to the entire network. Implementing a local firewall rule (via Windows Defender) to restrict access to only known MAC addresses (the Android nodes) is highly recommended.
+         * MITM Certificates: To function, the mitmproxy CA certificate must be installed on the Android devices. This compromises SSL security for other apps on the device. It is best practice to use a dedicated "Debug" browser profile or a dedicated development device for this work to avoid exposing personal data.
+13. Troubleshooting and Maintenance
+         * ADB Disconnects: Android devices may drop TCP connections during deep sleep or Wi-Fi roaming. The Controller should implement a "Watchdog" for the devices themselves, automatically re-running the connection sequence if a device disappears from the adb devices list.
+         * Port Collisions: The ephemeral port selection is race-condition prone if multiple flats start milliseconds apart. The Controller acts as a serialized queue for start commands to prevent this.
+         * Gemini Nano Availability: The window.ai API is highly experimental and its signature may change between Chrome Canary versions. The DevTools extension wrapper should abstract this API call to a single service file to facilitate easy updates.
+14. Conclusion
+The construction of this Heterogeneous Edge Cluster transforms a standard Windows workstation into a powerful, multi-node development command center. By utilizing watchdog for granular file control, adbutils for device orchestration, and mitmproxy for network-level AI injection, we create a workflow that is both highly automated and deeply integrated with modern AI capabilities. The use of Android devices as dedicated AI inference engines enables privacy-preserving intelligence without the latency or cost of cloud APIs, while the split-view Chrome interface provides a consolidated, IDE-grade visual workspace. This ecosystem not only solves the immediate "local refresh" and "device management" problems but sets the stage for a future where development environments are fully distributed, intelligent, and context-aware.
+________________
+Citations:
+42
+Works cited
+         1. Android Debug Bridge (adb) | Android Studio - Android Developers, accessed December 13, 2025, https://developer.android.com/tools/adb
+         2. How to Connect to Android with ADB over TCP? - GeeksforGeeks, accessed December 13, 2025, https://www.geeksforgeeks.org/android/how-to-connect-to-android-with-adb-over-tcp/
+         3. Automagically connect scrcpy wirelessly on windows · Issue #3003 - GitHub, accessed December 13, 2025, https://github.com/Genymobile/scrcpy/issues/3003
+         4. I can't find a way to run scrcpy wireless by simply clicking a shortcut on my pc without having to change something first. Is there a way? - Reddit, accessed December 13, 2025, https://www.reddit.com/r/scrcpy/comments/1gglf23/i_cant_find_a_way_to_run_scrcpy_wireless_by/
+         5. Issue when connecting a socket application over a port forwarded over adb - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/68631802/issue-when-connecting-a-socket-application-over-a-port-forwarded-over-adb
+         6. ADB port forwarding and reversing | by Godwin Joseph Kurinjikattu | Medium, accessed December 13, 2025, https://medium.com/@godwinjoseph.k/adb-port-forwarding-and-reversing-d2bc71835d43
+         7. flask application with watchdog observer - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/50593200/flask-application-with-watchdog-observer
+         8. Quickstart — watchdog 0.8.2 documentation - Pythonhosted.org, accessed December 13, 2025, https://pythonhosted.org/watchdog/quickstart.html
+         9. How to select random port number in Flask? - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/5085656/how-to-select-random-port-number-in-flask
+         10. Get port from flask localhost app running in a subprocess Popen process - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/54482095/get-port-from-flask-localhost-app-running-in-a-subprocess-popen-process
+         11. subprocess — Subprocess management — Python 3.14.2 documentation, accessed December 13, 2025, https://docs.python.org/3/library/subprocess.html
+         12. The subprocess Module: Wrapping Programs With Python - Real Python, accessed December 13, 2025, https://realpython.com/python-subprocess/
+         13. ADB to Launch android browser with given url - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/62244157/adb-to-launch-android-browser-with-given-url
+         14. Split View Tabs - Google Chrome Community, accessed December 13, 2025, https://support.google.com/chrome/thread/385063786/split-view-tabs?hl=en
+         15. Open two tabs side by side on Google Chrome - Super User, accessed December 13, 2025, https://superuser.com/questions/1077796/open-two-tabs-side-by-side-on-google-chrome
+         16. List of Chromium Command Line Switches - GitHub Gist, accessed December 13, 2025, https://gist.github.com/dodying/34ea4760a699b47825a766051f47d43b
+         17. First Look at Google Chrome's New Split Screen Feature - YouTube, accessed December 13, 2025, https://www.youtube.com/watch?v=yEo6-96Pv4U
+         18. Get window position & size with python - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/7142342/get-window-position-size-with-python
+         19. python win32com.client resize window - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/26616191/python-win32com-client-resize-window
+         20. Resize Chrome Application - python - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/78635305/resize-chrome-application
+         21. Control/Automate Google Chrome with AHK - AutoHotkey Community, accessed December 13, 2025, https://www.autohotkey.com/boards/viewtopic.php?t=116699
+         22. Autohotkey move chrome windows - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/66969079/autohotkey-move-chrome-windows
+         23. openatx/adbutils: pure python adb library for google adb service. - GitHub, accessed December 13, 2025, https://github.com/openatx/adbutils
+         24. adbutils - PyPI, accessed December 13, 2025, https://pypi.org/project/adbutils/
+         25. Launching a Web Browser on Android via ADB Commands - Repeato, accessed December 13, 2025, https://www.repeato.app/launching-a-web-browser-on-android-using-adb-commands/
+         26. Android ADB Open URL in a different browser other than the default - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/68180827/android-adb-open-url-in-a-different-browser-other-than-the-default
+         27. How can I open several web browser tabs using adb? - Stack Overflow, accessed December 13, 2025, https://stackoverflow.com/questions/19051290/how-can-i-open-several-web-browser-tabs-using-adb
+         28. A way to help arrange multiple scrcpy windows #4959 - GitHub, accessed December 13, 2025, https://github.com/Genymobile/scrcpy/issues/4959
+         29. I made a GUI for Scrcpy – Screencast your Android device to your PC : r/androiddev - Reddit, accessed December 13, 2025, https://www.reddit.com/r/androiddev/comments/1l72w4y/i_made_a_gui_for_scrcpy_screencast_your_android/
+         30. LLM Inference guide for Android | Google AI Edge, accessed December 13, 2025, https://ai.google.dev/edge/mediapipe/solutions/genai/llm_inference/android
+         31. Run the Gemma 2B model using MediaPipe with XNNPACK - Arm Learning Paths, accessed December 13, 2025, https://learn.arm.com/learning-paths/mobile-graphics-and-gaming/kleidiai-on-android-with-mediapipe-and-xnnpack/2-run-gemma-2b/
+         32. MLC LLM | Home, accessed December 13, 2025, https://llm.mlc.ai/
+         33. Android SDK — mlc-llm 0.1.0 documentation, accessed December 13, 2025, https://llm.mlc.ai/docs/deploy/android.html
+         34. Run GEMMA3 Locally on Termux - YouTube, accessed December 13, 2025, https://www.youtube.com/watch?v=aJAqSQo9vG8
+         35. Gemini CLI Mobile Development - Gemini API - Google AI Developers Forum, accessed December 13, 2025, https://discuss.ai.google.dev/t/gemini-cli-mobile-development/91272
+         36. REST API — mlc-llm 0.1.0 documentation, accessed December 13, 2025, https://llm.mlc.ai/docs/deploy/rest.html
+         37. Running an LLM on an Android Phone - Mostly nerdless, accessed December 13, 2025, https://mostlynerdless.de/blog/2025/11/05/running-an-llm-on-an-android-phone/
+         38. Message passing | Chrome for Developers, accessed December 13, 2025, https://developer.chrome.com/docs/extensions/develop/concepts/messaging
+         39. Native messaging - Chrome for Developers, accessed December 13, 2025, https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging
+         40. Extend DevTools | Chrome Extensions | Chrome for Developers, accessed December 13, 2025, https://developer.chrome.com/docs/extensions/how-to/devtools/extend-devtools
+         41. Get started with built-in AI | AI on Chrome, accessed December 13, 2025, https://developer.chrome.com/docs/ai/get-started
+         42. I tried "window.ai" in Chrome - Syntackle, accessed December 13, 2025, https://syntackle.com/blog/window-ai-in-chrome/
+         43. Creating scripts for mitmproxy - Bad Gateway, accessed December 13, 2025, https://lucaslegname.github.io/mitmproxy/2020/11/04/mitmproxy-scripts.html
+         44. Network: Intercept and manipulate HTTPS requests whith mitmproxy(with custom script), accessed December 13, 2025, https://medium.com/@mattew92/network-intercept-and-manipulate-https-requests-whith-mitmproxy-with-custom-script-14b8896ce114
+         45. JavaScript Injection with Selenium, Puppeteer, and Marionette in Chrome and Firefox - Intoli, accessed December 13, 2025, https://intoli.com/blog/javascript-injection/
+         46. Use scrcpy to connect to multiple smartphones - Android Enthusiasts Stack Exchange, accessed December 13, 2025, https://android.stackexchange.com/questions/234033/use-scrcpy-to-connect-to-multiple-smartphones
+         47. Use multiple phones with SCRCPY. Setup two phones with SCRCPY. - YouTube, accessed December 13, 2025, https://www.youtube.com/watch?v=8C9S4WfbJyY
+         48. Discover the Power of Gemini Nano: The On-Device AI Model running in Chrome 127+, accessed December 13, 2025, https://dev.to/codewithahsan/discover-the-power-of-gemini-nano-the-on-device-ai-model-running-in-chrome-127-e7g

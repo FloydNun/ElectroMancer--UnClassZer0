@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ElectroMancer Code Playground - UnClassZer0</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs/loader.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui;
+        background: #1e1e1e;
+        color: #ccc;
+      }
+      #container {
+        display: flex;
+        height: 100vh;
+      }
+      .panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .toolbar {
+        background: #007acc;
+        padding: 8px;
+        color: white;
+      }
+      #timeline {
+        width: 100%;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div class="panel">
+        <div class="toolbar">Original (Read-Only)</div>
+        <div id="original" style="flex: 1"></div>
+      </div>
+      <div class="panel">
+        <div class="toolbar">
+          Edited Version
+          <button onclick="saveVersion()">Save as _DV (Bundle)</button>
+        </div>
+        <div id="edited" style="flex: 1"></div>
+        <input
+          type="range"
+          id="timeline"
+          min="0"
+          max="10"
+          value="0"
+          oninput="loadVersion(this.value)"
+        />
+      </div>
+    </div>
+
+    <script>
+      require.config({
+        paths: {
+          vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs",
+        },
+      });
+      require(["vs/editor/editor.main"], function () {
+        const originalEditor = monaco.editor.create(
+          document.getElementById("original"),
+          {
+            value: "// Drop sorted chunk here or load from OUTBOX",
+            language: "python",
+            theme: "vs-dark",
+            readOnly: true,
+          },
+        );
+
+        const editedEditor = monaco.editor.create(
+          document.getElementById("edited"),
+          {
+            value: "// Edit here - changes tracked",
+            language: "python",
+            theme: "vs-dark",
+          },
+        );
+
+        window.saveVersion = () => {
+          const content = editedEditor.getValue();
+          const filename = `chunk_${Date.now()}_DV.md`; // ID-tag for sandbox
+          console.log(`Saved bundle: ${filename}`);
+          // In full Bridge this would call the virtual FS bundler
+          alert(`Saved as reusable bundle: ${filename}`);
+        };
+
+        window.loadVersion = (ver) => {
+          console.log(`Loading version ${ver}`);
+          // In full version this loads from snapshot history
+        };
+      });
+    </script>
+  </body>
+</html>

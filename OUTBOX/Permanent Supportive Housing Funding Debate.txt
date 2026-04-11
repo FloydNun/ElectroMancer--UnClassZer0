@@ -1,0 +1,263 @@
+﻿The Great Dismantling: A Systemic Analysis of the 2026 Permanent Supportive Housing Crisis, the Players, and the Battle for the American Safety Net
+Executive Preface: The Precipice of January 2026
+As of January 7, 2026, the United States social safety net stands at a historic inflection point, balancing precariously between a decades-old consensus on housing stabilization and a radical new federal paradigm centered on enforcement and mandatory treatment. The immediate catalyst for this instability is the impending expiration of American Rescue Plan Act (ARPA) funds and the chaotic fallout from the Department of Housing and Urban Development’s (HUD) attempted restructuring of the Continuum of Care (CoC) program in late 2025. This report offers an exhaustive, linear investigation into the mechanisms, players, and data driving this crisis. It traces the progression from the ideological shifts of 2024 to the legal standoffs of today, mapping the ecosystem from the highest federal officials down to rural county commissioners and private equity investors positioning themselves for the aftermath.
+The current landscape is defined by a "funding cliff" threatening to displace between 170,000 and 200,000 formerly homeless individuals.1 While a preliminary injunction in National Alliance to End Homelessness v. HUD has temporarily paused the most aggressive federal cuts, the operational reality for housing providers is one of paralyzing uncertainty. This report dissects the arguments of the "disruptors" (the Trump Administration, the Cicero Institute) and the "defenders" (the National Alliance to End Homelessness, Managed Care Organizations), identifying the middle ground where future policy may eventually settle.
+________________
+Part I: The Architectural Shift – From "Housing First" to "Treatment First"
+To understand the crisis of 2026, one must first analyze the deliberate dismantling of the "Housing First" consensus. For nearly twenty years, federal homelessness policy was guided by the principle that stable housing is a prerequisite for effective psychiatric and substance abuse treatment. This model, supported by bipartisan administrations since George W. Bush, prioritized low-barrier Permanent Supportive Housing (PSH). However, throughout 2024 and 2025, a sophisticated counter-narrative emerged, incubated in specific policy institutes and operationalized by the incoming administration.
+1.1 The Intellectual Architects: The Cicero and Manhattan Institutes
+The theoretical framework for the 2025 policy pivot was not developed within HUD, but rather within the Cicero Institute and the Manhattan Institute. These organizations successfully reframed "Housing First" not as a humanitarian standard, but as a failed bureaucratic experiment responsible for the visible disorder in American cities.
+The Cicero Institute, a nonpartisan policy organization with a focus on market-driven reforms, provided the specific legislative and rhetorical templates used by the administration. Their central argument, detailed in reports such as "Why America’s Homelessness Strategy Failed," posits that despite a doubling of PSH units since 2013, unsheltered homelessness increased by nearly 25%.3 They argue that PSH creates a "magnet effect," drawing individuals into the system or encouraging them to remain homeless to access free housing units.5
+Table 1: The Intellectual Divergence – Housing First vs. The New Paradigm
+Feature
+	The "Housing First" Consensus (2005–2024)
+	The Cicero/Manhattan Paradigm (2025–Present)
+	Core Philosophy
+	Housing is a basic right and a prerequisite for recovery.
+	Housing is a reward for compliance and sobriety.
+	Primary Metric
+	Housing retention rates (typically >80%).
+	Reduction in visible street homelessness (PIT counts).
+	Cause of Crisis
+	Lack of affordable housing supply and wage stagnation.
+	Addiction, mental illness, and "permissive" policies.
+	Role of Shelter
+	Temporary bridge to permanent housing.
+	Primary tool for managing street populations; mandatory.
+	Treatment
+	Voluntary and tenant-led (Harm Reduction).
+	Mandatory prerequisite for housing eligibility.
+	Key Citations
+	NAEH Retention Studies; HUD Family Options Study.
+	Ottawa PSH Study (Substance Use); Judge Glock’s critiques.
+	The Manhattan Institute complemented this with a sociological argument, articulated by fellows like Stephen Eide, which emphasizes "public order" over "housing rights." They argue that the unconditional nature of PSH ignores the behavioral health crisis, effectively subsidizing addiction under the guise of compassion.6 This "broken system" narrative was crucial in shifting the political window, allowing the Trump Administration to characterize existing federal spending as wasteful and enabling.
+1.2 The Legal Enabler: City of Grants Pass v. Johnson
+The policy shift required a legal mechanism to bypass the protections previously afforded to unhoused individuals under Martin v. Boise. That mechanism arrived in June 2024 with the Supreme Court’s decision in City of Grants Pass v. Johnson. By ruling that the enforcement of public camping bans did not violate the Eighth Amendment’s prohibition on cruel and unusual punishment—even when no shelter beds were available—the Court removed the primary leverage local advocates held against municipalities.8
+This ruling was transformative. It allowed the federal government to decouple funding from housing outcomes and instead link it to enforcement metrics. The administration seized upon Grants Pass not just as a permission slip for local police, but as a foundation for federal grant conditions. Under the new logic, communities that failed to enforce camping bans were viewed as derelict in their duty to maintain public order, and thus ineligible for competitive federal funds.10
+1.3 The Executive Order of July 24, 2025
+The ideological and legal currents converged on July 24, 2025, with the signing of the Executive Order titled "Ending Crime and Disorder on America's Streets." This document, which closely mirrored the Cicero Institute’s model legislation, served as the strategic blueprint for the subsequent funding cuts.
+The Executive Order issued three primary directives that would reshape the landscape:
+1. Ending "Housing First" Support: It explicitly directed HUD and HHS to "end support for 'housing first' policies that deprioritize accountability".11 This was a direct instruction to dismantle the scoring criteria in the CoC application process that had favored low-barrier programs for a decade.
+2. Mandating Treatment Participation: It instructed agencies to condition housing assistance on "active participation in treatment for substance use disorders or severe mental illness".11 This directive fundamentally alters the nature of PSH, transforming it from a tenant-landlord relationship into a custodial-patient relationship.
+3. Prioritizing Civil Commitment: The order directed the Department of Justice to encourage states to facilitate the involuntary institutionalization of those with severe mental illness, signaling a return to pre-deinstitutionalization models of care.13
+This Executive Order was not merely a statement of intent; it was the "marching order" for Secretary Scott Turner at HUD to overhaul the agency's funding mechanisms.
+________________
+Part II: The Mechanism of Disruption – The FY2025 NOFO
+The theoretical shift manifested as bureaucratic shock therapy in November 2025. The release of the Fiscal Year 2025 Continuum of Care (CoC) Notice of Funding Opportunity (NOFO) by HUD Secretary Scott Turner represented the most significant structural change to federal homelessness funding since the McKinney-Vento Act was reauthorized in 2009.
+2.1 The "30% Cap" and the Redistribution of Wealth
+The CoC program is the lifeblood of the homeless response system, distributing approximately $3.9 billion annually to local coalitions of service providers. Historically, the vast majority of these funds (often 85-90%) were used to renew existing Permanent Supportive Housing contracts. This stability allowed providers to sign long-term leases and landlords to accept high-risk tenants.
+The November 2025 NOFO introduced a radical new math: it capped the amount of CoC funding a community could use for Permanent Supportive Housing at 30% of their total award.15 The remaining funds were to be redirected toward:
+* Transitional Housing: Short-term, congregate living facilities focused on "flow" rather than stability.
+* Rapid Re-Housing (with Conditions): Time-limited subsidies contingent on employment or treatment benchmarks.
+* Law Enforcement Data Sharing: Compliance requirements that mandated providers share client data with law enforcement agencies, a condition that many providers argued violated privacy ethics and the Health Insurance Portability and Accountability Act (HIPAA).17
+2.2 The Impact Analysis: "A Sledgehammer to the Safety Net"
+The implications of this 30% cap were immediate and catastrophic. Because most CoCs were heavily over-indexed on PSH (often spending 90% of their budget on it), a reduction to 30% meant that two-thirds of existing programs would lose funding.
+* Displacement Projections: National estimates suggested that between 170,000 and 200,000 individuals currently living in PSH would lose their rental subsidies.1
+* Vulnerable Populations: Data from LeadingAge highlighted that 40% of PSH residents are older adults (age 55+), a demographic for whom "transitional housing" and "workforce training" are often inappropriate or physically impossible.15
+* State-Level Fallout:
+   * California: State officials estimated a loss of $250-$300 million annually, threatening housing for 32,000 people. Santa Clara County alone identified 1,000 households at immediate risk of eviction.20
+   * Ohio: The Coalition on Homelessness and Housing in Ohio (COHHIO) projected an $80 million cut, jeopardizing housing for 10,000 households. The Cuyahoga County provider EDEN estimated a reduction in service capacity from 2,700 households to fewer than 600.16
+   * Texas: In Denton County, $3.4 million in CoC funds used by mental health providers were placed at risk, threatening the stability of veterans and those with severe behavioral health diagnoses.23
+The "linear investigation" of these cuts reveals a deliberate strategy: by rendering PSH financially unviable, the administration sought to force the market to pivot toward the transitional and treatment-based models favored by their ideological partners.
+________________
+Part III: The Defenders – Data, Litigation, and the "Resistance"
+The response to the November NOFO was a coordinated mobilization of the "housing industrial complex"—a coalition of non-profits, municipal governments, healthcare systems, and legal advocates. Their defense relied on three pillars: economic data, legal challenges, and public health outcomes.
+3.1 The Economic Argument: The Cost of Chaos
+The primary argument leveraged by the defenders was not moral, but fiscal. Advocates argued that PSH is the most cost-effective intervention for chronic homelessness because it offsets massive costs in the emergency healthcare and criminal justice systems.
+Key Data Points of the Defense:
+* The "Offset" Ratio: The National Alliance to End Homelessness (NAEH) cited data showing that for every $1 spent on Housing First programs, the public sector saves approximately $1.44 in reduced emergency services. A study in Charlotte-Mecklenburg found a 49.5% reduction in public system costs when individuals transitioned to PSH.24
+* Healthcare Utilization: The defense leaned heavily on the fact that unhoused individuals are "super-utilizers" of emergency rooms. By providing stability, PSH reduces inpatient hospitalizations and emergency psychiatric holds. This argument was particularly potent with Managed Care Organizations (MCOs), who became unlikely allies in the fight to preserve PSH (detailed in Part VII).26
+* Recidivism: Data indicates that housing stability significantly lowers interaction with the criminal justice system. By dismantling PSH, the administration was effectively shifting costs from HUD to the Department of Justice and local jails—a "cost shift" rather than a cost savings.27
+3.2 The Legal Counterstrike: NAEH v. HUD
+The resistance culminated in federal court. On December 1, 2025, a broad coalition of plaintiffs—including the National Alliance to End Homelessness, the State of Washington, and major cities like San Francisco and Nashville—filed suit in the U.S. District Court for the District of Rhode Island.29
+The Legal Arguments in NAEH v. HUD:
+1. Arbitrary and Capricious (APA Violation): Plaintiffs argued that HUD’s rescission of the previously issued two-year NOFO and its replacement with the FY2025 NOFO violated the Administrative Procedure Act. The agency failed to provide a reasoned explanation for the sudden policy reversal and did not undergo the required notice-and-comment rulemaking.1
+2. Reliance Interests: The lawsuit emphasized that communities had built their entire infrastructure based on HUD’s prior commitments. To pull the rug out mid-cycle violated the "reliance interests" protected under federal administrative law.30
+3. Statutory Violation: The complaint alleged that the 30% cap on PSH violated the McKinney-Vento Homeless Assistance Act, which establishes a statutory preference for permanent housing solutions. By capping PSH, HUD was acting ultra vires (beyond its legal authority).2
+3.3 The Preliminary Injunction
+On December 19, 2025, Judge Mary S. McElroy issued a preliminary injunction blocking the implementation of the new NOFO. In her ruling, Judge McElroy was highly critical of HUD’s process, describing the rescission of the previous NOFO as an "apparent effort to evade judicial oversight" and noting that the plaintiffs had demonstrated a strong likelihood of success on the merits regarding the statutory violations.31
+This injunction forced HUD to rescind the November NOFO on December 23, 2025. However, while this was a legal victory, it created a new operational crisis: the "limbo" of January 2026.
+________________
+Part IV: The Players – "Highest of the High" and "Three Levels Out"
+To fully understand the dynamics of this conflict, we must map the ecosystem of influence, from the White House down to local boardrooms.
+4.1 Level 1: The "Highest of the High" (Federal & Executive)
+* President Donald Trump: The ultimate driver of the policy. His rhetorical focus on "ending disorder" and "reclaiming streets" provided the political mandate for the shift. His July Executive Order is the foundational document of the crisis.11
+* HUD Secretary Scott Turner: The executor of the policy. Turner, a former NFL player and Trump loyalist, has framed the issue as one of "accountability." His speeches emphasize that "compassion does not mean indefinitely subsidizing housing without accountability," positioning himself against the "homelessness industrial complex".33
+* Vice President JD Vance: A fierce critic of "housing first," Vance has used his influence to steer Ohio and national policy toward enforcement-based models. His departure from the Senate opened the door for his successor, Jon Husted, to continue this ideological lineage.35
+4.2 Level 2: The Policy Architects & Congressional Leadership
+* The Cicero Institute: Under the leadership of figures like Devon Kurtz, Cicero has drafted the model legislation used in states like Missouri and Texas, which served as the template for the federal Executive Order. They are the "brains" behind the operation, providing the data points on PSH failure.4
+* Senator Jon Husted (R-OH): Newly appointed to the Senate (Jan 2026) to replace Vance, Husted represents the pragmatic yet conservative wing. While he supports state-level efficiency, his alignment with the administration suggests he will support legislative efforts to codify the PSH cuts.35
+* Senator Bernie Moreno (R-OH): A populist firebrand, Moreno has targeted institutional investors in housing but also supports the "ROAD to Housing Act" supply-side reforms. His role is critical in bridging the gap between populist anger at housing costs and the administration’s cuts to safety nets.39
+* Rep. Brad Wenstrup (R-OH): A key ally in the House, Wenstrup has co-sponsored legislation like the "Housing PLUS Act," which seeks to legislatively mandate the treatment requirements that HUD attempted to impose via regulation.41
+4.3 Level 3: "Three Levels Out" – The Private Sector, MCOs, and Local Operators
+* Managed Care Organizations (MCOs):
+   * CareSource & Aetna: These insurers are deeply embedded in the "Housing as Healthcare" model. In Ohio, they fund programs like "Healthy Beginnings at Home" because their internal actuarial data shows it saves money. They are currently lobbying against the instability caused by HUD, as it threatens their investment in social determinants of health.26
+   * Molina Healthcare: Similarly involved in Ohio’s Medicaid waiver landscape, Molina uses housing stability as a metric for its "Next Generation MyCare" contracts.45
+* The Privatized "Solution" Providers:
+   * Pallet Shelter: A Public Benefit Corporation that manufactures rapid-assembly temporary shelters. As HUD shifts funds to "transitional" housing, Pallet stands to gain millions in contracts. They are backed by impact investors like DBL Partners and the Citi Impact Fund.46
+   * CoreCivic & GEO Group: The private prison giants. Their 2025 shareholder calls explicitly linked future revenue growth to the "civil commitment" and "immigration detention" expansion mandated by the Executive Order. They are positioning themselves to run the involuntary treatment centers that the new policy incentivizes.48
+* Local Stakeholders (Ground Level):
+   * Adena Health System (Ross County, OH): A rural health system that has identified housing as a top community need. Their 2025 Community Health Needs Assessment (CHNA) directly links the lack of affordable housing to the region’s opioid and suicide crisis.50
+   * Mayor Luke Feeney (Chillicothe, OH): Caught in the middle. He relies on federal grants to support local police and housing initiatives, but the federal cuts threaten the very non-profits (RCCAC) that keep his city’s homeless population managed.51
+________________
+Part V: The Data War – "Magnetism" vs. "Stabilization"
+The conflict is driven by two incompatible datasets. The administration utilizes "system-level" data to prove failure, while advocates use "individual-level" data to prove success.
+5.1 The Administration’s Data: The "Magnet Effect"
+The Cicero Institute and HUD rely on Point-in-Time (PIT) counts and academic critiques to justify their stance.
+* Rising Numbers: They cite that despite massive investment in PSH, street homelessness has risen. For example, California spent $24 billion on homelessness over five years, yet the unsheltered population grew. This is used as proof that PSH is a "failed experiment".3
+* The "Magnet" Theory: They argue that offering unconditional housing attracts people from outside the system. Data from San Francisco and Phoenix is often cited to show that PSH units fill up, but the street population does not decrease, suggesting an induced demand.3
+* Addiction Correlation: Citing studies from Ottawa, they argue that PSH residents often have higher rates of substance use and mortality than those in treatment-contingent programs, because the "Housing First" model does not mandate sobriety.3
+5.2 The Resistance’s Data: The "Stabilization" Reality
+Advocates argue that the administration’s data confuses market failure with program failure.
+* The Benioff Study (2025): The largest representative study of the homeless population in decades (UCSF Benioff Institute) debunked the "addiction" narrative. It found that less than 50% of the homeless population has a severe substance use disorder, and a significant portion are seniors (age 50+) whose primary barrier is economic, not behavioral.53
+* Cost Efficiency: NAEH data shows that PSH creates a "health dividend." For chronically homeless individuals, the cost of PSH is roughly $12,800 per year, compared to over $35,000 per year in jail, shelter, and hospital costs if they remain on the street.25
+* Retention Success: The hallmark data point for Housing First is retention. Across multiple studies, 80-90% of PSH residents remain housed after one year. Advocates argue that throwing these people back into transitional housing (which has much lower success rates) effectively plans for their return to homelessness.27
+________________
+Part VI: Regional Case Study – Ohio as the Ground Zero
+To illustrate the real-world impact of these high-level policy fights, we examine Ohio, a state that serves as a microcosm of the national conflict.
+6.1 Ross County and the "Deaths of Despair"
+Ross County (Chillicothe) sits at the intersection of the opioid crisis and the housing crisis.
+* The Funding Cliff: The Ross County Community Action Commission (RCCAC) relies on grants that are set to expire in December 2026. A $350,000 grant for emergency shelter operations is now in jeopardy due to the HUD freeze.52
+* Health Impact: Adena Health System’s data shows a direct correlation between housing instability and the county’s overdose death rate. The region’s "social vulnerability index" is among the highest in the state. If PSH funds are cut, Adena projects a spike in emergency room visits for overdose and exposure, costs that the hospital (and Medicaid) will have to absorb.50
+6.2 The "Middle Ground" Model: Healthy Beginnings at Home
+Amidst the polarization, Ohio has developed a model that bridges the gap: Healthy Beginnings at Home (HBAH).
+* The Model: HBAH provides rental assistance to pregnant women to reduce infant mortality. It is "Housing First" in practice but framed as "Pro-Life" and "Pro-Family" policy.
+* The Coalition: It is supported by conservative Governor Mike DeWine, MCOs like CareSource, and housing advocates. The data is irrefutable: babies born to housed mothers spend less time in the NICU, saving Medicaid millions.26
+* The Threat: HBAH relies on a braiding of state and federal funds. The HUD disruption threatens the federal matching dollars, potentially stalling the expansion of this successful bipartisan model into other counties.56
+6.3 The Medicaid 1115 Waiver Clash
+On January 1, 2026, Ohio implemented new Medicaid work and engagement requirements under a Section 1115 waiver.57 This creates a dangerous feedback loop with the HUD cuts:
+1. HUD cuts housing support, making it harder for individuals to maintain stability.
+2. Without stable housing, individuals struggle to meet the new Medicaid work/engagement requirements.
+3. They lose Medicaid coverage, cutting off access to the mental health/addiction treatment the administration claims to prioritize.
+4. The "spiral" accelerates, leading to increased incarceration and mortality.
+________________
+Part VII: The "Three Levels Out" – Private Equity & The New Economy of Homelessness
+A critical, often overlooked dimension of this crisis is the commodification of the response. As public funding for non-profit PSH recedes, private capital is rushing in to fill the void with profitable alternatives.
+7.1 The Transitional Shelter Industrial Complex
+Companies like Pallet Shelter are uniquely positioned to profit from the administration’s focus on "clearing encampments."
+* The Product: Pallet sells "interim" shelter units—small, rapidly deployable cabins. They align perfectly with the Grants Pass enforcement model: cities buy these units to legally justify clearing streets.
+* The Funding: Pallet has raised significant capital from impact investors (Citi Impact Fund). As HUD redirects funds from "permanent" to "transitional," municipalities are using these grants to purchase Pallet villages. This represents a transfer of wealth from local landlords and non-profits to a centralized manufacturing corporation.46
+7.2 The Detention Industry
+The most dystopian "third order" effect is the involvement of private prison firms.
+* CoreCivic and GEO Group: These corporations view the "civil commitment" directive as a growth sector. With immigration detention expanding and the new push to institutionalize the mentally ill, these firms are pitching their facilities as "treatment centers."
+* The Market Logic: A PSH unit is a low-margin asset managed by a non-profit. A civil commitment bed is a high-margin asset managed by a corporation. The policy shift from Housing First to Treatment First effectively opens the homelessness market to the private prison industry.48
+________________
+Part VIII: Future Deadlines and Legislative Horizons
+The immediate future is defined by a series of critical deadlines that will determine the fate of the safety net.
+8.1 The "Limbo" of Q1 2026
+* January-February 2026: Thousands of HUD CoC grants are expiring. With the NOFO rescinded, there is no automatic renewal mechanism. Housing providers are currently operating on reserves or lines of credit. If Congress or HUD does not issue a "Continuing Resolution" for these specific grants within weeks, mass eviction notices will begin.1
+* Litigation Timeline: The NAEH v. HUD case is moving toward a summary judgment phase. The administration is likely to appeal the preliminary injunction, potentially bringing the case to the Supreme Court—a court that has already signaled its stance in Grants Pass.58
+8.2 The Legislative Middle Ground: The ROAD to Housing Act
+In the Senate, the ROAD to Housing Act of 2025 (sponsored by Senators Scott and Warren) offers a potential off-ramp.
+* The Compromise: It focuses on increasing housing supply (deregulation, Opportunity Zones) rather than just subsidies. It appeals to Republicans (market-based) and Democrats (more housing).
+* Status: Passed by committee in July 2025, it is currently attached to the NDAA. If passed, it could provide new funding streams that bypass the paralyzed CoC program.59
+8.3 The Legislative Aggressor: The Housing PLUS Act
+In the House, the Housing PLUS Act (Rep. Barr/Wenstrup) seeks to codify the "Treatment First" model.
+* The Goal: Legally redefine "high barrier" housing as eligible for federal funds, effectively overruling the NAEH v. HUD arguments by changing the underlying statute.
+* Momentum: With a Republican trifecta (potentially), this bill has a high chance of passage in 2026, which would permanently end the Housing First era.42
+________________
+Conclusions
+The "Permanent Supportive Housing" crisis of 2026 is a manufactured instability, the result of a successful ideological campaign to redefine the causes of homelessness from "market failure" to "personal failure."
+1. The "Cliff" is Real: Without immediate congressional intervention to renew expiring grants, the U.S. will see a historic spike in unsheltered homelessness in Q2 2026, disproportionately affecting seniors and veterans.
+2. The Middle Ground is "Health": The only politically viable defense for housing support is to reframe it entirely as "healthcare." The success of Ohio’s "Healthy Beginnings at Home" and the lobbying power of Aetna/CareSource suggest that the future of housing policy may migrate from HUD (housing agency) to HHS (health agency), managed by insurance companies rather than housing authorities.
+3. Privatization is the Endgame: The chaos in the public sector is creating a lucrative market for the private sector. The shift is away from community-based housing and toward industrialized management of the poor—whether in Pallet villages or CoreCivic treatment centers.
+Table 2: Key Stakeholders & Their Strategic Positions (Jan 2026)
+Stakeholder
+	Role
+	Stance on PSH Cuts
+	Strategic Goal
+	HUD (Sec. Turner)
+	Policy Executor
+	Aggressive
+	Dismantle PSH; shift to "Accountability" model.
+	Cicero Institute
+	Ideological Architect
+	Aggressive
+	Push civil commitment; reduce "magnet" effect.
+	NAEH (National Alliance)
+	Defender
+	Defensive
+	Preserve Housing First via litigation (NAEH v. HUD).
+	Aetna / CareSource
+	"Health" Middle Ground
+	Defensive
+	Protect housing investments to lower medical costs.
+	Pallet Shelter
+	Private Sector Beneficiary
+	Opportunistic
+	Capture "Transitional Housing" market share.
+	CoreCivic / GEO
+	Private Sector Beneficiary
+	Opportunistic
+	Expand "Civil Commitment" detention contracts.
+	Sen. Jon Husted (OH)
+	Legislative Enabler
+	Supportive
+	Align with admin; support "Housing PLUS" legislation.
+	Adena Health System
+	Local "Ground Zero"
+	Desperate
+	Prevent collapse of local safety net to save ER capacity.
+	The prognosis for 2026 is volatile. The battle lines are drawn not just in courtrooms, but in hospital boardrooms and private equity prospectuses. The "Housing First" consensus is dead; what replaces it will likely be a hybrid system of healthcare-subsidized stability for the "deserving" few, and privatized, enforcement-heavy containment for the many.
+Works cited
+1. New Federal Mandates Will Push 170000 Back Into Homelessness - Housing Forward, accessed January 7, 2026, https://www.housingforward.org/news/new-federal-mandates-will-push-170000-back-homelessness
+2. Welch Joins 41 Senate Colleagues in Urging Trump's HUD to Immediately Halt Plans to Upend Key Homelessness Program, accessed January 7, 2026, https://www.welch.senate.gov/welch-joins-41-senate-colleagues-in-urging-trumps-hud-to-immediately-halt-plans-to-upend-key-homelessness-program/
+3. Housing First is a Failure - Cicero Institute, accessed January 7, 2026, https://ciceroinstitute.org/research/housing-first-is-a-failure/
+4. Why America's Homelessness Strategy Failed and How to Fix It | Cicero Institute, accessed January 7, 2026, https://ciceroinstitute.org/research/why-americas-homelessness-strategy-failed-and-how-to-fix-it/
+5. Homelessness | Pros, Cons, Debate, Arguments, Housing First policies, & Shelters, accessed January 7, 2026, https://www.britannica.com/procon/homelessness-debate
+6. Why We Must Fight for Housing First - Shelterforce, accessed January 7, 2026, https://shelterforce.org/2025/11/26/why-we-must-fight-for-housing-first/
+7. Housing First and Homelessness: The Rhetoric and the Reality | Manhattan Institute, accessed January 7, 2026, https://media4.manhattan-institute.org/sites/default/files/housing-first-and-homelessness-SE.pdf
+8. City of Grants Pass v. Johnson | 603 U.S. ___ (2024) | Justia U.S. Supreme Court Center, accessed January 7, 2026, https://supreme.justia.com/cases/federal/us/603/23-175/
+9. Camping Revisited: U.S. Supreme Court Changes the Landscape of Penalizing Public Sleeping - MRSC, accessed January 7, 2026, https://mrsc.org/stay-informed/mrsc-insight/july-2024/grants-pass-v-johnson
+10. FY2025 CoC Program Competition Application Information - National Alliance to End Homelessness, accessed January 7, 2026, https://endhomelessness.org/wp-content/uploads/2025/11/FY2025-CoC-Program-NOFO-Full-Analysis.pdf
+11. President Trump's Executive Order on Homelessness: A Shift in Federal Policy, accessed January 7, 2026, https://bipartisanpolicy.org/article/president-trumps-executive-order-on-homelessness-a-shift-in-federal-policy/
+12. Executive Order Regarding Homelessness - KCRHA, accessed January 7, 2026, https://kcrha.org/news-executive-order-regarding-homelessness/
+13. Ending Crime and Disorder on America's Streets - Federal Register, accessed January 7, 2026, https://www.federalregister.gov/documents/2025/07/29/2025-14391/ending-crime-and-disorder-on-americas-streets
+14. State Actions in Response to the Federal Homelessness Executive Order — Ohio - Cicero Institute, accessed January 7, 2026, https://ciceroinstitute.org/wp-content/uploads/2025/09/Ohio-State-Homelessness-EO-Memo.pdf
+15. HUD Policy Change Shifts Homelessness Funding From Permanent, Proven Solutions, accessed January 7, 2026, https://leadingage.org/hud-policy-change-shifts-homelessness-funding-from-permanent-proven-solutions/
+16. CoC Program Funding at Risk - COHHIO, accessed January 7, 2026, https://cohhio.org/coc-program-funding-at-risk/
+17. Homelessness Executive Order: fact sheet - Public Rights Project, accessed January 7, 2026, https://www.publicrightsproject.org/homelessness-executive-order-fact-sheet/
+18. New Executive Order Further Threatens Individuals Who Are Unsheltered and in Crisis, accessed January 7, 2026, https://nn4youth.org/2025/08/11/new-executive-order-further-threatens-individuals-who-are-unsheltered-and-in-crisis/
+19. National Alliance to End Homelessness Slams HUD's Reckless Reallocation of Homelessness Resources, accessed January 7, 2026, https://endhomelessness.org/media/national-alliance-to-end-homelessness-slams-huds-reckless-reallocation-of-homelessness-resources/
+20. Changes to Federal Homelessness Funding Could Put More than 32000 People in California at Risk of Losing Their Homes, accessed January 7, 2026, https://ternercenter.berkeley.edu/blog/changes-to-federal-homelessness-funding-could-undo-years-of-progress-in-california/
+21. California braces for 'devastating' expected cuts to federal homeless housing funds, accessed January 7, 2026, https://calmatters.org/housing/homelessness/2025/10/ca-federal-homeless-housing-cuts/
+22. Federal changes could significantly reduce permanent housing for homeless people in Cuyahoga County - WYSO, accessed January 7, 2026, https://www.wyso.org/2025-12-01/federal-changes-could-significantly-reduce-permanent-housing-for-homeless-people-in-cuyahoga-county
+23. Trump administration’s new approach to homelessness puts Denton County housing resources at risk, accessed January 7, 2026, https://www.keranews.org/news/2026-01-06/trump-administrations-new-approach-to-homelessness-puts-denton-county-housing-resources-at-risk
+24. What Would it Cost? - Mecklenburg County - Housing & Homelessness Dashboard, accessed January 7, 2026, https://mecklenburghousingdata.org/frontpage-article/what-would-it-cost/
+25. homeless and housing alliance annual report, accessed January 7, 2026, https://www.thehomelessplan.org/pdf/2025/HHAreport.pdf
+26. CareSource Receives National Award for Philanthropy, accessed January 7, 2026, https://www.caresource.com/newsroom/press-releases/caresource-receives-national-award-for-philanthropy/
+27. The Truth About Housing First - National Alliance to End Homelessness, accessed January 7, 2026, https://endhomelessness.org/blog/the-truth-about-housing-first/
+28. Johnson v. Grants Pass: The Future of Criminalization of Homelessness, accessed January 7, 2026, https://www.thn.org/2024/04/25/johnson-v-grants-pass-the-future-of-criminalization-of-homelessness/
+29. National Alliance to End Homelessness v. HUD - Public Rights Project Legal Cases, accessed January 7, 2026, https://www.publicrightsproject.org/what-we-do/legal-advocacy/national-alliance-to-end-homelessness-v-hud-dec-2025/
+30. National Alliance to End Homelessness v. HUD: fact sheet - Public Rights Project, accessed January 7, 2026, https://www.publicrightsproject.org/naeh-v-hud-fact-sheet/
+31. Federal Court Blocks Trump Administration Attempts to De-Fund Homelessness Solutions, accessed January 7, 2026, https://news.santaclaracounty.gov/federal-court-blocks-trump-administration-attempts-de-fund-homelessness-solutions
+32. Federal Update: Government Reopens, but Major Housing Risks Remain, accessed January 7, 2026, https://www.csb.org/news/newsroom/federal-government-shutdown-csb-response-commitment/
+33. HUD Secretary Scott Turner Applauds President Trump's Action on Homelessness, accessed January 7, 2026, https://www.hud.gov/news/hud-no-25-109
+34. News | HUD.gov / U.S. Department of Housing and Urban Development (HUD), accessed January 7, 2026, https://www.hud.gov/news
+35. Husted files for 2026 Senate race, launching aggressive statewide re-election push - Fox News, accessed January 7, 2026, https://www.foxnews.com/politics/husted-files-2026-senate-race-launching-aggressive-statewide-re-election-push
+36. Who is Jon Husted? From Dayton-area start to national stage as U.S. Senator, accessed January 7, 2026, https://www.daytondailynews.com/local/who-is-recently-appointed-senator-jon-husted-from-dayton-area-start-to-national-stage/SCPCSWT5QRCNHJH7A4YTMRENKY/
+37. Common Deficiencies in Homelessness Program Oversight Across Five U.S. Jurisdictions - Cicero Institute, accessed January 7, 2026, https://ciceroinstitute.org/wp-content/uploads/2025/06/Common-Deficiencies-in-Homelessness-Programs-6-24-2025.pdf
+38. DeWine appoints Ohio's Lt. Gov. Husted to succeed VP-elect Vance in the US Senate, accessed January 7, 2026, https://www.statenews.org/government-politics/2025-01-17/dewine-to-appoint-ohios-lt-gov-husted-to-succeed-vp-elect-vance-in-the-us-senate
+39. OHIO, accessed January 7, 2026, https://oh.onair.cc/
+40. Gavin Newsom joins Trump in blaming big investors for housing crisis - CalMatters, accessed January 7, 2026, https://calmatters.org/housing/2026/01/newsom-private-equity-housing/
+41. Congress Homelessness and Housing First Budget and, accessed January 7, 2026, https://nlihc.org/sites/default/files/Memo_11723.pdf
+42. RSC Blueprint to Save America - Kevin Hern - House.gov, accessed January 7, 2026, https://hern.house.gov/uploadedfiles/rsc_blueprint_to_save_america.pdf
+43. Agency Information - ACL.gov, accessed January 7, 2026, https://acl.gov/sites/default/files/programs/2022-08/FY19%20Public.xlsx
+44. S.Hrg. 115-438 — NOMINATION OF ALEX MICHAEL AZAR II - Congress.gov, accessed January 7, 2026, https://www.congress.gov/event/115th-congress/senate-event/LC62621/text
+45. Ohio Awards Four MyCare Dual Eligible Contracts To Start In 2026, Two Incumbents Are Out, accessed January 7, 2026, https://openminds.com/market-intelligence/news/ohio-awards-four-mycare-dual-eligible-contracts-to-start-in-2026-two-incumbents-are-out/
+46. second chance employer Archives - Pallet Shelter, accessed January 7, 2026, https://palletshelter.com/blog/tag/second-chance-employer/
+47. Pallet Raises $15 Million to Scale Rapid-Response Shelter Villages to Address Homelessness Crisis - EIN Presswire, accessed January 7, 2026, https://www.einpresswire.com/article/565604950/pallet-raises-15-million-to-scale-rapid-response-shelter-villages-to-address-homelessness-crisis
+48. Trump's budget bill benefits private immigration detention companies that donated to Trump, accessed January 7, 2026, https://www.citizensforethics.org/reports-investigations/crew-investigations/trumps-budget-bill-benefits-private-immigration-detention-companies-that-donated-to-trump/
+49. GeoGroup - Community Oriented Correctional Health Services, accessed January 7, 2026, https://cochs.org/tag/geogroup/
+50. December 2025 - Adena Health, accessed January 7, 2026, https://www.adena.org/docs/default-source/community-health/6481_chna-ross-county_2025.pdf?sfvrsn=50a46bf3_1
+51. News | Chillicothe Ross Chamber of Commerce, accessed January 7, 2026, https://members.chillicotheohio.com/news
+52. MEETING 24 VOLUME 26 The Ross County Board of Commissioners met on this day, June 12, 2023, in regular session. Comm, accessed January 7, 2026, https://www.rosscountyohio.gov/commissioners/docs/Minutes/Meeting%2024;%20June%2012,%202023.pdf
+53. New 2025 Study Finds The Silent Majority Of Homeless People Are Not Drug Addicts, accessed January 7, 2026, https://invisiblepeople.tv/new-2025-study-finds-the-silent-majority-of-homeless-people-are-not-drug-addicts/
+54. Study Challenges Stereotypes, Finding Just 37% of California's Homeless Population Are Regular Drug Users - Davis Vanguard, accessed January 7, 2026, https://davisvanguard.org/2025/03/study-challenges-stereotypes-finding-just-37-of-californias-homeless-population-are-regular-drug-users/
+55. Healthy Beginnings at Home | Housing Stability for Families - COHHIO, accessed January 7, 2026, https://cohhio.org/provider-resources/programs/healthy-beginnings-at-home/
+56. Improving States' Infant and Family Health Equity Through Equitable Housing Policies, accessed January 7, 2026, https://www.ncfr.org/policy/research-and-policy-briefs/improving-states-infant-family-health-equity-through-equitable-housing-policies
+57. Ohio Medicaid 1115 Waiver Proposal | PDF - Scribd, accessed January 7, 2026, https://www.scribd.com/document/833981445/Ohio-Department-of-Medicaid-Demonstration-Waiver-Application
+58. State of California v. Trump - Public Rights Project Legal Cases, accessed January 7, 2026, https://www.publicrightsproject.org/what-we-do/legal-advocacy/state-of-california-v-trump/
+59. What's in the ROAD to Housing Act of 2025? - Bipartisan Policy Center, accessed January 7, 2026, https://bipartisanpolicy.org/explainer/whats-in-the-road-to-housing-act-of-2025/
+60. U.S. Senate Committee Advances Bipartisan Housing Bill - Greater Ohio Policy Center, accessed January 7, 2026, https://www.greaterohio.org/blog/2025/7/30/federal-pattern-book-legislation-introduced-in-us-senate
+61. Mike Flood | Congress.gov, accessed January 7, 2026, https://www.congress.gov/member/mike-flood/F000474

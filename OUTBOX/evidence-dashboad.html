@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>C3 Evidence Dashboard</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+  
+  /* Sidebar for Exporting */
+  #sidebar { width: 300px; background: #1e1e1e; border-right: 2px solid #333; display: flex; flex-direction: column; padding: 15px; }
+  #export-list { flex-grow: 1; background: #000; color: #0f0; border: 1px solid #444; padding: 10px; font-family: monospace; font-size: 11px; overflow-y: auto; white-space: pre-wrap; margin-top: 10px; }
+  
+  /* Main Content Area */
+  #main { flex-grow: 1; display: flex; flex-direction: column; }
+  #header { padding: 15px; background: #252525; display: flex; gap: 15px; align-items: center; border-bottom: 2px solid #333; }
+  
+  /* Grid Layout */
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px; overflow-y: auto; }
+  .card { background: #2a2a2a; border: 1px solid #444; border-radius: 4px; overflow: hidden; position: relative; cursor: pointer; transition: 0.2s; }
+  .card:hover { border-color: #007bff; transform: translateY(-2px); }
+  .card.flagged { border: 2px solid #ff4444; background: #3d1a1a; }
+  .thumb-wrap { height: 120px; background: #000; display: flex; align-items: center; justify-content: center; }
+  .card img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .card-label { padding: 8px; font-size: 10px; word-break: break-all; color: #bbb; }
+  
+  /* Buttons & Search */
+  input[type="text"] { background: #333; border: 1px solid #555; color: #fff; padding: 8px; border-radius: 4px; flex-grow: 1; }
+  .btn { padding: 8px 15px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; }
+  .btn-primary { background: #007bff; color: white; }
+  .flag-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #fff; border: 1px solid #fff; width: 24px; height: 24px; border-radius: 50%; }
+  
+  /* Inspector Overlay */
+  #inspector { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; }
+  #inspector img { max-width: 95%; max-height: 95%; box-shadow: 0 0 20px #000; border: 1px solid #555; }
+  #close-inspector { position: fixed; top: 20px; right: 20px; font-size: 30px; color: white; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h3>FLAGGED EVIDENCE</h3>
+  <small>Filenames for legal study:</small>
+  <div id="export-list">No images flagged yet.</div>
+  <button class="btn btn-primary" style="margin-top:10px" onclick="copyList()">Copy List to Clipboard</button>
+</div>
+
+<div id="main">
+  <div id="header">
+    <input type="file" id="loader" multiple accept="image/*" style="display:none">
+    <button class="btn btn-primary" onclick="document.getElementById('loader').click()">CHOOSE IMAGES</button>
+    <input type="text" id="search" placeholder="Filter by keyword (e.g. 'Messages', 'Cash App', 'Settings')...">
+    <div id="status">0 Files</div>
+  </div>
+  
+  <div id="grid"></div>
+</div>
+
+<div id="inspector" onclick="this.style.display='none'">
+  <span id="close-inspector">&times;</span>
+  <img id="inspect-img">
+</div>
+
+<script>
+  let allFiles = [];
+  let flagged = new Set();
+
+  const loader = document.getElementById('loader');
+  const grid = document.getElementById('grid');
+  const search = document.getElementById('search');
+  const exportBox = document.getElementById('export-list');
+
+  loader.onchange = (e) => {
+    const files = Array.from(e.target.files);
+    allFiles = files.map(f => ({
+      name: f.name,
+      url: URL.createObjectURL(f)
+    })).sort((a,b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
+    
+    document.getElementById('status').innerText = `${allFiles.length} Files`;
+    render();
+  };
+
+  search.oninput = render;
+
+  function render() {
+    grid.innerHTML = '';
+    const query = search.value.toLowerCase();
+    
+    allFiles.forEach(file => {
+      if (file.name.toLowerCase().includes(query)) {
+        const card = document.createElement('div');
+        card.className = `card ${flagged.has(file.name) ? 'flagged' : ''}`;
+        card.onclick = () => {
+          document.getElementById('inspect-img').src = file.url;
+          document.getElementById('inspector').style.display = 'flex';
+        };
+
+        card.innerHTML = `
+          <div class="thumb-wrap"><img src="${file.url}"></div>
+          <button class="flag-btn" onclick="toggleFlag(event, '${file.name}')">${flagged.has(file.name) ? '★' : '☆'}</button>
+          <div class="card-label">${file.name}</div>
+        `;
+        grid.appendChild(card);
+      }
+    });
+  }
+
+  function toggleFlag(e, name) {
+    e.stopPropagation();
+    if (flagged.has(name)) flagged.delete(name);
+    else flagged.add(name);
+    
+    updateExport();
+    render();
+  }
+
+  function updateExport() {
+    if (flagged.size === 0) {
+      exportBox.innerText = "No images flagged yet.";
+      return;
+    }
+    exportBox.innerText = Array.from(flagged).join('\n');
+  }
+
+  function copyList() {
+    navigator.clipboard.writeText(exportBox.innerText);
+    alert("Copied list of flagged evidence to clipboard.");
+  }
+</script>
+</body>
+</html>

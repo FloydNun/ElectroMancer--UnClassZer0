@@ -1,0 +1,62 @@
+graph TD
+    %% CLASSES FOR STYLING
+    classDef chrome fill:#e6f4ea,stroke:#34a853,stroke-width:2px,color:black;
+    classDef edge fill:#fce8e6,stroke:#ea4335,stroke-width:2px,color:black;
+    classDef cloud fill:#e8f0fe,stroke:#4285f4,stroke-width:2px,color:black;
+    classDef nervous fill:#fff8e1,stroke:#fbbc04,stroke-width:2px,stroke-dasharray: 5 5,color:black;
+
+    %% ZONE 1: THE INTERFACE (CHROME)
+    subgraph User_Workstation
+        direction TB
+        User((👤 User))
+        
+        subgraph Chrome_Browser
+            Ext_SidePanel:::chrome
+            Ext_Worker:::chrome
+            Nano["🧠 Gemini Nano\n(Local AI / Affect Analysis)"]:::chrome
+        end
+        
+        SSHTunnel
+    end
+
+    %% ZONE 2: THE BODY (EDGE CLUSTER)
+    subgraph Pi_Cluster
+        direction TB
+        Gadget_Net:::edge
+        Pi_Agent:::edge
+        Hardware:::edge
+    end
+
+    %% ZONE 3: THE BRAIN (GOOGLE CLOUD)
+    subgraph Cloud_Backend [☁️ Google Cloud Platform]
+        direction TB
+        IDX:::cloud
+        Vertex:::cloud
+        CloudBuild:::cloud
+    end
+
+    %% THE NERVOUS SYSTEM (PUBSUB)
+    PubSub{{"⚡ Pub/Sub\n(The Nervous System)"}}:::nervous
+
+    %% CONNECTIONS
+    User -->|Browses / Smiles| Ext_SidePanel
+    Ext_SidePanel -->|Sends Page Content| Nano
+    Nano -->|1. Sentiment Score| Ext_SidePanel
+    
+    %% The Bridge to Hardware
+    Ext_Worker -->|2. Command: 'Happy Mode'| PubSub
+    PubSub -->|gRPC Pull| Pi_Agent
+    Pi_Agent -->|Activates| Hardware
+    
+    %% The Bridge to Cloud Memory
+    Ext_Worker -->|3. Store Memory| Vertex
+    Vertex -.->|4. Contextual Recall| Ext_Worker
+    
+    %% The Dev Loop
+    IDX -->|5. SSH Remote| SSHTunnel
+    SSHTunnel -->|Tunnel| Gadget_Net
+    Gadget_Net -->|Manage| Pi_Agent
+    
+    %% Deployment Loop
+    IDX -->|6. git push| CloudBuild
+    CloudBuild -->|7. Update Trigger| PubSub

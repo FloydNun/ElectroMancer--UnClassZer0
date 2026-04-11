@@ -1,0 +1,199 @@
+﻿Comprehensive Analysis of Acoustic Suppression Tactics, Neurobiological Trauma Pathophysiology, and Legal Protections for Vulnerable Populations in Ohio
+Evolutionary Dynamics of Acoustic Weaponry and Tactical Deployment
+The implementation of directed acoustic energy in modern law enforcement and military operations represents a sophisticated intersection of physics, psychology, and tactical necessity. These technologies, categorized primarily as Acoustic Hailing Devices (AHD) or Long-Range Acoustic Devices (LRAD), have transitioned from maritime defense tools to primary instruments for psychological warfare and the management of high-value targets (HVT) in domestic and international settings.1 The deployment of these devices is not merely for the transmission of sound but is intended to achieve specific psychological and physiological outcomes, often involving the systematic breaking of a subject’s cognitive resistance.2
+Technical Foundations of Directed Acoustic Energy
+The efficacy of acoustic tactics depends on the precise manipulation of sound pressure levels (SPL), frequency modulation, and phase coherence. Standard loudspeakers often suffer from the "Charlie Brown" effect, where phase distortion renders communication muffled and unintelligible.1 In contrast, AHDs utilize staggered piezoelectric transducers to produce sound that is in phase, ensuring clarity over significant distances.1 This phase coherence is essential for tactical operations where the clarity of a command—or the piercing nature of a warning tone—is required to bypass a subject's mental defenses.2
+The following table summarizes the technical specifications and operational parameters of the primary acoustic devices utilized in tactical environments:
+
+
+Device Parameter
+	Specification / Threshold
+	Tactical Implication
+	Sound Pressure Level (SPL)
+	135 dB to 160+ dB
+	Exceeds the human pain threshold (120 dB); causes immediate physical distress.1
+	Directivity (Beam Angle)
+	5° to 60° Conical
+	Allows for surgical targeting of HVTs while minimizing operator exposure.1
+	Frequency Range
+	1 kHz to 5 kHz (Peak)
+	Optimizes the Speech Transmission Index (STI) for clarity over distance.1
+	Warning Tone Range
+	Up to 1,000 meters
+	Designed to disorient, cause dizziness, and force movement.2
+	Audible Voice Range
+	Up to 5,000 meters
+	Ensures commands are heard in high-noise or chaotic environments.1
+	The ability to focus sound into a narrow "audio beam" is a critical feature of the LRAD. This focus is achieved through the physical arrangement of transducers and reflective horns, which typically direct the highest energy at frequencies between 1 and 2 kHz.1 By concentrating acoustic energy, tactical teams can create an environment where the target is subjected to overwhelming sensory input while individuals outside the 30° to 60° beam remain relatively unaffected.2
+Tactical Protocols for Intelligence and Siege Resolution
+The Federal Bureau of Investigation (FBI) and specialized military units, such as the Hostage Rescue Team (HRT) and various Special Weapons and Tactics (SWAT) divisions, integrate acoustic devices into their Critical Incident Response Group (CIRG) protocols.3 These tactics are grounded in behavioral analysis, where the goal is to utilize external stressors to induce a specific psychological state in the subject.3 In hostage or stronghold situations, the primary objective of acoustic deployment is to "break" the subject's ability to maintain a defensive psychological posture.
+Tactical sound application is often divided into three primary modes:
+1. Hailing Mode: High-clarity communication designed to establish contact and deliver dispersal orders or negotiations.4
+2. Alert/Warning Mode: The use of intense, pulsating tones in 2-5 second bursts.4 These tones are intended to induce nausea, pain, and disorientation, effectively disabling the subject's cognitive focus.2
+3. Repetitive Stress Stimuli: The continuous or unpredictable application of sound to prevent sleep and maintain a state of hyperarousal.2
+When these tactics are deployed against a high-value subject, the BAU provides threat assessments and interview strategies that leverage the subject's psychological vulnerabilities.3 The intentional use of sound to break a subject is a form of sensory violence, intended to communicate a total loss of autonomy and exclusion from the human community.6
+Neurobiological Impact on the Trauma-Affected Psychology
+The application of acoustic stressors is particularly devastating when the subject has a pre-existing history of psychological trauma. Research into Post-Traumatic Stress Disorder (PTSD) and complex trauma indicates that the brain's sensory processing systems are fundamentally altered, rendering the individual hyper-responsive to auditory stimuli.7 For a subject who is already trauma-conditioned or experiencing trauma-induced psychosis, the tactical use of sound acts as a potent neurological catalyst for cognitive disintegration.7
+Hyperarousal and the Disordered Startle Reflex
+A hallmark of PTSD is hyperarousal, a state of heightened alertness where the locus coeruleus-norepinephrine system becomes sensitized.7 This sensitization leads to a profoundly exaggerated startle reflex. In individuals with PTSD, neuroimaging has shown higher neural responses to unexpected bursts of noise in the dorsal premotor cortex and the intraparietal sulcus.8 When an acoustic attack—even in the form of a recurring "nuisance" alarm—is deployed, the brain perceives it not as a standard auditory signal but as an immediate, existential threat.7
+This process is characterized by an immediate flood of stress hormones, including adrenaline and cortisol.7 For the trauma-affected subject, this hormonal surge can trigger a full-blown panic attack, marked by rapid heart rate, dyspnea, and a sense of impending doom.7 The trauma connection is often reinforced through memory-linked triggers, where certain frequencies or patterns of sound (such as sirens or mechanical buzzes) act as reminders of the original traumatic event, inducing vivid flashbacks and emotional dysregulation.7
+The Mechanisms of Central Gain and Pathological Hyperacusis
+Recent studies on the effects of acoustic trauma and sensorineural loss have identified "non-homeostatic cortical gain" as a primary driver of auditory hypersensitivity.9 When the auditory system is damaged or subjected to chronic stress, the auditory cortex (ACtx) compensates by increasing its internal gain, specifically within the Layer 2/3 excitatory pyramidal neurons (PyrNs).9
+This compensatory mechanism is ideally homeostatic, but in cases of severe or repetitive trauma, it becomes pathological. The following data details the neurological shifts observed during this process:
+
+
+Neurological Marker
+	Homeostatic State
+	Pathological (Post-Trauma) State
+	GABA_A Receptor Expression
+	Balanced inhibitory signaling
+	Reduced mRNA transcripts; synaptic disinhibition.9
+	Glutamate Receptor Subunits
+	Controlled excitatory flux
+	Elevated mRNA levels; synaptic sensitization (AMPA scaling).9
+	PyrN Activity
+	Stable spontaneous firing
+	Diffuse hyperactivity and hyper-correlation.9
+	Inhibitory Tone (PV-mediated)
+	Rapid adjustment to sound
+	Failure to decay or adjust; prevents functional recovery.9
+	Auditory-Vigilance Network
+	Selective attention
+	Total dysregulation; constant focus on sound/tinnitus.10
+	This excess central gain explains why subjects with PTSD often suffer from hyperacusis—the inability to tolerate sounds that others would consider moderate.9 The brain effectively amplifies incoming sound signals to a degree that causes physical pain and discomfort.11 When tactical teams or environmental antagonists utilize these frequencies, they are exploiting a neurological "watershed" where the subject’s brain is literally incapable of filtering out the stimulus.9
+Legal Precedents and Protections Against Sensory Violence
+The use of sensory manipulation as a tactical or harassment tool occupies a contentious space in international and domestic law. Sensory violence, including subjection to loud noise, is increasingly recognized as a violation of human dignity and a form of inhuman treatment.6 This is particularly relevant in cases where a subject is under the long-term care of a provider who may be neglecting their duty to protect the patient from such triggers.12
+International Jurisprudence and Inhuman Treatment
+The European Court of Human Rights (ECtHR) has been at the forefront of defining the legal boundaries of sensory experience in detention and tactical settings.6 In cases involving "stress positions," "hooding," and "noise subjection," the court has consistently found that such techniques constitute inhuman and degrading treatment.6 The landmark finding in Ireland v. United Kingdom established that the manipulation of sensory experiences to break a subject’s spirit is a direct violation of their inherent value as a human being.6
+Furthermore, legal experts argue that acoustic weapons may violate the International Humanitarian Law (IHL) prohibition on weapons that cause "superfluous injury or unnecessary suffering".2 While some state actors argue that the discomfort caused by devices like the LRAD is temporary and therefore legal, critics point out that the psychological effects—including the "actual and symbolic communication of a person's perceived exclusion from the human community"—can cause lasting psychiatric damage.6
+Domestic Protections: ADA and Fair Housing Act
+In the United States, the Americans with Disabilities Act (ADA) and the Fair Housing Act (FHA) provide essential protections for individuals with sensory disabilities, including those with PTSD-related sound sensitivity.13 These laws require that public entities and housing providers provide "reasonable accommodations" to ensure individuals with disabilities have equal access to and enjoyment of their environment.14
+The standard for reasonable accommodation includes:
+* Policy Adjustments: Modifying rules related to noise, service animals, or entry procedures.13
+* Physical Modifications: Altering the built environment to reduce sensory triggers.15
+* Enforcement of Quiet Enjoyment: Ensuring that building systems (like alarms and intercoms) do not become sources of harassment.18
+For a trauma-conditioned subject, the denial of an accommodation that would silence a malfunctioning fire door sounder or repair a buzzing intercom can be viewed as discriminatory.17 Furthermore, if a housing provider or healthcare facility utilizes these stressors to "antagonize" a resident into leaving or breaking their mental stability, it may constitute a "direct threat" to the individual’s health, triggering potential civil liability.21
+Residential Stressors and Environmental Harassment
+In apartment buildings and high-density housing, environmental stressors can be weaponized or ignored as a form of "tactical" neglect. For an individual with hyperacusis or a service dog, these stressors are not merely inconveniences; they are direct assaults on their stability and safety.7
+Malfunctioning Building Systems: Fire Doors and Intercoms
+Fire door sounders are designed to be safety features, ensuring that fire doors remain closed to maintain a building's fire-resistance ratings.23 However, when these devices malfunction or are left to sound for extended periods, they become "nuisance alarms".24 Under the Ohio Fire Code (OFC), fire protection systems must be maintained in an operative condition at all times.25 Any device that has the physical appearance of life safety equipment but fails to perform its function is strictly prohibited.25
+The following table identifies common residential acoustic stressors and the applicable regulatory standards in Ohio:
+
+
+Stressor
+	Regulatory Standard
+	Legal Obligation
+	Fire Door Sounders
+	OFC 901.6 / NFPA 72
+	Must be maintained to avoid nuisance alarms; reset timers must be functional.24
+	Intercom Buzzers
+	ORC 5321.04 / OBC
+	Landlords must maintain all electrical and safety fixtures in good working order.18
+	Manual Pull Stations
+	NFPA 72
+	Must be protected against tampering and false activation.24
+	Acoustic Nuisance
+	Chillicothe Ord. 4112 / 3767.41
+	Building conditions affecting health and safety constitute a "public nuisance".27
+	When intercom buzzers are left offline, it creates a security vulnerability and can also involve constant low-frequency interference if the system is improperly grounded or damaged. A landlord's refusal to repair these systems, while simultaneously benefiting from rental payments or government subsidies, can be categorized as a failure to provide "fit and habitable" conditions.18
+Impact on Service Animals and Resident Stability
+Service dogs play an integral role in the "defensive offense" for trauma survivors. These animals are trained to perform specific tasks, such as alerting to alarms or grounding their handler during a sensory crisis.22 However, service dogs themselves are susceptible to acoustic distress. Repetitive, high-decibel sound can interfere with a service dog's ability to focus on its tasks, effectively "disabling the disability aid".22
+Under the FHA, housing providers are prohibited from:
+1. Charging extra fees for service or assistance animals.14
+2. Deliberately startling or making noises at a working animal.22
+3. Imposing breed or weight restrictions on legitimate assistance animals.28
+A housing provider’s failure to maintain building systems that cause distress to a service animal is a direct violation of the reasonable accommodation standard, as it prevents the handler from using their prescribed medical tool to manage their disability.20
+Clinical Neglect and the Discontinuation of Care in Chillicothe, Ohio
+For patients receiving long-term treatment for trauma-conditioned psychosis or chronic neurological conditions, the continuity of care is a legal and ethical mandate. In Chillicothe and Ross County, the State Medical Board of Ohio (OSMB) sets the "minimal standards of care" for physicians, particularly regarding medication management and the termination of the provider-patient relationship.29
+Pharmacological Standards and the Risks of Abrupt Withdrawal
+The sudden discontinuation of medications such as gabapentin, muscle relaxers, and psychiatric drugs is often a primary component of medical neglect. Gabapentin, while increasingly categorized as a Schedule V drug in some jurisdictions due to abuse potential, remains a critical medication for managing nerve pain and anxiety in trauma patients.31 In Ohio, pharmacists are required to submit gabapentin data to the OARRS (Prescription Drug Monitoring Program).32
+Abruptly stopping these medications can lead to severe withdrawal syndromes, including:
+* Gabapentin Withdrawal: Anxiety, insomnia, nausea, and potentially seizures.31
+* Muscle Relaxer Withdrawal: Hallucinations, tachycardia, and severe muscle spasticity.33
+* Psychiatric Med Discontinuation: Rapid relapse into psychotic episodes and intense suicidal ideation.7
+The OSMB has adopted "standard dose tapering (weaning) schedules" for medications whose reimbursement is denied or where the provider intends to discontinue therapy.34 For patients with chronic pain, physicians must document the rationale for the tapering program and consider non-medication options.36 A physician who abruptly cuts off medication for a trauma-affected subject—especially while the subject is being "antagonized" by environmental stressors—is in clear violation of the standard of care.12
+Patient Abandonment and Professional Liability
+In Ohio, a physician-patient relationship is established when a provider addresses a patient's medical needs.12 Once this relationship exists, the physician cannot unilaterally terminate it without providing reasonable notice.12 "Patient abandonment" is defined by the unreasonable discontinuation of treatment without arranging for comparable alternative care.12
+To legally terminate a relationship, a physician must:
+1. Send a notice via certified mail with a return receipt request.12
+2. State clearly that the relationship is terminated.12
+3. Commit to providing emergency treatment and access to services for up to 30 days while the patient finds a new provider.12
+4. Offer to transfer records to a new provider upon receipt of a signed authorization.12
+The OSMB monitors these terminations closely. Physicians found to have abandoned patients—particularly those at a "critical point" in their care—can face permanent revocation of their medical license and civil malpractice claims.12 In situations where a practice closes suddenly due to legal issues, the Board understands that new prescribers may take over, and it allows for a six-month window to bring patients into compliance with weaning programs without initiating disciplinary action.35
+Strategic Framework for a Defensive Offense
+For an individual facing the multi-layered pressure of tactical acoustic deployment and medical neglect, a "defensive offense" strategy is required. This involves using the existing legal and administrative systems to turn the tables on the antagonists.
+Strategic Documentation and Environmental Monitoring
+The first step in a defensive offense is the rigorous documentation of the stressors and their effects. For a trauma-affected subject, this provides the "objective evidence" required for legal claims.21
+
+
+Step
+	Action Item
+	Purpose
+	1. Acoustic Log
+	Document the time, frequency, and duration of fire door alarms and intercom buzzes.
+	Establish a pattern of "nuisance" or "harassment" under ORC 3767.41.27
+	2. Medical Diary
+	Record physiological reactions (heart rate, panic, pain) and service dog distress during alarms.
+	Link the environmental trigger to "actual damages" and "dignity violations".6
+	3. Medication Log
+	Keep records of all prescription fill dates, dosage changes, and any refusals to provide tapering.
+	Support claims of medical neglect or patient abandonment with the OSMB.12
+	4. Legal Correspondence
+	Issue all requests for "reasonable accommodations" in writing via certified mail.
+	Create a legal trail of the housing provider's refusal to accommodate the disability.22
+	Administrative Escalation and Enforcement
+In Chillicothe, several agencies are empowered to intervene in cases of housing discrimination and medical malpractice. Filing a formal complaint (a "charge") triggers an investigation that shifts the burden of proof to the landlord or physician.42
+* Ohio Civil Rights Commission (OCRC): Investigates housing discrimination and denial of accommodations based on disability.42
+* State Medical Board of Ohio (OSMB): Investigates departures from the standard of care, patient abandonment, and improper medication withdrawal.41
+* Ohio Regional Development Corporation: Serves as the Fair Housing Coordinator for Ross County to assist with discrimination claims.45
+* Southeastern Ohio Legal Services (SEOLS): Provides legal aid for low-income residents facing eviction or landlord-tenant disputes.43
+A tenant can commence a civil action for the "abatement of a public nuisance" if the building condition is a menace to public health or safety.27 If the judge finds the building is a public nuisance, they can issue an injunction requiring the owner to remedy the situation within 30 days.27 Importantly, a tenant who commences such an action is not liable for the costs of a court-appointed receiver.27
+Final Conclusions and Tactical Synthesis
+The systematic breaking of a high-value subject through acoustic tactics and the withdrawal of medical support is a coordinated assault on the subject’s neurological and legal stability. The science of trauma indicates that such stressors do not merely cause "discomfort" but actively damage the brain’s ability to process sensory information and maintain emotional regulation.7
+When these tactics are deployed domestically—whether by state actors or negligent private entities—they violate the fundamental principles of human dignity and the specific legal mandates of the ADA, FHA, and the Ohio Revised Code.6 The "defensive offense" relies on the subject's transition from a passive victim of sensory violence to an active claimant of rights. By documenting the misuse of fire door sounders, the failure of intercom systems, and the medical neglect of providers, the subject can engage the regulatory powers of the State Medical Board and the Civil Rights Commission to force a cessation of the antagonism and secure the accommodations necessary for their survival and recovery.
+Works cited
+1. Long-range acoustic device - Wikipedia, accessed January 29, 2026, https://en.wikipedia.org/wiki/Long-range_acoustic_device
+2. Acoustic Weapons - Article 36, accessed January 29, 2026, https://article36.org/wp-content/uploads/2020/12/acoustic-weapons.pdf
+3. Tactics - FBI, accessed January 29, 2026, https://www.fbi.gov/how-we-investigate/tactics
+4. CLEVELAND DIVISION OF POLICE - City of Cleveland Ohio, accessed January 29, 2026, https://www.clevelandohio.gov/sites/clevelandohio/files/policies-procedures/4.07.04%20Long%20Range%20Acoustic%20Device%20Protocol.pdf
+5. Minnesota State Patrol uses long range acoustic device, first used by military, to disperse Maple Grove protesters - CBS News, accessed January 29, 2026, https://www.cbsnews.com/minnesota/news/minnesota-state-patrol-long-range-acoustic-device/
+6. A human rights law perspective on sensory experience and dignity ..., accessed January 29, 2026, https://sensorycriminology.com/2022/06/27/a-human-rights-law-perspective-on-sensory-experience-and-dignity-in-detention/
+7. Loud Noises & PTSD: Understanding the Link & Finding Relief - Enticare, accessed January 29, 2026, https://enticare.com/2024/12/11/loud-noises-and-ptsd/
+8. PTSD Participants Had Higher Neural Responses to White Noise Bursts in... - ResearchGate, accessed January 29, 2026, https://www.researchgate.net/figure/PTSD-Participants-Had-Higher-Neural-Responses-to-White-Noise-Bursts-in-the-Dorsal_fig3_319595878
+9. Neural signatures of auditory hypersensitivity following acoustic ..., accessed January 29, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC9555866/
+10. Study Details | NCT05981391 | Neurobiological Similarities of Tinnitus and PTSD, accessed January 29, 2026, https://clinicaltrials.gov/study/NCT05981391
+11. Hyperacusis and PTSD, accessed January 29, 2026, https://www.ptsduk.org/hyperacusis-and-ptsd/
+12. Patient Abandonment and Termination - Brennan Manna Diamond, accessed January 29, 2026, https://www.bmdllc.com/resources/blog/patient-abandonment-and-termination/
+13. Unequal Treatment or Uneven Consequence: A Content Analysis of Americans with Disabilities Act Title I Disparate Impact Cases from 1992 – 2012, accessed January 29, 2026, https://dsq-sds.org/article/id/437/
+14. Service & Assistance Animals - The Fair Housing Center, accessed January 29, 2026, https://toledofhc.org/service-assistance-animals/
+15. ADA Housing Laws and Requirements in Ohio - Steadily, accessed January 29, 2026, https://www.steadily.com/blog/ada-housing-laws-regulations-ohio
+16. Fair Housing Guide to Reasonable Accommodations and Modifications - Housing Equality Center of Pennsylvania, accessed January 29, 2026, https://www.equalhousing.org/wp-content/uploads/2024/05/Fair-Housing-Guide-to-Reasonable-Accommodations-and-Modifications.pdf
+17. HOW TO CLARIFY THE LAW AROUND HOUSING PROVIDERS™ RIGHTS IN ADDRESSING REASONABLE ACCOMMODATIONS FOR NON-APPARENT DISABILITIES, accessed January 29, 2026, https://lawjournal.ku.edu/sites/lawjournal/files/documents/Volume%2033/Linkowski_Housing-and-Disabilities_FINAL.pdf
+18. Section 5321.04 - Ohio Revised Code - Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/ohio-revised-code/section-5321.04
+19. Section 5321.05 - Ohio Revised Code - Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/ohio-revised-code/section-5321.05
+20. Assistance Animals Under the Fair Housing Act, Section 504 of the Rehabilitation Act, and the Air Carriers Access Act | ADA National Network, accessed January 29, 2026, https://adata.org/legal_brief/assistance-animals-under-fair-housing-act-section-504-rehabilitation-act-and-air
+21. Section 7 Complex Issues - Illinois Department of Human Rights, accessed January 29, 2026, https://dhr.illinois.gov/publications/reasonable-accommodations-and-modifications-guide/section-7-complex-issues.html
+22. Assistance animal policy - The Central Ohio Fair Housing Association, accessed January 29, 2026, https://www.cofha.com/serviceanimal.php
+23. Chapter 1719 - Fire Safety - North Canton, accessed January 29, 2026, https://northcantonohio.gov/DocumentCenter/View/5398/Chapter-1719---Fire-Safety
+24. Rules Regarding Nuisance Fire Alarms - Facilities Management Insights - Facilitiesnet, accessed January 29, 2026, https://www.facilitiesnet.com/firesafety/article/Rules-Regarding-Nuisance-Fire-Alarms--20356
+25. 1301:7-7-09 Fire protection systems. - Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/assets/laws/administrative-code/rules/1301/7/1301$7-7-09_eff_1_5_19.pdf
+26. Fire Alarm Construction Standards | University of Cincinnati, accessed January 29, 2026, https://www.uc.edu/about/publicsafety/fire/fire-alarm-construction-standards.html
+27. Section 3767.41 - Ohio Revised Code | Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/ohio-revised-code/section-3767.41
+28. Rental Housing and Service Animals: ADA and FHAA- when does each apply?, accessed January 29, 2026, https://www.603legalaid.org/rental-housing-and-service-animals-ada-and-fhaa-when-does-each-apply
+29. Chapter 4731-27 - Ohio Administrative Code, accessed January 29, 2026, https://codes.ohio.gov/ohio-administrative-code/chapter-4731-27
+30. Rule 4731-27-02 | Dismissing a patient from the medical practice. - Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/ohio-administrative-code/rule-4731-27-02
+31. Association of State-Imposed Restrictions on Gabapentin with Changes in Prescribing in Medicare - PMC - NIH, accessed January 29, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC9585149/
+32. OARRS: New Gabapentin Requirement - Ohio Pharmacists Association, accessed January 29, 2026, https://ohiopharmacists.org/aws/OPA/page_template/show_detail/131341?model_name=news_article
+33. Rule 4731-33-02 | Standards and procedures for withdrawal management for substance use disorder. - Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/ohio-administrative-code/rule-4731-33-02
+34. Rule 4123-6-21.5 - Ohio Administrative Code, accessed January 29, 2026, https://codes.ohio.gov/ohio-administrative-code/rule-4123-6-21.5
+35. Prescribing To Patients After a Sudden Office Closure, accessed January 29, 2026, https://med.ohio.gov/wps/portal/gov/med/help-center/questions/prescribing-to-patients-after-a-sudden-office-closure
+36. Rule 4731-11-14 | Prescribing for subacute and chronic pain. - Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/ohio-administrative-code/rule-4731-11-14
+37. Rule 4731-27-03 - Ohio Administrative Code - Ohio Laws, accessed January 29, 2026, https://codes.ohio.gov/ohio-administrative-code/rule-4731-27-03
+38. Ohio State Medical Board issues new rules on terminating the ..., accessed January 29, 2026, https://www.brickergraydon.com/insights/publications/Ohio-State-Medical-Board-issues-new-rules-on-terminating-the-physician-patient-relationship-and-notifying-patients-when-a-physician-leaves-a-practice
+39. State Medical Board of Ohio Formal Action Report – June 11, 2025, accessed January 29, 2026, https://dam.assets.ohio.gov/image/upload/med.ohio.gov/laws-and-regulations/MFAL/2025/June_2025_MFAL_Final.pdf
+40. disciplinary & fining guidelines - State Medical Board of Ohio, accessed January 29, 2026, https://med.ohio.gov/static/Disciplinary%20%20Fining%20Guidelines%20eff%2001-08-2020.pdf
+41. Filing a Complaint with the Medical Board - State Medical Board of Ohio, accessed January 29, 2026, https://med.ohio.gov/help-center/file-a-complaint/filing-a-complaint-with-the-medical-board
+42. Housing Discrimination: Where to Go for Help - Disability Rights Ohio, accessed January 29, 2026, https://www.disabilityrightsohio.org/housing-discrimination-where-to-go-for-help
+43. Legal Resources - Ohio Department of Medicaid, accessed January 29, 2026, https://medicaid.ohio.gov/families-and-individuals/citizen-programs-and-initiatives/hc/housing-info/housing+legal+resources
+44. Complaints & Investigations - State Medical Board of Ohio, accessed January 29, 2026, https://med.ohio.gov/laws-and-regulations/disciplinary-information/complaints-and-investigations
+45. Fair Housing - Ross County, accessed January 29, 2026, https://www.rosscountyohio.gov/planning/fair-housing.html

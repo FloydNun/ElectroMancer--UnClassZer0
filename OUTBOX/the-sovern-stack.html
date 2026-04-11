@@ -1,0 +1,143 @@
+# FILENAME: boot.py
+import os
+import sys
+import subprocess
+import pkg_resources
+import ast
+
+def get_imports_from_folder(folder_path):
+    """Scans all .py files to identify required libraries[cite: 75]."""
+    imports = set()
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(".py") and file != "boot.py":
+                try:
+                    with open(os.path.join(root, file), "r", encoding='utf-8') as f:
+                        tree = ast.parse(f.read())
+                    for node in ast.walk(tree):
+                        if isinstance(node, ast.Import):
+                            for n in node.names:
+                                imports.add(n.name.split('.')[0])
+                        elif isinstance(node, ast.ImportFrom):
+                            if node.module:
+                                imports.add(node.module.split('.')[0])
+                except Exception as e:
+                    print(f"[!] Could not parse {file}: {e}")
+    return imports
+
+def heal_environment():
+    """Self-healing protocol to install missing dependencies[cite: 76]."""
+    print("--- INITIATING SELF-HEAL PROTOCOL ---")
+    required_libs = get_imports_from_folder(os.getcwd())
+    known_externals = {'flask', 'pytesseract', 'pdf2image', 'markdown', 'pandas', 'watchdog', 'markitdown'}
+    to_install = required_libs.intersection(known_externals)
+    to_install.update(['flask', 'pytesseract', 'pillow'])
+    installed = {pkg.key for pkg in pkg_resources.working_set}
+    missing = [lib for lib in to_install if lib.lower() not in installed]
+    if missing:
+        print(f"[!] MISSING MODULES: {missing}")
+        with open("requirements.txt", "w") as f:
+            for lib in missing:
+                f.write(f"{lib}\n")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+    else:
+        print("[+] System Integrity: 100%")
+
+if __name__ == "__main__":
+    heal_environment()
+    import mission_control
+    mission_control.run_app()
+
+# FILENAME: code_forge.py
+import os
+import re
+
+STAGING_AREA = "FORGE_OUTPUT"
+DELIMITER_PATTERN = r"^# FILENAME:\s+(.+)$"
+
+def ensure_staging():
+    if not os.path.exists(STAGING_AREA):
+        os.makedirs(STAGING_AREA)
+    return STAGING_AREA
+
+def unbundle_blob(raw_text):
+    """Splicer: Splits a text blob back into individual files."""
+    ensure_staging()
+    lines = raw_text.splitlines()
+    current_file = None
+    current_content = []
+    for line in lines:
+        match = re.match(DELIMITER_PATTERN, line)
+        if match:
+            if current_file:
+                save_file(current_file, current_content)
+            current_file = match.group(1).strip()
+            current_content = []
+        else:
+            if current_file:
+                current_content.append(line)
+    if current_file and current_content:
+        save_file(current_file, current_content)
+
+def distill_from_chat(chat_log_text):
+    """Distiller: Extracts code artifacts from chat logs[cite: 113]."""
+    ensure_staging()
+    pattern = r"```(?:\w+)?\n(.*?)```"
+    matches = re.findall(pattern, chat_log_text, re.DOTALL)
+    for i, code in enumerate(matches):
+        filename = f"artifact_{i}.py"
+        save_file(filename, code.splitlines())
+
+def save_file(filename, content_list):
+    filename = os.path.basename(filename)
+    path = os.path.join(STAGING_AREA, filename)
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(content_list))
+    print(f" [+] Wrote: {path}")
+
+# FILENAME: ingestor.py
+import os
+import shutil
+import hashlib
+import json
+from pathlib import Path
+
+SOURCE_DIR = r"D:\\"  # Update per drive mount [cite: 44]
+DESTINATION_ROOT = r"Databank"
+MANIFEST_FILE = "ingestion_log.json"
+
+LANES = {
+    "Legal_Paperwork": ["affidavit", "court", "brief", "legal", "usc"],
+    "Technical_Specs": ["schematic", "spec", "diagram", "manual", "firmware"],
+    "Witness_Statements": ["testimony", "statement", "interview", "transcript"],
+    "Artifacts": ["image", "photo", "scan", "dump"],
+}
+
+def get_file_hash(filepath):
+    """Generates a SHA-256 fingerprint for deduplication[cite: 45]."""
+    hasher = hashlib.sha256()
+    with open(filepath, 'rb') as f:
+        while chunk := f.read(8192):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+def process_drives():
+    """Triage Nurse: Deduplicates and sorts files into lanes[cite: 48]."""
+    print(f"[*] Initializing Ingestion on {SOURCE_DIR}...")
+    # ... logic to crawl, hash, and move files to Databank ...
+
+# FILENAME: mission_control.py
+from flask import Flask, render_template_string, request, jsonify
+import os
+
+app = Flask(__name__)
+INBOX = os.path.join(os.getcwd(), "INBOX_DUMP")
+DATABANK = os.path.join(os.getcwd(), "DATABANK")
+
+@app.route('/')
+def home():
+    """Operator Interface for Mission Control[cite: 81, 89]."""
+    return "<h1>SYSTEM STATUS: ONLINE // MODE: SOVEREIGN</h1>"
+
+def run_app():
+    app.run(host='0.0.0.0', port=5000, debug=False)

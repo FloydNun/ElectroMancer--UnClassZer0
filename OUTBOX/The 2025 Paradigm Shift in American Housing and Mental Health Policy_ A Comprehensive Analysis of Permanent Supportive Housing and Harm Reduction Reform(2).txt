@@ -1,0 +1,133 @@
+﻿PSH_IN_THE_NEWS: The 2025 Paradigm Shift in American Housing and Mental Health Policy: A Comprehensive Analysis of Permanent Supportive Housing and Harm Reduction Reform
+The landscape of American social policy in late 2025 is defined by a rigorous and often contentious re-evaluation of federal interventions in homelessness, mental health, and substance abuse. At the center of this debate is the transition from the long-standing "Housing First" model—prioritizing Permanent Supportive Housing (PSH) without preconditions—to a "Treatment-First" or "Self-Sufficiency" model emphasizing transitional housing, work requirements, and mandated clinical engagement.1 This shift, orchestrated at the highest levels of the Executive Branch and mirrored in state-level legislative actions in Ohio, represents a fundamental move away from harm reduction toward a more traditional, recovery-oriented framework.3
+The year 2025 has seen the introduction of the Second Trump Administration, which has utilized executive authority and budget reconciliation to overhaul the federal government’s approach to social safety nets.6 The administration's philosophy, articulated through the Domestic Policy Council (DPC) and executed via the Department of Housing and Urban Development (HUD), characterizes PSH as a well-intentioned but flawed mechanism that fosters government dependency and ignores the clinical root causes of homelessness, such as chronic mental illness and illicit drug use.2 Conversely, a coalition of state attorneys general, local governments, and housing advocates argues that this pivot threatens to dismantle an evidence-based system that has successfully housed hundreds of thousands of vulnerable Americans, potentially returning over 170,000 individuals to the streets.
+Federal Decision-Makers and the White House Policy Nexus
+The redirection of federal housing policy is not merely a bureaucratic adjustment but a primary objective of the White House Domestic Policy Council. Under the leadership of Director Vince Haley, the DPC serves as the primary engine for developing and implementing the administration’s domestic agenda, ensuring that agency actions align with the President’s goal of reducing federal spending.
+The Domestic Policy Council and Ideological Drivers
+Vince Haley, assuming office in January 2025, brings decades of experience shaping conservative political messaging and policy. Having worked closely with former Speaker Newt Gingrich for over a decade, Haley served as the campaign manager for Gingrich’s 2012 presidential run and was a primary speechwriter for the President during the 2024 campaign. As Director of the DPC, Haley oversees a team of specialists who have moved aggressively to rescind Biden-era health and housing directives.1
+Assisting Haley in the specific realm of health and housing are Theo Merkel and Corey Ensslin. Theo Merkel serves as a Special Assistant to the President for Domestic Policy, focusing on healthcare. His background at the Paragon Health Institute and the Manhattan Institute—where he advocated for reforming government programs characterized by "perverse incentives"—has made him a key architect of the push for efficiency in Medicaid. Corey Ensslin, as the Director for Health Policy within the DPC, works to target "waste, fraud, and abuse" in federal health programs while addressing chronic disease epidemics.
+The Role of the Department of Government Efficiency (DOGE)
+The 2025 policy environment is further shaped by the Department of Government Efficiency (DOGE), which has advocated for massive staffing reductions at HUD—targeting as much as half of the agency’s workforce—and proposing a freeze on federal investments in affordable housing. This pressure has created an urgency within the administration to slash PSH funding in favor of transitional models perceived as more efficient and less conducive to long-term government expenditure.11
+Table 1: Key White House and Executive Policy Decision-Makers (December 2025)
+Name
+	Position
+	Office / Department
+	Key Policy Focus
+	Donald J. Trump
+	47th President of the United States
+	The White House
+	Executive authority, federal spending cuts, One Big Beautiful Bill Act.
+	JD Vance
+	Vice President of the United States
+	Office of the Vice President
+	Congressional liaison, former Ohio Senator, tie-breaking legislative votes.
+	Vince Haley
+	Director
+	Domestic Policy Council
+	Strategic development of domestic agenda, oversight of DPC, former advisor.
+	Theo Merkel
+	Special Assistant to the President
+	Domestic Policy Council
+	Health care policy reform, Medicaid/Medicare efficiency, formerly Paragon Institute.
+	Corey Ensslin
+	Director for Health Policy
+	Domestic Policy Council
+	Health program waste/fraud reduction, clinical interventions, chronic disease.
+	Sam Adolphsen
+	Deputy Assistant to the President
+	Domestic Policy Council
+	SNAP and Medicaid eligibility standards, Foundation for Government Accountability.
+	Scott Turner
+	Secretary
+	Dept. of Housing and Urban Development
+	Implementation of transitional housing pivot, Opportunity Zones focus.
+	Fairfield Homes Integrated and the Accountability Paradox
+The findings regarding Fairfield Homes Integrated reveal a significant systemic failure where failures of accountability among specific private contractors are being used to justify a broad defunding of the Permanent Supportive Housing (PSH) model. While studies identify a 180-degree divergence between program guidelines and operational realities, these project-level failures are being weaponized to characterize community safety nets as "ineffective handouts".2
+Intersecting Policy Mechanisms
+* The Misuse of Risk Review: The 2025 HUD Notice of Funding Opportunity (NOFO) contains a new "Risk Review" provision allowing HUD to deny funding based on "public complaints" or an organization’s "history of subsidizing activities that conflict with the NOFO".4
+* Investor Shielding: Fairfield Homes is a prominent partner in projects utilizing the Low-Income Housing Tax Credit (LIHTC). Institutional investors have raised over $21.3 billion in equity through these credits, creating a financial wall that prioritizes a guaranteed return on investment over the actual quality of clinical support provided to residents.
+* State Referral Bans: Ohio's Senate Bill 138 (SB 138), effective January 1, 2025, mandates that behavioral health providers are prohibited from referring clients to any recovery housing residence not listed on the state registry, which must meet specific accreditation standards.
+Systemic Weaponization of Health Laws and Retaliation
+A critical development in late 2025 is the reported use of emergency health procedures as tools of retaliation against whistleblowers and vulnerable residents. Analysis reveals that the "Accountability Trap" extends beyond funding to the physical removal and silencing of individuals who report mismanagement.
+The "Pink Slip" (R.C. 5122.10) as a Retaliatory Mechanism
+Ohio Revised Code § 5122.10 provides for an involuntary psychiatric hold (commonly called a "pink slip") if a person represents a substantial risk of physical harm. Evidence has emerged of this procedure being used to retaliate against whistleblowers.
+* Documented Abuse: In Waller v. OhioHealth, a physician in training alleged that staff initiated a "pink slip" as retaliation for her hiring an attorney regarding workplace harassment.
+* Whistleblower Protections: Ohio law (ORC 3721.24) expressly prohibits care facilities from retaliating against any person who, in good faith, files a complaint regarding patient abuse or neglect.
+Denial of Medical Access and Fundamental Needs
+Reports indicate some PSH management groups are operating in opposition to program guidelines, effectively shifting from support models to "high-security lockdowns."
+* Access to Medication: Vulnerable residents have documented denials of access to life-saving antibiotics while under building "lock-ins." Under Title III of the ADA and Ohio Administrative Code 4112-5-06, it is unlawful to deny a person with a disability reasonable access to necessary services.
+* Interference with Survival: Instances of tenants missing meal deliveries and management characterizing the removal of window screens (used to receive medication) as "material violations" constitute "patient neglect" under ORC 2903.34.
+Hard Numbers: 2024-2025 Housing and Funding Data Analysis
+The data reflects a historic peak in demand and a significant contraction of long-term housing resources for the most vulnerable.
+Federal Funding and the 2025 Pivot
+* Total Funding Issued: In late 2024, HUD announced $3.6 billion in awards for nearly 7,000 projects.
+* The Funding Share: Historically, 87% to 90% of funds went to Permanent Housing. The 2025 policy imposes a 30% cap on these programs, redirecting the remaining 70% toward transitional models.
+* Ohio Fiscal Impact: Ohio was awarded $178 million in CoC funding in January 2025. The new cap results in a projected $105 million loss for PSH in the state, potentially displacing 10,000 households.
+Recipient and Tenant Statistics
+* Tenants in PSH: There are 171,490 beds nationwide dedicated to individuals with chronic homelessness and disabilities.
+* The 2024 Snapshot: A record 771,480 people experienced homelessness on a single night in 2024—an 18% increase from 2023.
+* Demographic Disparities: Black/African Americans represent 32% of the homeless population despite being 12% of the U.S. total. Children experiencing homelessness increased by 33% to nearly 150,000.
+The Congressional Battlefield: Fighters and Contacts
+The redirection of HUD funds has triggered immediate legislative counter-actions led by lawmakers who view the PSH overhaul as a threat to national stability.
+Top Contacts Fighting Over PSH Policy (December 2025)
+Name
+	Role
+	Position
+	Policy Stance
+	Maxine Waters
+	Fighter (For PSH)
+	Ranking Member, House Financial Services
+	Leads opposition to HUD cuts, demands staff retention.
+	Nancy Pelosi
+	Fighter (For PSH)
+	Speaker Emerita
+	Signed letters to reverse HUD cuts and protect the CoC program.
+	Cory Booker
+	Fighter (Harm Reduction)
+	Senator (NJ)
+	Co-introduced Freedom to Heal Act for innovative treatment access.
+	Jon Husted
+	Proponent (Reform)
+	U.S. Senator (OH)
+	Supports shift toward "temporary housing and health services".
+	Elizabeth Warren
+	Fighter (Whistleblowers)
+	Senator (MA)
+	Called for Secretary Turner to answer for civil rights failures.
+	Integrity Review & Metadata Campaign: Invitation for External Oversight
+This section serves as a direct invitation for key journalists and policy analysts to review the "Audit Cascade" findings regarding the 180-degree divergence between Permanent Supportive Housing (PSH) guidelines and operational realities.
+Top Media Contacts for Review
+The following journalists are actively tracking federal HUD cuts, whistleblower retaliation, and the impacts of the "Accountability Trap" on disabled populations.
+* Katherine Hapgood (Politico Pro): Primary reporter for internal HUD policy shifts and the legal challenges involving the 2025 NOFO. (Email: khapgood@politico.com)
+* Cornelius Frolik (Dayton Daily News): Leading investigative coverage on the $105 million funding cliff in Ohio and local project impacts. (Email: Cory.Frolik@coxinc.com or cfrolik@DaytonDailyNews.com)
+* Gabriel Kramer (Ideastream Public Media): Focused on housing and mental health disparities in Northern Ohio and Cuyahoga County. (Email: via ideastream.org)
+* Jen Butler (National Low Income Housing Coalition): Senior VP for External Affairs; coordinates national media response to the 30% PSH cap. (Email: jbutler@nlihc.org)10
+* David Greer (CLPHA): Director of Communications; monitors the impact of funding cuts on public housing authorities. (Email: dgreer@clpha.org)
+* Anna Bakalis (Federal Unionists Network): Handles media for the HUD whistleblower report alleging civil rights failures and political retaliation. (Email: media@federalunionists.net)
+Harm Reduction & Mental Health Policy Experts
+These individuals and offices are identified as critical nodes for reviewing evidence of systemic ADA violations and medical neglect within PSH portfolios.
+* Senator Cory Booker (D-NJ) & Senator Rand Paul (R-KY): Authors of the Freedom to Heal Act; focused on reducing federal barriers for innovative mental health access.
+* Senator Elizabeth Warren (D-MA): Ranking Member of the Senate Banking Committee; has called for Secretary Turner to answer for civil rights violations.
+* Senator Jon Husted (R-OH): Ohio liaison for groups expressing concern to HUD; proponent of "sober" transitional models.
+* Theo Merkel (Special Assistant to the President): Direct coordinator of health and domestic policy oversight; architect of "efficiency" measures.
+Institutional Oversight Authorities
+* Disability Rights Ohio: Designated to investigate cases of abuse, neglect, and discrimination against individuals in care facilities. (Phone: 1-800-282-9181)
+* HHS Office of Inspector General (OIG): Investigates mismanagement and fraud in programs involving Medicaid and mental health. (Hotline: 1-800-HHS-TIPS)
+* HUD Whistleblower Hotline: Recommended by HUD leadership for residents to submit allegations of "mismanagement, fraud, and waste".
+Conclusion: The 2026 Outlook
+The status of American housing policy remains in flux as the 2026 fiscal year approaches. Senators are expected to vote in early January 2026 on the Reed Amendment to extend existing funding for 12 months, providing a buffer against the immediate implementation of the 2025 NOFO. The conflict represents a profound realignment of priorities—moving away from a proven, autonomy-based model toward a mandate-driven intervention framework. For the residents of PSH, the challenge is survival within a system that increasingly uses their vulnerability as a justification for their displacement.
+Works cited
+1. Article | Trump administration policy change makes ... - POLITICO Pro, accessed December 29, 2025, https://subscriber.politicopro.com/article/2025/11/trump-administration-to-issue-policy-change-making-deep-cuts-to-homeless-housing-program-00650758
+2. Federal funding change could axe over 1K local permanent housing ..., accessed December 29, 2025, https://www.daytondailynews.com/local/federal-funding-change-could-axe-over-1k-local-permanent-housing-beds/6INS4STQHZEV5LKE735R3M55JI/
+3. Federal changes could significantly reduce permanent housing for homeless people in Cuyahoga County - WYSO, accessed December 29, 2025, https://www.wyso.org/2025-12-01/federal-changes-could-significantly-reduce-permanent-housing-for-homeless-people-in-cuyahoga-county
+4. Bay Area leaders brace for devastating cuts to homeless grants: 'People are going to die', accessed December 29, 2025, https://localnewsmatters.org/2025/11/19/bay-area-leaders-brace-for-devastating-cuts-to-homeless-grants-people-are-going-to-die/
+5. HUD Budget and Appropriations Congress White House Homelessness and Housing First Our Homes, Our Votes HoUSed, accessed December 29, 2025, https://nlihc.org/sites/default/files/Memo_Feb_18_25.pdf
+6. Donald Trump presidential administration, 2025 - Ballotpedia, accessed December 29, 2025, https://ballotpedia.org/Donald_Trump_presidential_administration,_2025
+7. Second presidency of Donald Trump - Wikipedia, accessed December 29, 2025, https://en.wikipedia.org/wiki/Second_presidency_of_Donald_Trump
+8. United States Domestic Policy Council - Wikipedia, accessed December 29, 2025, https://en.wikipedia.org/wiki/United_States_Domestic_Policy_Council
+9. House Democrats Send Letter Urging HUD to Rescind Harmful CoC NOFO That Slashes Funding for Permanent Housing, accessed December 29, 2025, https://nlihc.org/resource/house-democrats-send-letter-urging-hud-rescind-harmful-coc-nofo-slashes-funding-permanent
+10. AMCP Trump Administration Actions Tracker, accessed December 29, 2025, https://www.amcp.org/amcp-trump-administration-actions-tracker
+11. HUD Budget and Appropriations Congress Affordable Housing Supply State and Local Innovation Fair Housing Public Resource, accessed December 29, 2025, https://nlihc.org/sites/default/files/Memo_Mar_3_25.pdf
+12. Waters confronts Turner over HUD cuts - POLITICO Pro, accessed December 29, 2025, https://subscriber.politicopro.com/article/2025/03/waters-confronts-turner-over-hud-cuts-00208916
+13. The 100-year wait: The federal government returns to land use policy in full force with the introduction of sweeping bipartisan housing package, accessed December 29, 2025, https://www.smartgrowthamerica.org/knowledge-hub/news/the-100-year-wait-the-federal-government-returns-to-land-use-policy-in-full-force-with-the-introduction-of-sweeping-bipartisan-housing-package/
+14. Renewing Opportunity in the American Dream to Housing Act (ROAD) to Housing Act - The Real Estate Roundtable, accessed December 29, 2025, https://www.rer.org/tag/renewing-opportunity-in-the-american-dream-to-housing-act-road-to-housing-act/
