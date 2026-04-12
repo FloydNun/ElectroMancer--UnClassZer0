@@ -7,50 +7,74 @@
     <style>
       body {
         margin: 0;
-        font-family: system-ui;
         background: #1e1e1e;
         color: #ccc;
+        font-family: system-ui;
+        overflow: hidden;
       }
-      #container {
+      #main {
         display: flex;
         height: 100vh;
       }
-      .panel {
+      #sidebar {
+        width: 260px;
+        background: #252526;
+        padding: 10px;
+        overflow-y: auto;
+        border-right: 1px solid #333;
+      }
+      #sidebar h3 {
+        margin: 0 0 10px 0;
+        color: #007acc;
+      }
+      .file-item {
+        padding: 6px 10px;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      .file-item:hover {
+        background: #2a2d2e;
+      }
+      .file-item.active {
+        background: #007acc;
+        color: white;
+      }
+      #editor-area {
         flex: 1;
         display: flex;
         flex-direction: column;
       }
       .toolbar {
         background: #007acc;
-        padding: 8px;
+        padding: 10px;
         color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
-      #timeline {
-        width: 100%;
-        margin: 10px 0;
+      #monaco {
+        flex: 1;
       }
     </style>
   </head>
   <body>
-    <div id="container">
-      <div class="panel">
-        <div class="toolbar">Original (Read-Only)</div>
-        <div id="original" style="flex: 1"></div>
+    <div id="main">
+      <!-- Sidebar File List -->
+      <div id="sidebar">
+        <h3>📁 OUTBOX (click to edit)</h3>
+        <div id="file-list"></div>
       </div>
-      <div class="panel">
+
+      <!-- Editor Area -->
+      <div id="editor-area">
         <div class="toolbar">
-          Edited Version
-          <button onclick="saveVersion()">Save as _DV (Bundle)</button>
+          <strong>Code Space Editor</strong>
+          <div>
+            <button onclick="manualPaste()">📋 Manual Paste</button>
+            <button onclick="saveAsBundle()">💾 Save as _DV Bundle</button>
+          </div>
         </div>
-        <div id="edited" style="flex: 1"></div>
-        <input
-          type="range"
-          id="timeline"
-          min="0"
-          max="10"
-          value="0"
-          oninput="loadVersion(this.value)"
-        />
+        <div id="monaco"></div>
       </div>
     </div>
 
@@ -60,39 +84,120 @@
           vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs",
         },
       });
-      require(["vs/editor/editor.main"], function () {
-        const originalEditor = monaco.editor.create(
-          document.getElementById("original"),
+
+      let editor;
+      let currentFile = null;
+      let files = []; // will be populated from your OUTBOX folder
+
+      // === FAKE FILE LIST FOR NOW (replace with real folder scan in Electron later) ===
+      // For testing: just drop files into OUTBOX/ next to this HTML and refresh
+      function refreshFileList() {
+        const listEl = document.getElementById("file-list");
+        listEl.innerHTML = "";
+
+        // Demo files - you can manually add more here or we'll make it read real files soon
+        files = [
           {
-            value: "// Drop sorted chunk here or load from OUTBOX",
-            language: "python",
-            theme: "vs-dark",
-            readOnly: true,
+            name: "noisy_chunk_1.md",
+            content:
+              "// Drop your bulky noisy chunk here\nprint('FloydNun energy')",
           },
-        );
-
-        const editedEditor = monaco.editor.create(
-          document.getElementById("edited"),
           {
-            value: "// Edit here - changes tracked",
-            language: "python",
-            theme: "vs-dark",
+            name: "chat_extract_2026.txt",
+            content: "Paste your chat extractor output here",
           },
-        );
+          {
+            name: "doc_system_piece.py",
+            content: "# Your doc system piece goes here",
+          },
+        ];
 
-        window.saveVersion = () => {
-          const content = editedEditor.getValue();
-          const filename = `chunk_${Date.now()}_DV.md`; // ID-tag for sandbox
-          console.log(`Saved bundle: ${filename}`);
-          // In full Bridge this would call the virtual FS bundler
-          alert(`Saved as reusable bundle: ${filename}`);
-        };
+        files.forEach((file, index) => {
+          const div = document.createElement("div");
+          div.className = "file-item";
+          div.textContent = "📄 " + file.name;
+          div.onclick = () => loadFile(index);
+          listEl.appendChild(div);
+        });
+      }
 
-        window.loadVersion = (ver) => {
-          console.log(`Loading version ${ver}`);
-          // In full version this loads from snapshot history
-        };
-      });
+      function loadFile(index) {
+        currentFile = files[index];
+        document
+          .querySelectorAll(".file-item")
+          .forEach((el) => el.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+
+        if (!editor) {
+          require(["vs/editor/editor.main"], () => {
+            editor = monaco.editor.create(document.getElementById("monaco"), {
+              value: currentFile.content,
+              language: currentFile.name.endsWith(".py")
+                ? "python"
+                : currentFile.name.endsWith(".md")
+                  ? "markdown"
+                  : "plaintext",
+              theme: "vs-dark",
+              automaticLayout: true,
+              fontSize: 15,
+            });
+            editor.focus();
+          });
+        } else {
+          editor.setValue(currentFile.content);
+          editor.focus();
+        }
+      }
+
+      window.manualPaste = () => {
+        if (editor) {
+          navigator.clipboard
+            .readText()
+            .then((text) => {
+              const selection = editor.getSelection();
+              editor.executeEdits("paste", [
+                {
+                  range: selection,
+                  text: text,
+                  forceMoveMarkers: true,
+                },
+              ]);
+              editor.focus();
+            })
+            .catch(() =>
+              alert(
+                "Clipboard blocked – try Ctrl+V after clicking inside editor",
+              ),
+            );
+        }
+      };
+
+      window.saveAsBundle = () => {
+        if (editor && currentFile) {
+          const newContent = editor.getValue();
+          const bundleName =
+            currentFile.name.replace(/\.\w+$/, "") +
+            "_DV_" +
+            Date.now() +
+            ".md";
+          console.log(
+            `✅ SAVED BUNDLE → ${bundleName}\nReady for virtual FS sandbox`,
+          );
+          alert(
+            `Saved as reusable bundle:\n${bundleName}\n\n(You can now copy this into your Bundler v2)`,
+          );
+          // In full version this will auto-write to OUTBOX_PROCESSED/
+        }
+      };
+
+      // Boot it up
+      window.onload = () => {
+        refreshFileList();
+        // Auto-load first file
+        setTimeout(() => {
+          if (files.length > 0) loadFile(0);
+        }, 500);
+      };
     </script>
   </body>
 </html>
